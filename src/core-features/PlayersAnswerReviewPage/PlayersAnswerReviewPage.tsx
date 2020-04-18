@@ -17,8 +17,6 @@ export function PlayersAnswerReviewPage(props: {
     <div>
       <Branding />
       <QuestionSection answerCount={answerSlotsN} songTitle={songName} />
-      {/* <EmojiAnswerSlots emojiCount={answerSlotsN} onSubmit={onEmojiSubmitted} /> */}
-      {/* <PlayersCompletionPanel /> */}
     </div>
   );
 }
@@ -70,7 +68,7 @@ function EmojiAnswer(props: {
   ));
 
   return (
-    <div className="EmojiAnswerSlots">
+    <div className="EmojiAnswerDisplay">
       <Grid className="EmojiAnswer" container justify="center" spacing={2}>
         {slots}
       </Grid>
