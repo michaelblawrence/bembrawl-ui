@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import emojiRegex from "emoji-regex";
 import "./PlayersAnswerReviewPage.css";
 import { PageState } from "../../core/enums/PageState";
 import { Branding } from "../../core-common/Branding";
@@ -44,23 +43,6 @@ function EmojiAnswer(props: {
   answerCount: number;
 }) {
   const { answerCount } = props;
-  const slotRefs = [
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-  ];
-  const slotState = [
-    useState<string>(""),
-    useState<string>(""),
-    useState<string>(""),
-    useState<string>(""),
-    useState<string>(""),
-    useState<string>(""),
-  ];
-
   const slots = new Array(answerCount).fill(0).map((_, idx) => (
     <Grid item xl={4} xs={6} key={idx}>
       <h4>Answer {idx}</h4>
