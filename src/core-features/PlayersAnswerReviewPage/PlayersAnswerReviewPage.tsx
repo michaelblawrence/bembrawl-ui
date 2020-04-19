@@ -1,13 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import "./PlayersAnswerReviewPage.css";
-import { PageState } from "../../core/enums/PageState";
+import { PageState, Messages } from "../../core/enums/PageState";
 import { Branding } from "../../core-common/Branding";
-import { Grid, TextField, Button, Container } from "@material-ui/core";
-
-type OnEmojiSubmit = (emoji: string[]) => void;
+import { Grid } from "@material-ui/core";
 
 export function PlayersAnswerReviewPage(props: {
   setPage: (page: PageState) => void;
+  setMessage: Messages;
 }) {
   const [answerSlotsN] = useState(5);
   const [songName] = useState("SONG NAME");
