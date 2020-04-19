@@ -8,15 +8,19 @@ import { PlayersAnswerPage } from "./core-features/PlayersAnswerPage/PlayersAnsw
 import { useServerPageFSM } from "./core/effects/useServerPageFSM";
 
 function App() {
-  const [page, setPage] = useState(PageState.JoinRoom);
+  const [page, setPage] = useState(PageState.PlayersAnswer);
   useFullScreen(page);
-  useServerPageFSM(page, setPage);
+  const [setMessage] = useServerPageFSM(page, setPage);
   return (
     <div className="Window">
-      {page === PageState.JoinRoom && <JoinPage setPage={setPage} />}
-      {page === PageState.WaitingRoom && <WaitingRoomPage setPage={setPage} />}
+      {page === PageState.JoinRoom && (
+        <JoinPage setPage={setPage} setMessage={setMessage} />
+      )}
+      {page === PageState.WaitingRoom && (
+        <WaitingRoomPage setPage={setPage} setMessage={setMessage} />
+      )}
       {page === PageState.PlayersAnswer && (
-        <PlayersAnswerPage setPage={setPage} />
+        <PlayersAnswerPage setPage={setPage} setMessage={setMessage} />
       )}
     </div>
   );

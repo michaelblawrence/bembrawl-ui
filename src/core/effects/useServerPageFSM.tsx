@@ -1,22 +1,49 @@
-import React, { useEffect } from "react";
-import { PageState } from "../enums/PageState";
+import React, { useEffect, useState } from "react";
+import { PageState, Messages } from "../enums/PageState";
 import { HostClientService } from "../../HostClientService";
 
 export function useServerPageFSM(
   page: PageState,
   setPage: React.Dispatch<React.SetStateAction<PageState>>
-) {
-  // TODO: interact with server here
-  useEffect(() => initServices(page, setPage), [page, setPage]);
+): [Messages] {
+  const [svc, setSvc] = useState<HostClientService | null>(null);
+  useEffect(() => initServices(page, setPage, svc, setSvc), [
+    page,
+    setPage,
+    svc,
+    setSvc,
+  ]);
+  return [mapServiceToMessages(svc)];
 }
 
-export function initServices(
+const defaultMessages: Messages = {
+  JoinRoom: () => {},
+};
+
+function mapServiceToMessages(svc: HostClientService | null): Messages {
+  if (!svc) return defaultMessages;
+  return {
+    JoinRoom: (msg) => svc.joinRoom(msg.payload.roomId),
+  };
+}
+
+function initServices(
   page: PageState,
-  setPage: React.Dispatch<React.SetStateAction<PageState>>
+  setPage: React.Dispatch<React.SetStateAction<PageState>>,
+  svc: HostClientService | null,
+  setSvc: React.Dispatch<React.SetStateAction<HostClientService | null>>
 ) {
+  if (svc) {
+    return () => {
+      svc.dispose();
+    };
+  }
+
   const hostClientService = new HostClientService();
   hostClientService.registerPage(page, setPage);
   startHostClientService(hostClientService);
+  setSvc(hostClientService);
+
   return () => {
     hostClientService.dispose();
   };

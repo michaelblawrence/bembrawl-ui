@@ -3,12 +3,18 @@ import { useState } from "react";
 import "../../App.css";
 import "./JoinPage.css";
 import { Button, Input } from "@material-ui/core";
-import { PageState } from "../../core/enums/PageState";
+import {
+  PageState,
+  Messages,
+} from "../../core/enums/PageState";
 import { WaitingMessage } from "../../core-common/WaitingMessage";
 import { Branding } from "../../core-common/Branding";
 import { generateMappedInputSetter } from "../../core/utils/generateMappedInputSetter";
 
-export function JoinPage(props: { setPage: (page: PageState) => void }) {
+export function JoinPage(props: {
+  setPage: (page: PageState) => void;
+  setMessage: Messages;
+}) {
   const [roomId, setRoomId] = useState<number | null>(null);
   const onRoomIdChange = generateMappedInputSetter<number | null>(
     setRoomId,
@@ -17,7 +23,13 @@ export function JoinPage(props: { setPage: (page: PageState) => void }) {
   );
   const submit = () => {
     console.log(roomId);
+    if (!roomId) {
+      return;
+    }
     props.setPage(PageState.WaitingRoom);
+    props.setMessage.JoinRoom({
+      payload: { roomId: `${roomId}` },
+    });
   };
   return (
     <div className="App">

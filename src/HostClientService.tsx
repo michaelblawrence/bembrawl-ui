@@ -10,10 +10,18 @@ export class HostClientConstants {
   public static readonly URL_API_ROOT = "http://192.168.1.66:4000/api/v2";
   public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/players/register";
   public static readonly URL_API_ROUTE_KEEP_ALIVE = "/players/keepalive";
+  public static readonly URL_API_ROUTE_JOIN_ROOM = "/players/join";
+  public static readonly INTERVAL_API_RECONNECT = 4000;
+  public static readonly INTERVAL_API_KEEPALIVE = 5000;
 }
 
 interface RegisterPlayerRequest {
   deviceId: string;
+  sessionId: string;
+}
+
+interface JoinRoomRequest {
+  roomId: string;
   sessionId: string;
 }
 
@@ -26,12 +34,13 @@ export class HostClientService {
   private pageSetter: React.Dispatch<
     React.SetStateAction<PageState>
   > | null = null;
+  private currentPage: PageState | null = null;
   private connected: boolean = false;
   private keepAliveHandle: any;
 
   constructor() {
     this.deviceGuid = this.getPersistentGuid();
-    this.sessionGuid = uuidv4();
+    this.sessionGuid = this.getSessionId();
     this.connectionHealthTracker = new ConnectionHealthTracker();
   }
 
@@ -51,10 +60,11 @@ export class HostClientService {
       );
     } catch (ex) {
       if (this.shouldRetry("Can't call connect on server")) {
-        await asyncWait(2000);
+        await asyncWait(HostClientConstants.INTERVAL_API_RECONNECT);
         await this.connect();
         return;
       } else {
+        alert("Lost connection to host. Please try refreshing to reconnect.");
         throw ex;
       }
     }
@@ -64,19 +74,24 @@ export class HostClientService {
     this.connected = true;
   }
 
-  private startPeriodicKeepAlive() {
-    if (this.keepAliveHandle) {
-      clearTimeout(this.keepAliveHandle);
-      this.keepAliveHandle = null;
-    }
-
-    this.keepAliveHandle = setTimeout(() => {
-      try {
-        this.getServerHealth().then(() => this.startPeriodicKeepAlive());
-      } catch {
-        this.startPeriodicKeepAlive();
+  public async joinRoom(roomId: string): Promise<boolean> {
+    this.connectionHealthTracker.addConnectionAttempts();
+    try {
+      const joinSuccess = await HttpClient.postJson<JoinRoomRequest, boolean>(
+        HostClientConstants.URL_API_ROUTE_JOIN_ROOM,
+        {
+          roomId: roomId,
+          sessionId: this.sessionGuid,
+        }
+      );
+      if (!joinSuccess) {
+        this.transitionPage(PageState.JoinRoom);
+        return false;
       }
-    }, 2000);
+    } catch (ex) {
+      return false;
+    }
+    return true;
   }
 
   public registerPage(
@@ -90,6 +105,8 @@ export class HostClientService {
       );
       this.pageStatusHandle = timeoutHandle as number;
     }
+    this.pageSetter = setPage;
+    this.currentPage = page;
   }
 
   public dispose() {
@@ -97,6 +114,32 @@ export class HostClientService {
       clearInterval(this.pageStatusHandle);
       this.pageStatusHandle = null;
     }
+  }
+
+  private reconnect() {
+    this.connected = false;
+    this.connect();
+  }
+
+  private startPeriodicKeepAlive() {
+    if (this.keepAliveHandle) {
+      clearTimeout(this.keepAliveHandle);
+      this.keepAliveHandle = null;
+    }
+
+    this.keepAliveHandle = setTimeout(() => {
+      try {
+        this.getServerHealth().then((isHealthy) => {
+          if (isHealthy === false) {
+            this.reconnect();
+            return;
+          }
+          this.startPeriodicKeepAlive();
+        });
+      } catch {
+        this.startPeriodicKeepAlive();
+      }
+    }, HostClientConstants.INTERVAL_API_KEEPALIVE);
   }
 
   private getPersistentGuid() {
@@ -109,22 +152,29 @@ export class HostClientService {
     return newGuid;
   }
 
-  private async getServerHealth() {
+  private getSessionId(): string {
+    return "SIDv1|" + uuidv4();
+  }
+
+  private async getServerHealth(): Promise<boolean> {
     try {
       this.connectionHealthTracker.addConnectionAttempts();
       const isHealthy: boolean = await HttpClient.postJson(
         HostClientConstants.URL_API_ROUTE_KEEP_ALIVE,
-        this.sessionGuid
+        { sessionId: this.sessionGuid }
       );
       this.connectionHealthTracker.addSuccessfulAttempt();
 
       if (!isHealthy) {
         console.warn("Lost connection to party");
         this.transitionPage(PageState.JoinRoom);
+        return false;
       }
     } catch {
       this.shouldRetry("Couldn't do healthcheck");
+      return false;
     }
+    return true;
   }
 
   private shouldRetry(errorMsg: string): boolean {
