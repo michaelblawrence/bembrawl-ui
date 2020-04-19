@@ -2,6 +2,7 @@ export enum PageState {
   JoinRoom,
   WaitingRoom,
   PlayersAnswer,
+  PlayersAnswerReview
 }
 
 export interface Message<T> {

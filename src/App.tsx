@@ -6,9 +6,10 @@ import { JoinPage } from "./core-features/JoinPage/JoinPage";
 import { WaitingRoomPage } from "./core-features/WaitingRoomPage/WaitingRoomPage";
 import { PlayersAnswerPage } from "./core-features/PlayersAnswerPage/PlayersAnswerPage";
 import { useServerPageFSM } from "./core/effects/useServerPageFSM";
+import { PlayersAnswerReviewPage } from "./core-features/PlayersAnswerReviewPage/PlayersAnswerReviewPage";
 
 function App() {
-  const [page, setPage] = useState(PageState.PlayersAnswer);
+  const [page, setPage] = useState(PageState.PlayersAnswerReview);
   useFullScreen(page);
   const [setMessage] = useServerPageFSM(page, setPage);
   return (
@@ -21,6 +22,9 @@ function App() {
       )}
       {page === PageState.PlayersAnswer && (
         <PlayersAnswerPage setPage={setPage} setMessage={setMessage} />
+      )}
+      {page === PageState.PlayersAnswerReview && (
+        <PlayersAnswerReviewPage setPage={setPage} />
       )}
     </div>
   );
