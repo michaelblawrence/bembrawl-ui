@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import "./WaitingRoomPage.css";
 import { PageState } from "../../core/enums/PageState";
 import { Branding } from "../../core-common/Branding";

@@ -1,6 +1,6 @@
 export enum PageState {
   WaitingForUsers,
-  QuestionAndAnswers,
+  QuestionsAndAnswers,
   QuestionResults,
   FinalResults
 }
