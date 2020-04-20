@@ -9,7 +9,7 @@ import { PlayersAnswerReviewPage } from "./core-features/PlayersAnswerReviewPage
 import { useServerPageFSM } from "./core/effects/useServerPageFSM";
 
 function App() {
-  const [page, setPage] = useState(PageState.PlayersAnswerReview);
+  const [page, setPage] = useState(PageState.JoinRoom);
   useFullScreen(page);
   const [setMessage] = useServerPageFSM(page, setPage);
   return (
