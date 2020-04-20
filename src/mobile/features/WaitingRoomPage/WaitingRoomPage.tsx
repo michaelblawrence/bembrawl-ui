@@ -1,8 +1,8 @@
 import React from 'react';
 import "./WaitingRoomPage.css";
 import { Branding } from "../../../core-common/Branding";
-import { PageState } from '../../../core/enums/PageState';
-import { Messages } from '../../../core/enums/PageState';
+import { PageState } from '../../enums/PageState';
+import { Messages } from '../../enums/PageState';
 
 export function WaitingRoomPage(props: {
   setPage: (page: PageState) => void;

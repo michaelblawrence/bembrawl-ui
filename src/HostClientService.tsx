@@ -1,4 +1,4 @@
-import { PageState } from "./core/enums/PageState";
+import { PageState } from "./mobile/enums/PageState";
 import { setTimeout } from "timers";
 import { HttpClient } from "./core/utils/HttpClient";
 import {

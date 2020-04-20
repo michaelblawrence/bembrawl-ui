@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PageState, Messages } from "../enums/PageState";
+import { PageState, Messages } from "../../mobile/enums/PageState";
 import { HostClientService } from "../../HostClientService";
 
 export function useServerPageFSM(

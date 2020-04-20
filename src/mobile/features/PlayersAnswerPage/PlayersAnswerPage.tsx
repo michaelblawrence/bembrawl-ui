@@ -3,7 +3,7 @@ import emojiRegex from "emoji-regex";
 import "./PlayersAnswerPage.css";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
-import { PageState, Messages } from "../../../core/enums/PageState";
+import { PageState, Messages } from "../../enums/PageState";
 
 type OnEmojiSubmit = (emoji: string[]) => void;
 

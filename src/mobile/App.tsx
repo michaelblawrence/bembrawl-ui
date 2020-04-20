@@ -4,7 +4,7 @@ import { JoinPage } from "./features/JoinPage/JoinPage";
 import { WaitingRoomPage } from "./features/WaitingRoomPage/WaitingRoomPage";
 import { PlayersAnswerPage } from "./features/PlayersAnswerPage/PlayersAnswerPage";
 import { PlayersAnswerReviewPage } from "./features/PlayersAnswerReviewPage/PlayersAnswerReviewPage";
-import { PageState } from "../core/enums/PageState";
+import { PageState } from "./enums/PageState";
 import { useFullScreen } from "../core/effects/useFullScreen";
 import { useServerPageFSM } from "../core/effects/useServerPageFSM";
 
