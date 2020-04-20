@@ -6,7 +6,7 @@ import { PlayersAnswerPage } from "./features/PlayersAnswerPage/PlayersAnswerPag
 import { PlayersAnswerReviewPage } from "./features/PlayersAnswerReviewPage/PlayersAnswerReviewPage";
 import { PageState } from "./enums/PageState";
 import { useFullScreen } from "../core/effects/useFullScreen";
-import { useServerPageFSM } from "../core/effects/useServerPageFSM";
+import { useServerPageFSM } from "./effects/useServerPageFSM";
 
 function App() {
   const [page, setPage] = useState(PageState.JoinRoom);

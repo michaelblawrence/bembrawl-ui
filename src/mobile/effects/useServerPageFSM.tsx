@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { PageState, Messages } from "../../mobile/enums/PageState";
-import { HostClientService } from "../../HostClientService";
+// copy and move to host
+import { PageState, Messages } from "../enums/PageState";
+import { HostClientService } from "../HostClientService";
 
 export function useServerPageFSM(
   page: PageState,

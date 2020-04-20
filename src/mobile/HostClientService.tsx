@@ -1,15 +1,14 @@
-import { PageState } from "./mobile/enums/PageState";
+import { PageState } from "./enums/PageState";
 import { setTimeout } from "timers";
-import { HttpClient } from "./core/utils/HttpClient";
+import { HttpClient } from "../core/utils/HttpClient";
 import {
   HostClientConnection,
   ConnectionInfo,
   ConnectionHealthTracker,
   PageSetter,
-} from "./core/server/HostClientConnection";
+} from "../core/server/HostClientConnection";
 
 export class PlayersClientConstants {
-  public static readonly URL_API_ROOT = "http://192.168.1.66:4000/api/v2";
   public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/players/register";
   public static readonly URL_API_ROUTE_KEEP_ALIVE = "/players/keepalive";
   public static readonly URL_API_ROUTE_JOIN_ROOM = "/players/join";
