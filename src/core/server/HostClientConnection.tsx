@@ -1,10 +1,9 @@
-// move to core
-import { uuidv4 } from "./core/utils/uuidv4";
+import { uuidv4 } from "../utils/uuidv4";
 import { setTimeout } from "timers";
-import { HttpClient } from "./core/utils/HttpClient";
-import { asyncWait } from "./core/utils/asyncWait";
-import { HostConnectionConfig } from "./HostConnectionConfig";
-import { PageState } from "./mobile/enums/PageState";
+import { HttpClient } from "../utils/HttpClient";
+import { asyncWait } from "../utils/asyncWait";
+import { HostConnectionConfig } from "../configs/HostConnectionConfig";
+import { PageState } from "../../mobile/enums/PageState";
 
 export type PageSetter = React.Dispatch<React.SetStateAction<PageState>>;
 

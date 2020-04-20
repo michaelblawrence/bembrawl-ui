@@ -1,4 +1,3 @@
-// move to core
 export interface HostConnectionConfig {
   promptReconnect?: () => void;
   keepAliveUrl: string;
