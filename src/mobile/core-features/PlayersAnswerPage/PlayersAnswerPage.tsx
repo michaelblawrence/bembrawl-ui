@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import emojiRegex from "emoji-regex";
 import "./PlayersAnswerPage.css";
-import { PageState } from "../../core/enums/PageState";
+import { PageState, Messages } from "../../core/enums/PageState";
 import { Branding } from "../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
 
@@ -9,6 +9,7 @@ type OnEmojiSubmit = (emoji: string[]) => void;
 
 export function PlayersAnswerPage(props: {
   setPage: (page: PageState) => void;
+  setMessage: Messages;
 }) {
   const [answerSlotsN, setAnswerSlotsN] = useState(5);
   const [songName, setSongName] = useState("SONG NAME");

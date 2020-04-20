@@ -1,9 +1,12 @@
 import React from 'react';
 import "./WaitingRoomPage.css";
-import { PageState } from "../../core/enums/PageState";
+import { PageState, Messages } from "../../core/enums/PageState";
 import { Branding } from "../../core-common/Branding";
 
-export function WaitingRoomPage(props: { setPage: (page: PageState) => void }) {
+export function WaitingRoomPage(props: {
+  setPage: (page: PageState) => void;
+  setMessage: Messages;
+}) {
   return (
     <div>
       <Branding />
