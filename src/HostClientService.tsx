@@ -6,7 +6,7 @@ import {
   ConnectionInfo,
   ConnectionHealthTracker,
   PageSetter,
-} from "./HostClientConnection";
+} from "./core/server/HostClientConnection";
 
 export class PlayersClientConstants {
   public static readonly URL_API_ROOT = "http://192.168.1.66:4000/api/v2";
