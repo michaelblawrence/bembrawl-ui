@@ -3,13 +3,10 @@ import { useState } from "react";
 import "../../App.css";
 import "./JoinPage.css";
 import { Button, Input } from "@material-ui/core";
-import {
-  PageState,
-  Messages,
-} from "../../core/enums/PageState";
 import { WaitingMessage } from "../../core-common/WaitingMessage";
 import { Branding } from "../../core-common/Branding";
-import { generateMappedInputSetter } from "../../core/utils/generateMappedInputSetter";
+import { PageState, Messages } from "../../../core/enums/PageState";
+import { generateMappedInputSetter } from "../../../core/utils/generateMappedInputSetter";
 
 export function JoinPage(props: {
   setPage: (page: PageState) => void;

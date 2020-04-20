@@ -1,8 +1,8 @@
 import { PageState } from "./core/enums/PageState";
-import { uuidv4 } from "./core/utils/uuidv4";
 import { setTimeout } from "timers";
 import { HttpClient } from "./core/utils/HttpClient";
 import { asyncWait } from "./core/utils/asyncWait";
+import { uuidv4 } from "./core/utils/uuidv4";
 
 export class HostClientConstants {
   public static readonly LOCAL_STORAGE_GUID = "GUID";
