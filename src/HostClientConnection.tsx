@@ -4,7 +4,7 @@ import { setTimeout } from "timers";
 import { HttpClient } from "./core/utils/HttpClient";
 import { asyncWait } from "./core/utils/asyncWait";
 import { HostConnectionConfig } from "./HostConnectionConfig";
-import { PageState } from "./core/enums/PageState";
+import { PageState } from "./mobile/enums/PageState";
 
 export type PageSetter = React.Dispatch<React.SetStateAction<PageState>>;
 

@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import emojiRegex from "emoji-regex";
 import "./PlayersAnswerPage.css";
-import { PageState, Messages } from "../../core/enums/PageState";
-import { Branding } from "../../core-common/Branding";
+import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
+import { PageState, Messages } from "../../enums/PageState";
 
 type OnEmojiSubmit = (emoji: string[]) => void;
 
