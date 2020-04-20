@@ -1,6 +1,6 @@
 import React from 'react';
 import "./WaitingRoomPage.css";
-import { Branding } from "../../core-common/Branding";
+import { Branding } from "../../../core-common/Branding";
 import { PageState } from '../../../core/enums/PageState';
 import { Messages } from '../../../core/enums/PageState';
 

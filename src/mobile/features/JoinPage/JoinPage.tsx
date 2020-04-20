@@ -3,8 +3,8 @@ import { useState } from "react";
 import "../../App.css";
 import "./JoinPage.css";
 import { Button, Input } from "@material-ui/core";
-import { WaitingMessage } from "../../core-common/WaitingMessage";
-import { Branding } from "../../core-common/Branding";
+import { WaitingMessage } from "../../../core-common/WaitingMessage";
+import { Branding } from "../../../core-common/Branding";
 import { PageState, Messages } from "../../../core/enums/PageState";
 import { generateMappedInputSetter } from "../../../core/utils/generateMappedInputSetter";
 

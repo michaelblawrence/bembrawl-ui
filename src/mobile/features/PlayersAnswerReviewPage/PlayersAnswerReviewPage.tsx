@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./PlayersAnswerReviewPage.css";
-import { Branding } from "../../core-common/Branding";
+import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
 import { PageState, Messages } from "../../../core/enums/PageState";
 

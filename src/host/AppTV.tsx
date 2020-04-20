@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { PageState } from "./core/enums/PageState";
+import { PageState } from "./enums/PageState";
 import "./AppTV.css";
-import { WaitingForUsersPage } from "./core-features/WaitingForUsersPAge/WaitingForUsersPage";
+import { WaitingForUsersPage } from "./features/WaitingForUsersPAge/WaitingForUsersPage";
 import { Helmet } from "react-helmet";
-import {QuestionsAndAnswersPage} from './core-features/QuestionAndAnswersPage/QuestionsAndAnswersPage';
+import {QuestionsAndAnswersPage} from './features/QuestionAndAnswersPage/QuestionsAndAnswersPage';
 
 function AppTV() {
   const [page, setPage] = useState(PageState.WaitingForUsers);

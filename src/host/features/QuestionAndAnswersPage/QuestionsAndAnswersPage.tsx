@@ -1,9 +1,9 @@
 import React from "react";
-import { PageState } from "../../core/enums/PageState";
+import { PageState } from "../../enums/PageState";
 import { useState } from "react";
-import { Branding } from "../../../mobile/core-common/Branding";
+import { Branding } from "../../../core-common/Branding";
 import { Input, Button, Grid } from "@material-ui/core";
-import { WaitingMessage } from "../../../mobile/core-common/WaitingMessage";
+import { WaitingMessage } from "../../../core-common/WaitingMessage";
 
 export function QuestionsAndAnswersPage(props: { setPage: (page: PageState) => void }) {
 
