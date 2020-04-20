@@ -1,6 +1,4 @@
 import { PageState } from "./enums/PageState";
-import { setTimeout } from "timers";
-import { HttpClient } from "../core/utils/HttpClient";
 import {
   HostClientConnection,
   ConnectionInfo,
@@ -9,14 +7,8 @@ import {
 } from "../core/server/HostClientConnection";
 
 export class PlayersClientConstants {
-  public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/players/register";
-  public static readonly URL_API_ROUTE_KEEP_ALIVE = "/players/keepalive";
-  public static readonly URL_API_ROUTE_JOIN_ROOM = "/players/join";
-}
-
-interface JoinRoomRequest {
-  roomId: string;
-  sessionId: string;
+  public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/hosts/register";
+  public static readonly URL_API_ROUTE_KEEP_ALIVE = "/hosts/keepalive";
 }
 
 export class HostClientService {
@@ -33,7 +25,7 @@ export class HostClientService {
     this.connection = new HostClientConnection({
       registerUrl: PlayersClientConstants.URL_API_ROUTE_PLAYER_REGISTER,
       keepAliveUrl: PlayersClientConstants.URL_API_ROUTE_KEEP_ALIVE,
-      promptReconnect: () => this.transitionPage(PageState.JoinRoom),
+      promptReconnect: () => this.transitionPage(PageState.WaitingForUsers),
     });
   }
 
@@ -50,38 +42,10 @@ export class HostClientService {
     this.connection.dispose();
   }
 
-  public async joinRoom(roomId: string): Promise<boolean> {
-    if (!this.connectionInfo) return false;
-    this.connectionHealthTracker.addConnectionAttempts();
-    try {
-      const joinSuccess = await HttpClient.postJson<JoinRoomRequest, boolean>(
-        PlayersClientConstants.URL_API_ROUTE_JOIN_ROOM,
-        {
-          roomId: roomId,
-          sessionId: this.connectionInfo.sessionGuid,
-        }
-      );
-      if (!joinSuccess) {
-        this.transitionPage(PageState.JoinRoom);
-        return false;
-      }
-    } catch (ex) {
-      return false;
-    }
-    return true;
-  }
-
   public registerPage(
     page: PageState,
     setPage: React.Dispatch<React.SetStateAction<PageState>>
   ) {
-    if (page === PageState.WaitingRoom) {
-      const timeoutHandle: any = setTimeout(
-        () => setPage(PageState.PlayersAnswer),
-        1000
-      );
-      this.pageStatusHandle = timeoutHandle as number;
-    }
     this.pageSetter = setPage;
     this.currentPage = page;
   }

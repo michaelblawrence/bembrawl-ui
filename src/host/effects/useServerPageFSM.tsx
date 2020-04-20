@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { PageState, Messages } from "../../mobile/enums/PageState";
-import { HostClientService } from "../../mobile/HostClientService";
+import { Messages } from "../enums/PageState";
+import { HostClientService } from "../HostClientService";
+import { PageState } from "../enums/PageState";
 
 export function useServerPageFSM(
   page: PageState,
@@ -22,9 +23,7 @@ const defaultMessages: Messages = {
 
 function mapServiceToMessages(svc: HostClientService | null): Messages {
   if (!svc) return defaultMessages;
-  return {
-    JoinRoom: (msg) => svc.joinRoom(msg.payload.roomId),
-  };
+  return {};
 }
 
 function initServices(
