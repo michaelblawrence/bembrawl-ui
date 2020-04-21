@@ -7,6 +7,8 @@ import {
   ClientMessage,
   ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
+import { HostState, InitialHostState } from "./features/PageProps";
+import { HostClientStateService } from "../core/server/HostClientStateService";
 
 export class PlayersClientConstants {
   public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/hosts/register";
@@ -16,6 +18,7 @@ export class PlayersClientConstants {
 export class HostClientService {
   private readonly connection: HostClientConnection;
   private readonly connectionHealthTracker: ConnectionHealthTracker;
+  private readonly stateService: HostClientStateService<HostState>;
   private readonly subscription: ClientMessageSubscription | null = null;
 
   private connectionInfo: ConnectionInfo | null = null;
@@ -23,8 +26,12 @@ export class HostClientService {
   private pageSetter: PageSetter<PageState> | null = null;
   private currentPage: PageState | null = null;
 
-  constructor() {
+  constructor(stateSetter: React.Dispatch<React.SetStateAction<HostState>>) {
     this.connectionHealthTracker = new ConnectionHealthTracker();
+    this.stateService = new HostClientStateService<HostState>(
+      InitialHostState,
+      stateSetter
+    );
     this.connection = new HostClientConnection({
       registerUrl: PlayersClientConstants.URL_API_ROUTE_PLAYER_REGISTER,
       keepAliveUrl: PlayersClientConstants.URL_API_ROUTE_KEEP_ALIVE,
@@ -43,6 +50,9 @@ export class HostClientService {
     switch (msg.type) {
       case "CONNECT_SUCCESS":
         console.log(msg.payload);
+        const state = this.stateService.getState();
+        state.RoomInfo.roomId = msg.payload.joinId;
+        this.stateService.pushState(state);
         break;
     }
   }

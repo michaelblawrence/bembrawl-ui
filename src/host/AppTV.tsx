@@ -6,10 +6,12 @@ import { WaitingForUsersPage } from "./features/WaitingForUsersPAge/WaitingForUs
 import { Helmet } from "react-helmet";
 import { QuestionsAndAnswersPage } from "./features/QuestionAndAnswersPage/QuestionsAndAnswersPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
+import { HostState, InitialHostState } from "./features/PageProps";
 
 function AppTV() {
   const [page, setPage] = useState(PageState.WaitingForUsers);
-  useServerPageFSM(page, setPage);
+  const [state, setState] = useState<HostState>(InitialHostState);
+  const [setMessage] = useServerPageFSM(page, setPage, setState);
   return (
     <div className="Window">
       <Helmet>
@@ -17,10 +19,10 @@ function AppTV() {
         <title>BembrawlTV</title>
       </Helmet>
       {page === PageState.WaitingForUsers && (
-        <WaitingForUsersPage setPage={setPage} />
+        <WaitingForUsersPage setPage={setPage} setMessage={setMessage} state={state} />
       )}
       {page === PageState.QuestionsAndAnswers && (
-        <QuestionsAndAnswersPage setPage={setPage} />
+        <QuestionsAndAnswersPage setPage={setPage} setMessage={setMessage} state={state} />
       )}
     </div>
   );

@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
 import { Input, Button, Grid, Paper } from "@material-ui/core";
 import { WaitingMessage } from "../../../core-common/WaitingMessage";
+import { PageProps } from "../PageProps";
 
-export function WaitingForUsersPage(props: { setPage: (page: PageState) => void }) {
+export function WaitingForUsersPage(props: PageProps) {
 
   const [playerNames] = useState(["player1", "player2"])
 

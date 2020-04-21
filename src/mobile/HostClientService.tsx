@@ -9,12 +9,14 @@ import {
   ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
 import { PlayerState, InitialPlayerState } from "./features/PageProps";
+import { HostClientStateService } from "../core/server/HostClientStateService";
 
 export class PlayersClientConstants {
   public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/players/register";
   public static readonly URL_API_ROUTE_KEEP_ALIVE = "/players/keepalive";
   public static readonly URL_API_ROUTE_JOIN_ROOM = "/players/join";
   public static readonly URL_API_ROUTE_COMPLETE_ROOM = "/players/complete";
+  public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
 }
 
 interface JoinRoomRequest {
@@ -30,23 +32,25 @@ interface CompleteRoomRequest {
 export class HostClientService {
   private readonly connection: HostClientConnection;
   private readonly connectionHealthTracker: ConnectionHealthTracker;
+  private readonly stateService: HostClientStateService<PlayerState>;
   private readonly subscription: ClientMessageSubscription | null = null;
 
   private connectionInfo: ConnectionInfo | null = null;
   private pageStatusHandle: number | null = null;
   private pageSetter: PageSetter<PageState> | null = null;
-  private stateSetter: React.Dispatch<React.SetStateAction<PlayerState>>;
   private currentPage: PageState | null = null;
-  private playerState: PlayerState = InitialPlayerState;
 
   constructor(stateSetter: React.Dispatch<React.SetStateAction<PlayerState>>) {
-    this.stateSetter = stateSetter;
     this.connectionHealthTracker = new ConnectionHealthTracker();
     this.connection = new HostClientConnection({
       registerUrl: PlayersClientConstants.URL_API_ROUTE_PLAYER_REGISTER,
       keepAliveUrl: PlayersClientConstants.URL_API_ROUTE_KEEP_ALIVE,
       promptReconnect: () => this.transitionPage(PageState.JoinRoom),
     });
+    this.stateService = new HostClientStateService<PlayerState>(
+      InitialPlayerState,
+      stateSetter
+    );
     this.subscription = this.connection.subscribe((msg) =>
       this.onMessageReceived(msg)
     );
@@ -62,11 +66,14 @@ export class HostClientService {
         this.transitionPage(PageState.PlayersAnswer);
         break;
       case "JOINED_PLAYER":
-        this.playerState.RoomInfo.lastJoined = {
-          displayUntilMs: msg.payload.eventTime + 8,
-          playerId: msg.payload.playerJoinOrder + 1
-        }
-        this.pushState();
+        const state = this.stateService.getState();
+        state.RoomInfo.lastJoined = {
+          displayUntilMs:
+            msg.payload.eventTime +
+            PlayersClientConstants.TIMEOUT_ALERT_JOINED_PLAYER_MS,
+          playerId: msg.payload.playerJoinOrder + 1,
+        };
+        this.stateService.pushState(state);
         break;
     }
   }
@@ -86,6 +93,7 @@ export class HostClientService {
     if (!this.connectionInfo) return false;
     this.connectionHealthTracker.addConnectionAttempts();
     try {
+      const state = this.stateService.getState();
       const joinResult = await HttpClient.postJson<
         JoinRoomRequest,
         { success: boolean; isMaster: boolean; playerIdx: number | null }
@@ -97,9 +105,9 @@ export class HostClientService {
         this.transitionPage(PageState.JoinRoom);
         return false;
       }
-      this.playerState.PlayerInfo.isMaster = joinResult.isMaster;
-      this.playerState.RoomInfo.roomId = roomId;
-      this.pushState();
+      state.PlayerInfo.isMaster = joinResult.isMaster;
+      state.RoomInfo.roomId = roomId;
+      this.stateService.pushState(state);
     } catch (ex) {
       return false;
     }
@@ -110,7 +118,8 @@ export class HostClientService {
     if (!this.connectionInfo) return false;
     this.connectionHealthTracker.addConnectionAttempts();
     try {
-      const roomId = this.playerState.RoomInfo.roomId;
+      const state = this.stateService.getState();
+      const roomId = state.RoomInfo.roomId;
       if (!roomId) return false;
 
       const completeRoomResult = await HttpClient.postJson<
@@ -125,8 +134,8 @@ export class HostClientService {
         this.transitionPage(PageState.WaitingRoom);
         return false;
       }
-      this.playerState.RoomInfo.isJoining = true;
-      this.pushState();
+      state.RoomInfo.isJoining = true;
+      this.stateService.pushState(state);
     } catch (ex) {
       return false;
     }
@@ -139,10 +148,6 @@ export class HostClientService {
   ) {
     this.pageSetter = setPage;
     this.currentPage = page;
-  }
-
-  private pushState() {
-    this.stateSetter(JSON.parse(JSON.stringify(this.playerState)));
   }
 
   private transitionPage(newPage: PageState) {

@@ -12,14 +12,14 @@ function Alert(props: AlertProps) {
 
 export function WaitingRoomPage(props: PageProps) {
   const { PlayerInfo, RoomInfo } = props.state;
-
   const [showBannerTimeout, setShowBannerTimeout] = useState(0);
+
   useEffect(() => {
     let handle: number | null = null;
-    console.log("RoomInfo.lastJoined", RoomInfo.lastJoined);
+
     if (RoomInfo.lastJoined) {
       const toShowMs = RoomInfo.lastJoined.displayUntilMs - Date.now();
-      console.log("toShowMs", toShowMs);
+      console.log("toShowS", toShowMs / 1000);
       if (toShowMs > 0) {
         setShowBannerTimeout(toShowMs);
         handle = setTimeout(() => setShowBannerTimeout(0), toShowMs) as any;

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// copy and move to host
 import { PageState, Messages } from "../enums/PageState";
 import { HostClientService } from "../HostClientService";
 import { PlayerState } from "../features/PageProps";
