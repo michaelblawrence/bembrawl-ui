@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { PageState } from "./enums/PageState";
 import "./AppTV.css";
-import { WaitingForUsersPage } from "./features/WaitingForUsersPAge/WaitingForUsersPage";
 import { Helmet } from "react-helmet";
 import { QuestionsAndAnswersPage } from "./features/QuestionAndAnswersPage/QuestionsAndAnswersPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
