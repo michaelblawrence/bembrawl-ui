@@ -7,7 +7,7 @@ import * as serviceWorker from './mobile/serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    {document.location.href.includes("tv") ? (<AppTV />) : (<App />) }
+    {isHost() ? (<AppTV />) : (<App />) }
   </React.StrictMode>,
   document.getElementById('root')
 );
@@ -16,3 +16,10 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+function isHost() {
+  const href = document.location.href;
+  const trimmed = href.endsWith('/') ? href.substring(0, href.length - 1) : href;
+  return trimmed.endsWith("tv");
+}
+

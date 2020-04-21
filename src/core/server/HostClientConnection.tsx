@@ -3,9 +3,8 @@ import { setTimeout } from "timers";
 import { HttpClient } from "../utils/HttpClient";
 import { asyncWait } from "../utils/asyncWait";
 import { HostConnectionConfig } from "../configs/HostConnectionConfig";
-import { PageState } from "../../mobile/enums/PageState";
 
-export type PageSetter = React.Dispatch<React.SetStateAction<PageState>>;
+export type PageSetter<TPageState> = React.Dispatch<React.SetStateAction<TPageState>>;
 
 export interface RegisterPlayerRequest {
   deviceId: string;
@@ -137,10 +136,10 @@ export class HostClientConnection {
       this.connectionHealthTracker.addConnectionAttempts();
       const resp: {
         valid: boolean;
-        data?: {
+        messages?: [{
           type: string;
           payload: any;
-        };
+        }];
       } = await HttpClient.postJson(this.config.keepAliveUrl, {
         sessionId: this.sessionGuid,
       });
