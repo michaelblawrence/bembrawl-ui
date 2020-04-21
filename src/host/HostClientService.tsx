@@ -4,6 +4,8 @@ import {
   ConnectionInfo,
   ConnectionHealthTracker,
   PageSetter,
+  ClientMessage,
+  ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
 
 export class PlayersClientConstants {
@@ -14,6 +16,7 @@ export class PlayersClientConstants {
 export class HostClientService {
   private readonly connection: HostClientConnection;
   private readonly connectionHealthTracker: ConnectionHealthTracker;
+  private readonly subscription: ClientMessageSubscription | null = null;
 
   private connectionInfo: ConnectionInfo | null = null;
   private pageStatusHandle: number | null = null;
@@ -27,17 +30,30 @@ export class HostClientService {
       keepAliveUrl: PlayersClientConstants.URL_API_ROUTE_KEEP_ALIVE,
       promptReconnect: () => this.transitionPage(PageState.WaitingForUsers),
     });
+    this.subscription = this.connection.subscribe((msg) =>
+      this.onMessageReceived(msg)
+    );
   }
 
   public async connect() {
-    const info = await this.connection.connect();
-    this.connectionInfo = info;
+    this.connectionInfo = await this.connection.connect();
+  }
+
+  private onMessageReceived(msg: ClientMessage) {
+    switch (msg.type) {
+      case "CONNECT_SUCCESS":
+        console.log(msg.payload);
+        break;
+    }
   }
 
   public dispose() {
     if (this.pageStatusHandle) {
       clearInterval(this.pageStatusHandle);
       this.pageStatusHandle = null;
+    }
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
     this.connection.dispose();
   }

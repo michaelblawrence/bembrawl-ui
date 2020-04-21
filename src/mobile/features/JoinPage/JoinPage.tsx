@@ -5,13 +5,11 @@ import "./JoinPage.css";
 import { Button, Input } from "@material-ui/core";
 import { WaitingMessage } from "../../../core-common/WaitingMessage";
 import { Branding } from "../../../core-common/Branding";
-import { PageState, Messages } from "../../enums/PageState";
+import { PageState } from "../../enums/PageState";
 import { generateMappedInputSetter } from "../../../core/utils/generateMappedInputSetter";
+import { PageProps } from "../PageProps";
 
-export function JoinPage(props: {
-  setPage: (page: PageState) => void;
-  setMessage: Messages;
-}) {
+export function JoinPage(props: PageProps) {
   const [roomId, setRoomId] = useState<number | null>(null);
   const onRoomIdChange = generateMappedInputSetter<number | null>(
     setRoomId,

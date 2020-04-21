@@ -4,16 +4,18 @@ import { HttpClient } from "../utils/HttpClient";
 import { asyncWait } from "../utils/asyncWait";
 import { HostConnectionConfig } from "../configs/HostConnectionConfig";
 
-export type PageSetter<TPageState> = React.Dispatch<React.SetStateAction<TPageState>>;
+export type PageSetter<TPageState> = React.Dispatch<
+  React.SetStateAction<TPageState>
+>;
 
-export interface RegisterPlayerRequest {
+export interface RegisterClientRequest {
   deviceId: string;
   sessionId: string;
 }
 
 export interface ConnectionInfo {
-    deviceGuid: string;
-    sessionGuid: string;
+  deviceGuid: string;
+  sessionGuid: string;
 }
 
 class HostClientConstants {
@@ -23,10 +25,19 @@ class HostClientConstants {
   public static readonly INTERVAL_API_KEEPALIVE = 5000;
 }
 
+export type ClientMessage = {
+  type: string;
+  payload: any;
+};
+
+export type ClientMessageObserver = (message: ClientMessage) => void;
+export type ClientMessageSubscription = { unsubscribe: () => void };
+
 export class HostClientConnection {
   private readonly deviceGuid: string;
   private readonly sessionGuid: string;
   private readonly connectionHealthTracker: ConnectionHealthTracker;
+  private readonly observers: Set<ClientMessageObserver>;
   private readonly config: HostConnectionConfig;
   private connected: boolean = false;
   private keepAliveHandle: any;
@@ -36,9 +47,10 @@ export class HostClientConnection {
     this.sessionGuid = this.getSessionId();
     this.config = config;
     this.connectionHealthTracker = new ConnectionHealthTracker();
+    this.observers = new Set<ClientMessageObserver>();
   }
 
-  public async connect(): Promise<ConnectionInfo> {
+  public async connect<TResp>(): Promise<ConnectionInfo> {
     if (this.connected) {
       console.warn("connect() called but already connected");
       return this.getConnectionIds();
@@ -46,13 +58,14 @@ export class HostClientConnection {
 
     this.connectionHealthTracker.addConnectionAttempts();
     try {
-      await HttpClient.postJson<RegisterPlayerRequest, never>(
+      const resp = await HttpClient.postJson<RegisterClientRequest, TResp>(
         this.config.registerUrl,
         {
           deviceId: this.deviceGuid,
           sessionId: this.sessionGuid,
         }
       );
+      this.pushMessageToObservers({ type: "CONNECT_SUCCESS", payload: resp });
     } catch (ex) {
       if (this.shouldRetry("Can't call connect on server")) {
         await asyncWait(HostClientConstants.INTERVAL_API_RECONNECT);
@@ -68,10 +81,17 @@ export class HostClientConnection {
     return this.getConnectionIds();
   }
 
+  public subscribe(action: ClientMessageObserver): ClientMessageSubscription {
+    this.observers.add(action);
+    return {
+      unsubscribe: () => this.observers.delete(action),
+    };
+  }
+
   private getConnectionIds(): ConnectionInfo {
     return {
       deviceGuid: this.deviceGuid,
-      sessionGuid: this.deviceGuid,
+      sessionGuid: this.sessionGuid,
     };
   }
 
@@ -136,10 +156,7 @@ export class HostClientConnection {
       this.connectionHealthTracker.addConnectionAttempts();
       const resp: {
         valid: boolean;
-        messages?: [{
-          type: string;
-          payload: any;
-        }];
+        messages?: ClientMessage[];
       } = await HttpClient.postJson(this.config.keepAliveUrl, {
         sessionId: this.sessionGuid,
       });
@@ -149,11 +166,20 @@ export class HostClientConnection {
         this.promptReconnect();
         return false;
       }
+      if (resp.messages) {
+        for (const msg of resp.messages) {
+          this.pushMessageToObservers(msg);
+        }
+      }
     } catch {
       this.shouldRetry("Couldn't do healthcheck");
       return false;
     }
     return true;
+  }
+
+  private pushMessageToObservers(msg: ClientMessage) {
+    this.observers.forEach((observer) => observer(msg));
   }
 
   private promptReconnect() {

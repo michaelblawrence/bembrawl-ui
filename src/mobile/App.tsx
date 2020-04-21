@@ -7,24 +7,26 @@ import { PlayersAnswerReviewPage } from "./features/PlayersAnswerReviewPage/Play
 import { PageState } from "./enums/PageState";
 import { useFullScreen } from "../core/effects/useFullScreen";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
+import { PlayerState, InitialPlayerState } from "./features/PageProps";
 
 function App() {
   const [page, setPage] = useState(PageState.JoinRoom);
+  const [state, setState] = useState<PlayerState>(InitialPlayerState);
   useFullScreen(page);
-  const [setMessage] = useServerPageFSM(page, setPage);
+  const [setMessage] = useServerPageFSM(page, setPage, setState);
   return (
     <div className="Window">
       {page === PageState.JoinRoom && (
-        <JoinPage setPage={setPage} setMessage={setMessage} />
+        <JoinPage setPage={setPage} setMessage={setMessage} state={state} />
       )}
       {page === PageState.WaitingRoom && (
-        <WaitingRoomPage setPage={setPage} setMessage={setMessage} />
+        <WaitingRoomPage setPage={setPage} setMessage={setMessage} state={state} />
       )}
       {page === PageState.PlayersAnswer && (
-        <PlayersAnswerPage setPage={setPage} setMessage={setMessage} />
+        <PlayersAnswerPage setPage={setPage} setMessage={setMessage} state={state} />
       )}
       {page === PageState.PlayersAnswerReview && (
-        <PlayersAnswerReviewPage setPage={setPage} setMessage={setMessage} />
+        <PlayersAnswerReviewPage setPage={setPage} setMessage={setMessage} state={state} />
       )}
     </div>
   );
