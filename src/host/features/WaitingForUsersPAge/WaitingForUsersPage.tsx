@@ -2,13 +2,14 @@ import React from "react";
 import { PageState } from "../../enums/PageState";
 import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
-import { Input, Button, Grid, Paper } from "@material-ui/core";
+import { Grid, Paper } from "@material-ui/core";
+import "./WaitingForUsersPage.css";
 import { WaitingMessage } from "../../../core-common/WaitingMessage";
 import { PageProps } from "../PageProps";
 
 export function WaitingForUsersPage(props: PageProps) {
 
-  const [playerNames] = useState(["player1", "player2"])
+  const [playerNames] = useState(["player1", "player2", "player3", "player4", "player5", "player6", "player7", "player8"])
 
   const [roomId, setRoomId] = useState<number | null>(null);
 
@@ -17,16 +18,9 @@ export function WaitingForUsersPage(props: PageProps) {
       <Branding />
       <div className={"root-tv"}>
         <Grid container spacing={3}>
-          <Grid item xs={6}>
-            <Paper className={"paper"}>
-              <div className="WaitingForUsers">
-                <h1>Room ID: {roomId}</h1>
-              </div>
-            </Paper>
-          </Grid>
-          <Grid item xs={6}>
+          <WaitingForUsers roomId={roomId}/>
+          <Grid item xs={6} spacing={3}>
             <PlayersList playerNames={playerNames} />
-
           </Grid>
         </Grid>
       </div>
@@ -37,18 +31,25 @@ export function WaitingForUsersPage(props: PageProps) {
 function PlayersList(props: { playerNames: string[] }) {
   const { playerNames } = props;
   const players = playerNames.map((name, idx) => (
-    <Grid item xl={4} key={idx}>
-      <h4>{name}</h4>
+    <Grid className="PlayerList-grid" item xl={4} key={idx}>
+      <h4 className={`player-${idx}`}>{name}</h4>
     </Grid>
   ));
 
   return (
-    <Paper className={"paper"}>
-      <Grid xl={6}>
-        <div className="QuestionSection">
-          {players}
-        </div>
-      </Grid>
-    </Paper>
+    <Grid xl={6} spacing={10}>
+      <div className="PlayersList-div">
+        {players}
+      </div>
+    </Grid>
   );
+}
+
+function WaitingForUsers(props: { roomId: number | null }) {
+  const { roomId } = props;
+  return <Grid item xs={6}>
+    <div className="WaitingForUsers">
+      <h1>Room ID: {roomId || "Waiting..."}</h1>
+    </div>
+  </Grid>
 }
