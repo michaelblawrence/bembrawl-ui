@@ -5,11 +5,11 @@ import {
   ConnectionInfo,
   ConnectionHealthTracker,
   PageSetter,
-  ClientMessage,
   ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
 import { PlayerState, InitialPlayerState } from "./features/PageProps";
 import { HostClientStateService } from "../core/server/HostClientStateService";
+import { ClientMessage, MessageTypes } from "../core/server/server.types";
 
 export class PlayersClientConstants {
   public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/players/register";
@@ -62,17 +62,18 @@ export class HostClientService {
 
   private onMessageReceived(msg: ClientMessage) {
     switch (msg.type) {
-      case "ROOM_READY":
+      case MessageTypes.ROOM_READY:
         this.transitionPage(PageState.PlayersAnswer);
         break;
-      case "JOINED_PLAYER":
+      case MessageTypes.JOINED_PLAYER:
         const state = this.stateService.getState();
         state.RoomInfo.lastJoined = {
           displayUntilMs:
             msg.payload.eventTime +
             PlayersClientConstants.TIMEOUT_ALERT_JOINED_PLAYER_MS,
-          playerId: msg.payload.playerJoinOrder + 1,
+          playerId: (msg.payload.playerJoinOrder || -1) + 1,
         };
+        state.RoomInfo.playerCount = msg.payload.playerCount;
         this.stateService.pushState(state);
         break;
     }
@@ -91,6 +92,7 @@ export class HostClientService {
 
   public async joinRoom(roomId: string): Promise<boolean> {
     if (!this.connectionInfo) return false;
+    this.transitionPage(PageState.WaitingRoom);
     this.connectionHealthTracker.addConnectionAttempts();
     try {
       const state = this.stateService.getState();
@@ -106,6 +108,9 @@ export class HostClientService {
         return false;
       }
       state.PlayerInfo.isMaster = joinResult.isMaster;
+      if (joinResult.playerIdx != null) {
+        state.PlayerInfo.playerId = joinResult.playerIdx + 1;
+      }
       state.RoomInfo.roomId = roomId;
       this.stateService.pushState(state);
     } catch (ex) {

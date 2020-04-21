@@ -17,16 +17,16 @@ function App() {
   return (
     <div className="Window">
       {page === PageState.JoinRoom && (
-        <JoinPage setPage={setPage} setMessage={setMessage} state={state} />
+        <JoinPage setMessage={setMessage} state={state} />
       )}
       {page === PageState.WaitingRoom && (
-        <WaitingRoomPage setPage={setPage} setMessage={setMessage} state={state} />
+        <WaitingRoomPage setMessage={setMessage} state={state} />
       )}
       {page === PageState.PlayersAnswer && (
-        <PlayersAnswerPage setPage={setPage} setMessage={setMessage} state={state} />
+        <PlayersAnswerPage setMessage={setMessage} state={state} />
       )}
       {page === PageState.PlayersAnswerReview && (
-        <PlayersAnswerReviewPage setPage={setPage} setMessage={setMessage} state={state} />
+        <PlayersAnswerReviewPage setMessage={setMessage} state={state} />
       )}
     </div>
   );

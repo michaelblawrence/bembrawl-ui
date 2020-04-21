@@ -19,10 +19,10 @@ function AppTV() {
         <title>BembrawlTV</title>
       </Helmet>
       {page === PageState.WaitingForUsers && (
-        <WaitingForUsersPage setPage={setPage} setMessage={setMessage} state={state} />
+        <WaitingForUsersPage setMessage={setMessage} state={state} />
       )}
       {page === PageState.QuestionsAndAnswers && (
-        <QuestionsAndAnswersPage setPage={setPage} setMessage={setMessage} state={state} />
+        <QuestionsAndAnswersPage setMessage={setMessage} state={state} />
       )}
     </div>
   );

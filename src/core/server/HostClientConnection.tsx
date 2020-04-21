@@ -3,6 +3,7 @@ import { setTimeout } from "timers";
 import { HttpClient } from "../utils/HttpClient";
 import { asyncWait } from "../utils/asyncWait";
 import { HostConnectionConfig } from "../configs/HostConnectionConfig";
+import { ClientMessage, MessageTypes } from "./server.types";
 
 export type PageSetter<TPageState> = React.Dispatch<
   React.SetStateAction<TPageState>
@@ -22,13 +23,8 @@ class HostClientConstants {
   public static readonly LOCAL_STORAGE_GUID = "GUID";
   public static readonly MAX_API_ATTEMPTS = 5;
   public static readonly INTERVAL_API_RECONNECT = 4000;
-  public static readonly INTERVAL_API_KEEPALIVE = 5000;
+  public static readonly INTERVAL_API_KEEPALIVE = 2000;
 }
-
-export type ClientMessage = {
-  type: string;
-  payload: any;
-};
 
 export type ClientMessageObserver = (message: ClientMessage) => void;
 export type ClientMessageSubscription = { unsubscribe: () => void };
@@ -50,7 +46,7 @@ export class HostClientConnection {
     this.observers = new Set<ClientMessageObserver>();
   }
 
-  public async connect<TResp>(): Promise<ConnectionInfo> {
+  public async connect(): Promise<ConnectionInfo> {
     if (this.connected) {
       console.warn("connect() called but already connected");
       return this.getConnectionIds();
@@ -58,14 +54,17 @@ export class HostClientConnection {
 
     this.connectionHealthTracker.addConnectionAttempts();
     try {
-      const resp = await HttpClient.postJson<RegisterClientRequest, TResp>(
+      const resp = await HttpClient.postJson<RegisterClientRequest, any>(
         this.config.registerUrl,
         {
           deviceId: this.deviceGuid,
           sessionId: this.sessionGuid,
         }
       );
-      this.pushMessageToObservers({ type: "CONNECT_SUCCESS", payload: resp });
+      this.pushMessageToObservers({
+        type: MessageTypes.CONNECT_SUCCESS,
+        payload: { joinId: (resp || {}).joinId },
+      });
     } catch (ex) {
       if (this.shouldRetry("Can't call connect on server")) {
         await asyncWait(HostClientConstants.INTERVAL_API_RECONNECT);

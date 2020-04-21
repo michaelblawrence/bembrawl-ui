@@ -13,6 +13,13 @@ function Alert(props: AlertProps) {
 export function WaitingRoomPage(props: PageProps) {
   const { PlayerInfo, RoomInfo } = props.state;
   const [showBannerTimeout, setShowBannerTimeout] = useState(0);
+  const [playerId, setPlayerId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (PlayerInfo.playerId) {
+      setPlayerId(PlayerInfo.playerId);
+    }
+  }, [PlayerInfo.playerId]);
 
   useEffect(() => {
     let handle: number | null = null;
@@ -40,7 +47,7 @@ export function WaitingRoomPage(props: PageProps) {
   };
   const onCloseRoom = () => props.setMessage.CloseRoom(Nothing);
   const isMaster = PlayerInfo.isMaster;
-  const isJoining = RoomInfo.isJoining;
+  const isJoinDisabled = RoomInfo.isJoining || RoomInfo.playerCount < 2;
   const openAlert = !!(showBannerTimeout && RoomInfo.lastJoined);
   return (
     <div>
@@ -58,13 +65,21 @@ export function WaitingRoomPage(props: PageProps) {
       </Snackbar>
       <div className="WaitingRoom">
         <header className="WaitingRoom-header">
-          <h1>YOU IN THE WAITING ROOM</h1>
-          <h2>Check out the big screen!</h2>
-          {isMaster && (
-            <Button disabled={isJoining} onClick={onCloseRoom}>
-              All Players In
-            </Button>
-          )}
+          <div className="WaitingRoom-header-container">
+            {playerId && <h3>WELCOME PLAYER {playerId}</h3>}
+            <h1>YOU IN THE WAITING ROOM</h1>
+            <h2>Check out the big screen!</h2>
+            {isMaster && (
+              <Button
+                disabled={isJoinDisabled}
+                onClick={onCloseRoom}
+                variant="contained"
+                color="primary"
+              >
+                All Players In
+              </Button>
+            )}
+          </div>
         </header>
       </div>
     </div>

@@ -1,18 +1,16 @@
-import { Messages, PageState } from "../enums/PageState";
+import { Messages } from "../enums/PageState";
 
 export interface PageProps {
-  setPage: (page: PageState) => void;
   setMessage: Messages;
   state: HostState;
 }
 
 export interface HostState {
-  PlayerInfo: {
-    isMaster: boolean;
-  };
   RoomInfo: {
     roomId?: number;
-    isJoining: boolean;
+    players: {
+      playerId: number;
+    }[];
     lastJoined?: {
         displayUntilMs: number,
         playerId: number,
@@ -21,10 +19,7 @@ export interface HostState {
 }
 
 export const InitialHostState: HostState = {
-  PlayerInfo: {
-    isMaster: false,
-  },
   RoomInfo: {
-    isJoining: false,
+    players: [],
   },
 };

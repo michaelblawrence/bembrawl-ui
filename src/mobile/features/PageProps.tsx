@@ -1,7 +1,6 @@
-import { Messages, PageState } from "../enums/PageState";
+import { Messages } from "../enums/PageState";
 
 export interface PageProps {
-  setPage: (page: PageState) => void;
   setMessage: Messages;
   state: PlayerState;
 }
@@ -9,14 +8,16 @@ export interface PageProps {
 export interface PlayerState {
   PlayerInfo: {
     isMaster: boolean;
+    playerId?: number;
   };
   RoomInfo: {
     roomId?: string;
     isJoining: boolean;
+    playerCount: number;
     lastJoined?: {
-        displayUntilMs: number,
-        playerId: number,
-    }
+      displayUntilMs: number;
+      playerId: number;
+    };
   };
 }
 
@@ -26,5 +27,6 @@ export const InitialPlayerState: PlayerState = {
   },
   RoomInfo: {
     isJoining: false,
+    playerCount: 0,
   },
 };

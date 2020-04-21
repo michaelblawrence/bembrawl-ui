@@ -4,11 +4,11 @@ import {
   ConnectionInfo,
   ConnectionHealthTracker,
   PageSetter,
-  ClientMessage,
   ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
 import { HostState, InitialHostState } from "./features/PageProps";
 import { HostClientStateService } from "../core/server/HostClientStateService";
+import { MessageTypes, ClientMessage } from "../core/server/server.types";
 
 export class PlayersClientConstants {
   public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/hosts/register";
@@ -47,12 +47,20 @@ export class HostClientService {
   }
 
   private onMessageReceived(msg: ClientMessage) {
+    const state = this.stateService.getState();
     switch (msg.type) {
-      case "CONNECT_SUCCESS":
-        console.log(msg.payload);
-        const state = this.stateService.getState();
+      case MessageTypes.CONNECT_SUCCESS:
         state.RoomInfo.roomId = msg.payload.joinId;
         this.stateService.pushState(state);
+        break;
+      case MessageTypes.PLAYER_LIST:
+        state.RoomInfo.players = msg.payload.players.map((player) => ({
+          playerId: player.playerId === null ? -1 : player.playerId + 1,
+        }));
+        this.stateService.pushState(state);
+        break;
+      case MessageTypes.ROOM_READY:
+        this.transitionPage(PageState.QuestionsAndAnswers);
         break;
     }
   }

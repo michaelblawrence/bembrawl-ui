@@ -21,7 +21,6 @@ export function JoinPage(props: PageProps) {
     if (!roomId) {
       return;
     }
-    props.setPage(PageState.WaitingRoom);
     props.setMessage.JoinRoom({
       payload: { roomId: `${roomId}` },
     });
