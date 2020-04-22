@@ -30,8 +30,19 @@ export function WaitingForUsersPage(props: { setPage: (page: PageState) => void 
 function PlayersList(props: { playerNames: string[] }) {
   const { playerNames } = props;
   const players = playerNames.map((name, idx) => (
-    <Grid className="PlayerList-grid" item xl={4} key={idx}>
-      <h4 className={`player-${idx}`}>{name}</h4>
+    <Grid className={`PlayerList-grid-${idx}`} item xl={4} key={idx}>
+      <ul>
+        <li>
+          <span>
+            {name}
+          </span>
+        </li>
+      </ul>
+{/* 
+      <div className={`player-grid-${idx}`}>
+        <h4 className={`player-${idx}`}>
+          </h4>
+        </div> */}
     </Grid>
   ));
 

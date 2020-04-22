@@ -7,7 +7,7 @@ import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUs
 import { QuestionsAndAnswersPage } from "./features/QuestionAndAnswersPage/QuestionsAndAnswersPage";
 
 function AppTV() {
-  const [page, setPage] = useState(PageState.WaitingForUsers);
+  const [page, setPage] = useState(PageState.QuestionsAndAnswers);
   useServerPageFSM(page, setPage);
   return (
     <div className="Window">

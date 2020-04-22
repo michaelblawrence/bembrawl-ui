@@ -1,0 +1,20 @@
+.Question {
+    /* color: grey; */
+    background-color: grey;
+    /* height: 12vh; */
+    /* height: 90%;  */
+    /* text-align:center;  */
+    display:table;
+    width:100%;
+}
+
+.QuestionString {
+
+}
+
+.Answers {
+    background-color: whitesmoke;
+    color: black;
+    display:table;
+    /* height: 32vh; */
+}
