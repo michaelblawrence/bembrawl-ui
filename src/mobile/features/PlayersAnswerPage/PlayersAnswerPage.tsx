@@ -3,14 +3,11 @@ import emojiRegex from "emoji-regex";
 import "./PlayersAnswerPage.css";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
-import { PageState, Messages } from "../../enums/PageState";
+import { PageProps } from "../PageProps";
 
 type OnEmojiSubmit = (emoji: string[]) => void;
 
-export function PlayersAnswerPage(props: {
-  setPage: (page: PageState) => void;
-  setMessage: Messages;
-}) {
+export function PlayersAnswerPage(props: PageProps) {
   const [answerSlotsN, setAnswerSlotsN] = useState(5);
   const [songName, setSongName] = useState("SONG NAME");
   const onEmojiSubmitted = (a: string[]) => {

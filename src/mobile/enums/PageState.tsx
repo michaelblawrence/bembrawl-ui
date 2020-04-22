@@ -15,6 +15,11 @@ export interface JoinRoomMessage {
   roomId: string;
 }
 
+export const Nothing = { payload: {} };
+export interface EmptyMessage {}
+
 export type Messages = {
   JoinRoom: MessageSetter<JoinRoomMessage>;
+  CloseRoom: MessageSetter<EmptyMessage>;
 };
+

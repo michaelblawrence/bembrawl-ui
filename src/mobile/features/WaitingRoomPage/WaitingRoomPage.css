@@ -12,3 +12,7 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+.WaitingRoom-header-container {
+  padding: 0 10px 80px;
+}

@@ -2,12 +2,9 @@ import React, { useState } from "react";
 import "./PlayersAnswerReviewPage.css";
 import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
-import { PageState, Messages } from "../../enums/PageState";
+import { PageProps } from "../PageProps";
 
-export function PlayersAnswerReviewPage(props: {
-  setPage: (page: PageState) => void;
-  setMessage: Messages;
-}) {
+export function PlayersAnswerReviewPage(props: PageProps) {
   const [answerSlotsN] = useState(5);
   const [songName] = useState("SONG NAME");
 

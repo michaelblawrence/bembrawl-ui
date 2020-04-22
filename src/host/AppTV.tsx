@@ -1,48 +1,33 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import { PageState } from "./enums/PageState";
 import "./AppTV.css";
 import { Helmet } from "react-helmet";
-import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
 import { QuestionsAndAnswersPage } from "./features/QuestionAndAnswersPage/QuestionsAndAnswersPage";
+import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
+import { useServerPageFSM } from "./effects/useServerPageFSM";
+import { HostState, InitialHostState } from "./features/PageProps";
 
 function AppTV() {
   const [page, setPage] = useState(PageState.QuestionsAndAnswers);
-  useServerPageFSM(page, setPage);
+  // useServerPageFSM(page, setPage);
+  // const [page, setPage] = useState(PageState.WaitingForUsers);
+  const [state, setState] = useState<HostState>(InitialHostState);
+  const [setMessage] = useServerPageFSM(page, setPage, setState);
   return (
     <div className="Window">
       <Helmet>
         <meta charSet="utf-8" />
         <title>BembrawlTV</title>
       </Helmet>
-      {page === PageState.WaitingForUsers && <WaitingForUsersPage setPage={setPage} />}
-      {page === PageState.QuestionsAndAnswers && <QuestionsAndAnswersPage setPage={setPage} />}
+      {page === PageState.WaitingForUsers && (
+        <WaitingForUsersPage setMessage={setMessage} state={state} />
+      )}
+      {page === PageState.QuestionsAndAnswers && (
+        <QuestionsAndAnswersPage setMessage={setMessage} state={state} />
+      )}
     </div>
   );
 }
-
-
-function useServerPageFSM(
-  page: PageState,
-  setPage: React.Dispatch<React.SetStateAction<PageState>>
-) {
-  // TODO: interact with server here
-  useEffect(() => {
-    let handle: number | null = null;
-    // if (page === PageState.WaitingForUsers) {
-    //   const timeoutHandle: any = setTimeout(
-    //     () => setPage(PageState.WaitingForUsers),
-    //     1000
-    //   );
-    //   handle = timeoutHandle as number;
-    // }
-    return () => {
-      if (handle) {
-        clearInterval(handle);
-      }
-    };
-  }, [page, setPage]);
-}
-
 
 export default AppTV;
