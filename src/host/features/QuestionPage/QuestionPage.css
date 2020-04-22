@@ -1,0 +1,46 @@
+.Page {
+  font-size: calc(10px + 2vmin);
+}
+
+.QuestionPage {
+  background-color: #3e4252;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.Question {
+  background-color: grey;
+  display: table;
+  width: 100%;
+}
+
+.QuestionString {
+  text-align: center;
+}
+
+.Answers {
+  background-color: whitesmoke;
+  color: black;
+  display: table;
+  flex-direction: column;
+  height: 80vh;
+}
+
+.Waiting {
+  background-color: whitesmoke;
+  color: black;
+  /* display:table; */
+  flex-direction: column;
+  height: 80vh;
+}
+
+.AnswerList {
+  padding-top: 5%;
+  padding-bottom: 5%;
+  align-content: center;
+}

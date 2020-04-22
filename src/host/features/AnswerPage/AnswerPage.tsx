@@ -3,23 +3,23 @@ import { PageState } from "../../enums/PageState";
 import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
 import { Input, Button, Grid } from "@material-ui/core";
-import "./QuestionsAndAnswersPage.css";
+import "./QuestionPage.css";
 import { WaitingMessage } from "../../../core-common/WaitingMessage";
 import { PageProps } from "../PageProps";
 
-export function QuestionsAndAnswersPage(props: PageProps) {
+export function QuestionPage(props: PageProps) {
 
-  // const [playerNames] = useState(["player1", "player2"]);
   const [questionString] = useState<String>("Enter a song name");
-
-  const [answerList] = useState<String[]>(["answer1", "answer2", "answer3", "answer4", "answer5", "answer6", "answer7", "answer8", "answer9", "answer10"]);
+  const [showAnswers] = useState<boolean>(true);
+  const [countDown] = useState<number>(60);
+  const [answerList] = useState<String[]>(["answer1", "answer2", "answer3", "answer4", "answer5", "answer6", "answer7", "answer8"]);
   return (
     <div className="App">
       <Branding />
       <Question questionString={questionString} />
-      <div>
-        <Answers answerList={answerList} />
-      </div>
+      <div style={{maxHeight: "-webkit-fill-available"}}>
+        <Answers answerList={answerList} /> 
+      </div> 
     </div>
   );
 }
@@ -36,15 +36,19 @@ function Answers(props: { answerList: String[] }) {
 
   let displacements: number[] = [];
   for (let index = 0; index < answerList.length; index++) {
-    displacements.push((Math.random() - 0.5)*150)
+    displacements.push((Math.random() - 0.5) * 150)
   }
+
   const answers =
-    <ul>
+    <ul className="AnswerList" style={{listStylePosition:"inside", paddingLeft:0}}>
       {answerList.map((answer, idx) => (
-      <li>
-        <h2 style={{marginLeft: `${displacements[idx]}%`}}>
+      <li style={{alignContent:"centre"}}>
+        <text style={{
+          fontSize: "1.5rem",
+          height: "0.8vh"
+          }}>
           {answer}
-        </h2>
+        </text>
       </li>
     ))}
     </ul>;

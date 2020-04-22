@@ -3,15 +3,13 @@ import { useState } from "react";
 import { PageState } from "./enums/PageState";
 import "./AppTV.css";
 import { Helmet } from "react-helmet";
-import { QuestionsAndAnswersPage } from "./features/QuestionAndAnswersPage/QuestionsAndAnswersPage";
 import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
 import { HostState, InitialHostState } from "./features/PageProps";
+import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 
 function AppTV() {
   const [page, setPage] = useState(PageState.QuestionsAndAnswers);
-  // useServerPageFSM(page, setPage);
-  // const [page, setPage] = useState(PageState.WaitingForUsers);
   const [state, setState] = useState<HostState>(InitialHostState);
   const [setMessage] = useServerPageFSM(page, setPage, setState);
   return (
@@ -24,7 +22,7 @@ function AppTV() {
         <WaitingForUsersPage setMessage={setMessage} state={state} />
       )}
       {page === PageState.QuestionsAndAnswers && (
-        <QuestionsAndAnswersPage setMessage={setMessage} state={state} />
+        <QuestionPage setMessage={setMessage} state={state} />
       )}
     </div>
   );
