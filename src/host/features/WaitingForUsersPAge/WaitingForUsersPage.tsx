@@ -8,7 +8,7 @@ import { PageProps } from "../PageProps";
 export function WaitingForUsersPage(props: PageProps) {
   const { RoomInfo } = props.state;
 
-  const [playerNames, setPlayerNames] = useState(["Waiting for players"]);
+  const [playerNames, setPlayerNames] = useState<string[]>([]);
   const [roomId, setRoomId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export function WaitingForUsersPage(props: PageProps) {
     }
     if (RoomInfo.players.length) {
       setPlayerNames(
-        RoomInfo.players.map((player) => `Player ${player.playerId}`)
+        RoomInfo.players.map((player) => player.playerName)
       );
     }
   }, [RoomInfo]);
@@ -29,7 +29,10 @@ export function WaitingForUsersPage(props: PageProps) {
         <Grid container spacing={3}>
           <WaitingForUsers roomId={roomId} />
           <Grid item xs={6} spacing={3}>
-            <PlayersList playerNames={playerNames} />
+            <PlayersList
+              playerNames={playerNames}
+              defaultMessage="Waiting for players"
+            />
           </Grid>
         </Grid>
       </div>
@@ -37,14 +40,14 @@ export function WaitingForUsersPage(props: PageProps) {
   );
 }
 
-function PlayersList(props: { playerNames: string[] }) {
-  const { playerNames } = props;
-  const players = playerNames.map((name, idx) => (
+function PlayersList(props: { playerNames: string[]; defaultMessage: string }) {
+  const { playerNames, defaultMessage } = props;
+  const displayPlayers = playerNames.length ? playerNames : [defaultMessage];
+  const players = displayPlayers.map((name, idx) => (
     <Grid className="PlayerList-grid" item xl={4} key={idx}>
       <h2 className={`player-${idx}`}>{name}</h2>
     </Grid>
   ));
-
   return (
     <Grid
       container
@@ -53,8 +56,15 @@ function PlayersList(props: { playerNames: string[] }) {
       justify="center"
       style={{ height: "100%" }}
     >
-      <Grid xl={6} spacing={10}>
-        <div className="PlayersList-div">{players}</div>
+      <Grid container direction="column">
+        {playerNames.length > 0 && (
+          <Grid xl={6} spacing={10}>
+            <h2>Ready players:</h2>
+          </Grid>
+        )}
+        <Grid xl={6} spacing={10}>
+          <div className="PlayersList-div">{players}</div>
+        </Grid>
       </Grid>
     </Grid>
   );
@@ -62,10 +72,15 @@ function PlayersList(props: { playerNames: string[] }) {
 
 function WaitingForUsers(props: { roomId: number | null }) {
   const { roomId } = props;
+  const url = document.location.host;
   return (
     <Grid item xs={6}>
       <div className="WaitingForUsers">
-        <h1>Room ID: {roomId || "Waiting..."}</h1>
+        <h3>Get tapping on your phone web browser to: </h3>
+        <h2>{url}</h2>
+        <h1>
+          Room ID: <span>{roomId || "Waiting..."}</span>
+        </h1>
       </div>
     </Grid>
   );

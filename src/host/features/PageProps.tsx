@@ -10,6 +10,7 @@ export interface HostState {
     roomId?: number;
     players: {
       playerId: number;
+      playerName: string;
     }[];
     lastJoined?: {
         displayUntilMs: number,

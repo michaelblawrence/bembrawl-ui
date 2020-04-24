@@ -1,23 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import "./WaitingRoomPage.css";
 import { Branding } from "../../../core-common/Branding";
 import { PageProps } from "../PageProps";
-import { Button, Snackbar } from "@material-ui/core";
+import {
+  Button,
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Tooltip,
+} from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { Nothing } from "../../enums/PageState";
-
-function Alert(props: AlertProps) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export function WaitingRoomPage(props: PageProps) {
   const { PlayerInfo, RoomInfo } = props.state;
   const [showBannerTimeout, setShowBannerTimeout] = useState(0);
-  const [playerId, setPlayerId] = useState<number | null>(null);
+  const [playerId, setPlayerId] = useState<string | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [hasOpened, setHasOpened] = React.useState(false);
+
+  const openEditName = () => {
+    setOpen(true);
+    setHasOpened(true);
+  };
 
   useEffect(() => {
     if (PlayerInfo.playerId) {
-      setPlayerId(PlayerInfo.playerId);
+      setPlayerId("PLAYER " + PlayerInfo.playerId);
     }
   }, [PlayerInfo.playerId]);
 
@@ -45,6 +57,16 @@ export function WaitingRoomPage(props: PageProps) {
     }
     setShowBannerTimeout(0);
   };
+  const submitPlayerName = (newPlayerName: string | null) => {
+    setOpen(false);
+    const playerNameValue = newPlayerName || playerId;
+    setPlayerId(playerNameValue);
+    if (playerNameValue) {
+      props.setMessage.ChangePlayerName({
+        payload: { playerName: playerNameValue },
+      });
+    }
+  };
   const onCloseRoom = () => props.setMessage.CloseRoom(Nothing);
   const isMaster = PlayerInfo.isMaster;
   const isJoinDisabled = RoomInfo.isJoining || RoomInfo.playerCount < 2;
@@ -59,14 +81,32 @@ export function WaitingRoomPage(props: PageProps) {
       >
         {RoomInfo.lastJoined && (
           <Alert onClose={handleClose} severity="success">
-            Player {RoomInfo.lastJoined.playerId} has joined the room!
+            "{RoomInfo.lastJoined.playerName}" has {RoomInfo.lastJoined.eventNotificationType}!
           </Alert>
         )}
       </Snackbar>
       <div className="WaitingRoom">
+        <EditPlayerName
+          playerName={playerId || ""}
+          open={open}
+          submit={submitPlayerName}
+        />
         <header className="WaitingRoom-header">
           <div className="WaitingRoom-header-container">
-            {playerId && <h3>WELCOME PLAYER {playerId}</h3>}
+            {playerId && (
+              <h3>
+                WELCOME{" "}
+                <Tooltip
+                  title="Edit Player Name"
+                  enterDelay={500}
+                  placement="top"
+                  open={!hasOpened}
+                  arrow
+                >
+                  <span onClick={openEditName}>{playerId}</span>
+                </Tooltip>
+              </h3>
+            )}
             <h1>YOU IN THE WAITING ROOM</h1>
             <h2>Check out the big screen!</h2>
             {isMaster && (
@@ -83,5 +123,60 @@ export function WaitingRoomPage(props: PageProps) {
         </header>
       </div>
     </div>
+  );
+}
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+function EditPlayerName(props: {
+  playerName: string;
+  submit: (playerName: string | null) => void;
+  open: boolean;
+}) {
+  const [playerName, setPlayerName] = React.useState(props.playerName);
+
+  const handleClose = () => {
+    setPlayerName("");
+    props.submit(null);
+  };
+
+  const handleSubmit = () => {
+    props.submit(playerName);
+    setPlayerName("");
+  };
+
+  const handleNameChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    setPlayerName(e.target.value);
+  };
+  return (
+    <Dialog
+      open={props.open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">Edit Player Name</DialogTitle>
+      <DialogContent style={{ margin: "0px 15px" }}>
+        <TextField
+          onChange={handleNameChange}
+          value={playerName}
+          autoFocus
+          margin="normal"
+          label="Player Name"
+          fullWidth
+        />
+      </DialogContent>
+      <DialogActions style={{ margin: "0px 15px 5px" }}>
+        <Button onClick={handleClose} color="primary" variant="contained">
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} color="primary" variant="contained">
+          OK
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

@@ -7,7 +7,11 @@ import {
   PageSetter,
   ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
-import { PlayerState, InitialPlayerState } from "./features/PageProps";
+import {
+  PlayerState,
+  InitialPlayerState,
+  LastJoinedPlayerNotification,
+} from "./features/PageProps";
 import { HostClientStateService } from "../core/server/HostClientStateService";
 import { ClientMessage, MessageTypes } from "../core/server/server.types";
 
@@ -16,6 +20,7 @@ export class PlayersClientConstants {
   public static readonly URL_API_ROUTE_KEEP_ALIVE = "/players/keepalive";
   public static readonly URL_API_ROUTE_JOIN_ROOM = "/players/join";
   public static readonly URL_API_ROUTE_COMPLETE_ROOM = "/players/complete";
+  public static readonly URL_API_ROUTE_PLAYER_CHANGE_NAME = "/players/name";
   public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
 }
 
@@ -26,6 +31,10 @@ interface JoinRoomRequest {
 
 interface CompleteRoomRequest {
   roomId: string;
+  sessionId: string;
+}
+interface ChangePlayerNameRequest {
+  playerName: string;
   sessionId: string;
 }
 
@@ -67,11 +76,19 @@ export class HostClientService {
         break;
       case MessageTypes.JOINED_PLAYER:
         const state = this.stateService.getState();
+        const playerIndex =
+          msg.payload.playerJoinOrder === null
+            ? -1
+            : msg.payload.playerJoinOrder + 1;
+        const playerName = msg.payload.playerJoinName;
         state.RoomInfo.lastJoined = {
           displayUntilMs:
             msg.payload.eventTime +
             PlayersClientConstants.TIMEOUT_ALERT_JOINED_PLAYER_MS,
-          playerId: (msg.payload.playerJoinOrder || -1) + 1,
+          playerName: playerName || `Player ${playerIndex}`,
+          eventNotificationType: msg.payload.playerNameChanged
+            ? LastJoinedPlayerNotification.NameChange
+            : LastJoinedPlayerNotification.Joined,
         };
         state.RoomInfo.playerCount = msg.payload.playerCount;
         this.stateService.pushState(state);
@@ -145,6 +162,15 @@ export class HostClientService {
       return false;
     }
     return true;
+  }
+
+  public async changePlayerName(playerName: string) {
+    if (!this.connectionInfo) return;
+
+    await HttpClient.postJson<ChangePlayerNameRequest, boolean>(
+      PlayersClientConstants.URL_API_ROUTE_PLAYER_CHANGE_NAME,
+      { playerName, sessionId: this.connectionInfo.sessionGuid }
+    );
   }
 
   public registerPage(
