@@ -1,27 +1,31 @@
 import React from "react";
-import { useState } from "react";
 import { PageState } from "./enums/PageState";
 import "./AppTV.css";
 import { Helmet } from "react-helmet";
-import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
+import { PlayersWaitingRoomPage } from "./features/PlayersWaitingRoomPage/PlayersWaitingRoomPage";
+// import { WaitingForUsersPage } from "./features/WaitingForUsersPAge/WaitingForUsersPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
-import { HostState, InitialHostState } from "./features/PageProps";
+import { InitialHostState } from "./features/PageProps";
 import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 import { ResultsPage } from "./features/Results/ResultsPage";
 
 function AppTV() {
-  const [page, setPage] = useState(PageState.Results);
-  const [state, setState] = useState<HostState>(InitialHostState);
-  const [setMessage] = useServerPageFSM(page, setPage, setState);
+  const [page, state, setMessage] = useServerPageFSM(
+    PageState.PlayersWaitingRoom,
+    InitialHostState
+  );
   return (
     <div className="Window">
       <Helmet>
         <meta charSet="utf-8" />
         <title>BembrawlTV</title>
       </Helmet>
-      {page === PageState.WaitingForUsers && (
+      {/* {page === PageState.WaitingForUsers && (
         <WaitingForUsersPage setMessage={setMessage} state={state} />
+      )} */}
+      {page === PageState.PlayersWaitingRoom && (
+        <PlayersWaitingRoomPage setMessage={setMessage} state={state} />
       )}
       {page === PageState.Question && (
         <QuestionPage setMessage={setMessage} state={state} />

@@ -1,0 +1,42 @@
+/* duplicate? */
+.players { 
+  background-color: #3e4252;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #ffffff;
+  padding-top: 30%;
+  padding-bottom: 30%;
+}
+
+.WaitingRoomMessage {
+  background-color: #3e4252;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(5px + 2vmin);
+  color: #c4c8d4;
+}
+
+.WaitingRoomMessage h3 {
+  margin: 1.5em 1em;
+}
+
+.WaitingRoomMessage h2 {
+  margin: 0.2em 1em;
+  font-size: 1.5em;
+  color: #ffffff;
+}
+
+.WaitingRoomMessage h1 span {
+  color: #ffffff;
+}
+
+[class^="player-"] {
+  min-height: 1vh;
+}

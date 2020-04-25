@@ -3,13 +3,21 @@ export enum MessageTypes {
     PLAYER_LIST = "PLAYER_LIST",
     ROOM_READY = "ROOM_READY",
     CONNECT_SUCCESS = "CONNECT_SUCCESS",
+    EMOJI_GAME_STARTED = "EMOJI_GAME_STARTED",
+    EMOJI_NEW_PROMPT = "EMOJI_NEW_PROMPT",
+    EMOJI_ALL_RESPONSES = "EMOJI_ALL_RESPONSES",
+    EMOJI_VOTING_RESULTS = "EMOJI_VOTING_RESULTS",
 }
 
 export type ClientMessage =
     | JoinedPlayerMessage
     | PlayerListMessage
     | RoomReadyMessage
-    | ConnectSuccessMessage;
+    | ConnectSuccessMessage
+    | EmojiGameStartedMessage
+    | EmojiNewPromptMessage
+    | EmojiAllResponsesMessage
+    | EmojiVotingResultsMessage;
 
 export type JoinedPlayerMessage = {
     type: MessageTypes.JOINED_PLAYER;
@@ -18,7 +26,7 @@ export type JoinedPlayerMessage = {
         playerJoinOrder: number | null;
         playerJoinName: string | null;
         playerCount: number;
-        playerNameChanged: false;
+        playerNameChanged: boolean;
     };
 };
 
@@ -46,4 +54,49 @@ export type RoomReadyMessage = {
         gameTimeStartTimeMs: number;
         gameCountDownMs: number;
     };
+};
+
+export type EmojiGameStartedMessage = {
+    type: MessageTypes.EMOJI_GAME_STARTED;
+    payload: {
+        gameStartTimeMs: number;
+        initialPromptPlayerId: string;
+    };
+};
+
+export type EmojiNewPromptMessage = {
+    type: MessageTypes.EMOJI_NEW_PROMPT;
+    payload: {
+        promptText: string;
+        promptFromPlayerId: string;
+    };
+};
+
+export type EmojiAllResponsesMessage = {
+    type: MessageTypes.EMOJI_NEW_PROMPT;
+    payload: {
+        promptText: string;
+        promptFromPlayerId: string;
+        emojiResponses: PlayerEmojiResponse[];
+    };
+};
+
+export type EmojiVotingResultsMessage = {
+    type: MessageTypes.EMOJI_VOTING_RESULTS;
+    payload: {
+        promptText: string;
+        promptFromPlayerId: string;
+        votes: PlayerVotingResult[];
+    };
+};
+
+export type PlayerVotingResult = {
+    playerName: string;
+    playerId: string;
+    voteCount: number;
+};
+
+export type PlayerEmojiResponse = {
+    playerId: string;
+    responseEmoji: string[];
 };

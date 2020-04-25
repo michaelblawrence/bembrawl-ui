@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { PageState, Messages } from "../enums/PageState";
 import { HostClientService } from "../HostClientService";
 import { PlayerState } from "../features/PageProps";
 
 export function useServerPageFSM(
-  page: PageState,
-  setPage: React.Dispatch<React.SetStateAction<PageState>>,
-  setState: React.Dispatch<React.SetStateAction<PlayerState>>
-): [Messages] {
+  initialPage: PageState,
+  initialState: PlayerState
+): [PageState, PlayerState, Messages] {
+  const [page, setPage] = useState(initialPage);
+  const [state, setState] = useState<PlayerState>(initialState);
   const [svc, setSvc] = useState<HostClientService | null>(null);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export function useServerPageFSM(
     }
   }, [page, setPage, svc]);
 
-  return [mapServiceToMessages(svc)];
+  return [page, state, mapServiceToMessages(svc)];
 }
 
 const defaultMessages: Messages = {

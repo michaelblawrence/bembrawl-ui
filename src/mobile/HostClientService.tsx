@@ -4,7 +4,7 @@ import {
   HostClientConnection,
   ConnectionInfo,
   ConnectionHealthTracker,
-  PageSetter,
+  StateSetter,
   ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
 import {
@@ -43,13 +43,14 @@ export class HostClientService {
   private readonly connectionHealthTracker: ConnectionHealthTracker;
   private readonly stateService: HostClientStateService<PlayerState>;
   private readonly subscription: ClientMessageSubscription | null = null;
+  private readonly client: HostClient;
 
   private connectionInfo: ConnectionInfo | null = null;
   private pageStatusHandle: number | null = null;
-  private pageSetter: PageSetter<PageState> | null = null;
+  private pageSetter: StateSetter<PageState> | null = null;
   private currentPage: PageState | null = null;
 
-  constructor(stateSetter: React.Dispatch<React.SetStateAction<PlayerState>>) {
+  constructor(stateSetter: StateSetter<PlayerState>) {
     this.connectionHealthTracker = new ConnectionHealthTracker();
     this.connection = new HostClientConnection({
       registerUrl: PlayersClientConstants.URL_API_ROUTE_PLAYER_REGISTER,
@@ -63,10 +64,11 @@ export class HostClientService {
     this.subscription = this.connection.subscribe((msg) =>
       this.onMessageReceived(msg)
     );
+    this.client = new HostClient();
   }
 
   public async connect() {
-    this.connectionInfo = await this.connection.connect();
+    this.connectionInfo = await this.connection.connect(); // this info can change? do we need to register this with connection
   }
 
   private onMessageReceived(msg: ClientMessage) {
@@ -74,6 +76,7 @@ export class HostClientService {
       case MessageTypes.ROOM_READY:
         this.transitionPage(PageState.PlayersAnswer);
         break;
+
       case MessageTypes.JOINED_PLAYER:
         const state = this.stateService.getState();
         const playerIndex =
@@ -111,19 +114,16 @@ export class HostClientService {
     if (!this.connectionInfo) return false;
     this.transitionPage(PageState.WaitingRoom);
     this.connectionHealthTracker.addConnectionAttempts();
+    
     try {
-      const state = this.stateService.getState();
-      const joinResult = await HttpClient.postJson<
-        JoinRoomRequest,
-        { success: boolean; isMaster: boolean; playerIdx: number | null }
-      >(PlayersClientConstants.URL_API_ROUTE_JOIN_ROOM, {
-        roomId: roomId,
-        sessionId: this.connectionInfo.sessionGuid,
-      });
+      const { sessionGuid } = this.connectionInfo;
+      const joinResult = await this.client.joinRoom(roomId, sessionGuid);
       if (!joinResult.success) {
         this.transitionPage(PageState.JoinRoom);
         return false;
       }
+
+      const state = this.stateService.getState();
       state.PlayerInfo.isMaster = joinResult.isMaster;
       if (joinResult.playerIdx != null) {
         state.PlayerInfo.playerId = joinResult.playerIdx + 1;
@@ -144,18 +144,13 @@ export class HostClientService {
       const roomId = state.RoomInfo.roomId;
       if (!roomId) return false;
 
-      const completeRoomResult = await HttpClient.postJson<
-        CompleteRoomRequest,
-        boolean
-      >(PlayersClientConstants.URL_API_ROUTE_COMPLETE_ROOM, {
-        roomId: roomId,
-        sessionId: this.connectionInfo.sessionGuid,
-      });
-
-      if (!completeRoomResult) {
+      const { sessionGuid } = this.connectionInfo;
+      const success = await this.client.completeRoom(roomId, sessionGuid);
+      if (!success) {
         this.transitionPage(PageState.WaitingRoom);
         return false;
       }
+
       state.RoomInfo.isJoining = true;
       this.stateService.pushState(state);
     } catch (ex) {
@@ -167,16 +162,11 @@ export class HostClientService {
   public async changePlayerName(playerName: string) {
     if (!this.connectionInfo) return;
 
-    await HttpClient.postJson<ChangePlayerNameRequest, boolean>(
-      PlayersClientConstants.URL_API_ROUTE_PLAYER_CHANGE_NAME,
-      { playerName, sessionId: this.connectionInfo.sessionGuid }
-    );
+    const { sessionGuid } = this.connectionInfo;
+    await this.client.changePlayerName(playerName, sessionGuid);
   }
 
-  public registerPage(
-    page: PageState,
-    setPage: React.Dispatch<React.SetStateAction<PageState>>
-  ) {
+  public registerPage(page: PageState, setPage: StateSetter<PageState>) {
     this.pageSetter = setPage;
     this.currentPage = page;
   }
@@ -190,5 +180,34 @@ export class HostClientService {
         "wasn't registered to be able to change page. transition failed"
       );
     }
+  }
+}
+
+export class HostClient {
+  public async completeRoom(roomId: string, sessionId: string) {
+    return await HttpClient.postJson<CompleteRoomRequest, boolean>(
+      PlayersClientConstants.URL_API_ROUTE_COMPLETE_ROOM,
+      {
+        roomId: roomId,
+        sessionId,
+      }
+    );
+  }
+
+  public async changePlayerName(playerName: string, sessionId: string) {
+    await HttpClient.postJson<ChangePlayerNameRequest, boolean>(
+      PlayersClientConstants.URL_API_ROUTE_PLAYER_CHANGE_NAME,
+      { playerName, sessionId }
+    );
+  }
+
+  public async joinRoom(roomId: string, sessionId: string) {
+    return await HttpClient.postJson<
+      JoinRoomRequest,
+      { success: boolean; isMaster: boolean; playerIdx: number | null }
+    >(PlayersClientConstants.URL_API_ROUTE_JOIN_ROOM, {
+      roomId: roomId,
+      sessionId: sessionId,
+    });
   }
 }
