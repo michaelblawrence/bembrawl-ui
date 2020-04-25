@@ -72,6 +72,21 @@ export class HostClientService {
         break;
       case MessageTypes.EMOJI_GAME_STARTED:
         this.transitionPage(PageState.PlayersWaitingRoom);
+        break;
+      case MessageTypes.EMOJI_NEW_PROMPT:
+        state.EmojiGame.Question = {
+          TimeoutMs: msg.payload.timeoutMs,
+          Prompt: msg.payload.promptText,
+        }
+        this.stateService.pushState(state);
+        this.transitionPage(PageState.Question);
+        break;
+      case MessageTypes.EMOJI_ALL_RESPONSES:
+        this.transitionPage(PageState.Answers);
+        break;
+      case MessageTypes.EMOJI_VOTING_RESULTS:
+        this.transitionPage(PageState.Results);
+        break;
     }
   }
 
