@@ -12,17 +12,21 @@ export interface HostState {
       Subject?: string;
       TimeoutMs?: number;
     };
-    PlayerAnswers?: [];
+    PlayerAnswers?: {
+      playerIndex: number;
+      answer: string;
+      votes: number;
+    }[];
   };
   RoomInfo: {
     roomId?: number;
     players: {
-      playerId: number;
+      playerIndex: number;
       playerName: string;
     }[];
     lastJoined?: {
       displayUntilMs: number;
-      playerId: number;
+      playerIndex: number;
     };
   };
 }

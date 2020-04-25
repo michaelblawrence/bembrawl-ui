@@ -1,17 +1,12 @@
 import React from "react";
-import { PageState } from "../../enums/PageState";
 import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
-import { Input, Button, Grid } from "@material-ui/core";
 import "./AnswerPage.css";
-import { WaitingMessage } from "../../../core-common/WaitingMessage";
 import { PageProps } from "../PageProps";
 
 export function AnswerPage(props: PageProps) {
 
   const [questionString] = useState<String>("Enter a song name");
-  const [showAnswers] = useState<boolean>(true);
-  const [countDown] = useState<number>(60);
   const [answerList] = useState<String[]>(["answer1", "answer2", "answer3", "answer4", "answer5", "answer6", "answer7", "answer8"]);
   return (
     <div className="App">

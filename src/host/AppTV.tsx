@@ -8,9 +8,10 @@ import { useServerPageFSM } from "./effects/useServerPageFSM";
 import { HostState, InitialHostState } from "./features/PageProps";
 import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
+import { ResultsPage } from "./features/Results/ResultsPage";
 
 function AppTV() {
-  const [page, setPage] = useState(PageState.Question);
+  const [page, setPage] = useState(PageState.Results);
   const [state, setState] = useState<HostState>(InitialHostState);
   const [setMessage] = useServerPageFSM(page, setPage, setState);
   return (
@@ -27,6 +28,9 @@ function AppTV() {
       )}
       {page === PageState.Answers && (
         <AnswerPage setMessage={setMessage} state={state} />
+      )}
+      {page === PageState.Results && (
+        <ResultsPage setMessage={setMessage} state={state} />
       )}
     </div>
   );

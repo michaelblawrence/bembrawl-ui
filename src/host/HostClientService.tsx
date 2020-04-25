@@ -55,10 +55,10 @@ export class HostClientService {
         break;
       case MessageTypes.PLAYER_LIST:
         state.RoomInfo.players = msg.payload.players.map((player) => {
-          const playerId = player.playerId === null ? -1 : player.playerId + 1;
+          const playerIndex = player.playerId === null ? -1 : player.playerId + 1;
           return {
-            playerId,
-            playerName: player.playerName || `Player ${playerId}`,
+            playerIndex,
+            playerName: player.playerName || `Player ${playerIndex}`,
           };
         });
         this.stateService.pushState(state);
