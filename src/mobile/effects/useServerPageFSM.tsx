@@ -33,6 +33,7 @@ const defaultMessages: Messages = {
   CloseRoom: () => {},
   ChangePlayerName: () => {},
   SubmitNewPrompt: () => {},
+  SubmitEmojiAnswer: () => {},
 };
 
 function mapServiceToMessages(svc: HostClientService | null): Messages {
@@ -42,6 +43,7 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
     CloseRoom: () => svc.closeRoom(),
     ChangePlayerName: (msg) => svc.changePlayerName(msg.payload.playerName),
     SubmitNewPrompt: (msg) => svc.submitNewPrompt(msg.payload.promptResponse),
+    SubmitEmojiAnswer: (msg) => svc.submitResponseEmoji(msg.payload.emoji),
   };
 }
 

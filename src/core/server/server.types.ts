@@ -64,6 +64,7 @@ export type EmojiGameStartedMessage = {
             playerId: string;
             playerName: string | null;
         };
+        promptPlayerAnswersEmoji: boolean;
     };
 };
 
@@ -72,11 +73,12 @@ export type EmojiNewPromptMessage = {
     payload: {
         promptText: string;
         promptFromPlayerId: string;
+        timeoutMs: number;
     };
 };
 
 export type EmojiAllResponsesMessage = {
-    type: MessageTypes.EMOJI_NEW_PROMPT;
+    type: MessageTypes.EMOJI_ALL_RESPONSES;
     payload: {
         promptText: string;
         promptFromPlayerId: string;

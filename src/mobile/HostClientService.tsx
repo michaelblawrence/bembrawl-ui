@@ -22,6 +22,7 @@ export class PlayersClientConstants {
   public static readonly URL_API_ROUTE_COMPLETE_ROOM = "/players/complete";
   public static readonly URL_API_ROUTE_PLAYER_CHANGE_NAME = "/players/name";
   public static readonly URL_API_ROUTE_PLAYER_NEW_PROMPT = "/emoji/prompt";
+  public static readonly URL_API_ROUTE_PLAYER_NEW_RESPONSE = "/emoji/response";
   public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
 }
 
@@ -39,8 +40,13 @@ interface ChangePlayerNameRequest {
   sessionId: string;
 }
 interface NewPromptReq {
-    sessionId: string;
-    playerPrompt: string;
+  sessionId: string;
+  playerPrompt: string;
+}
+
+interface NewResponseReq {
+  sessionId: string;
+  responseEmoji: string[];
 }
 
 export class HostClientService {
@@ -107,6 +113,10 @@ export class HostClientService {
           this.connectionInfo?.deviceGuid ===
           msg.payload.initialPromptPlayer.playerId;
 
+        state.EmojiGame.promptPlayerAnswersEmoji =
+          msg.payload.promptPlayerAnswersEmoji;
+        this.stateService.pushState(state);
+
         if (isPromptPlayer) {
           this.transitionPage(PageState.SetPrompt);
         } else {
@@ -117,12 +127,20 @@ export class HostClientService {
       case MessageTypes.EMOJI_NEW_PROMPT:
         const wasPromptPlayer =
           this.connectionInfo?.deviceGuid === msg.payload.promptFromPlayerId;
+        state.EmojiGame.Question.Prompt = msg.payload.promptText;
+        this.stateService.pushState(state);
 
-        if (wasPromptPlayer) {
+        if (wasPromptPlayer && !state.EmojiGame.promptPlayerAnswersEmoji) {
           this.transitionPage(PageState.WaitingRoom);
         } else {
           this.transitionPage(PageState.PlayersAnswer);
         }
+        break;
+
+      case MessageTypes.EMOJI_ALL_RESPONSES:
+        state.EmojiGame.AnswerEmoji = msg.payload.emojiResponses;
+        this.stateService.pushState(state);
+        this.transitionPage(PageState.PlayersAnswerReview);
         break;
     }
   }
@@ -201,6 +219,14 @@ export class HostClientService {
     await this.client.newPrompt(promptResponse, sessionGuid);
   }
 
+  public async submitResponseEmoji(emoji: string[]) {
+    if (!this.connectionInfo) return;
+
+    const { sessionGuid } = this.connectionInfo;
+    await this.client.newEmojiResponse(emoji, sessionGuid);
+    this.transitionPage(PageState.WaitingRoom);
+  }
+
   public registerPage(page: PageState, setPage: StateSetter<PageState>) {
     this.pageSetter = setPage;
     this.currentPage = page;
@@ -240,6 +266,13 @@ export class HostClient {
     await HttpClient.postJson<NewPromptReq, boolean>(
       PlayersClientConstants.URL_API_ROUTE_PLAYER_NEW_PROMPT,
       { playerPrompt, sessionId }
+    );
+  }
+
+  public async newEmojiResponse(emoji: string[], sessionId: string) {
+    return await HttpClient.postJson<NewResponseReq, boolean>(
+      PlayersClientConstants.URL_API_ROUTE_PLAYER_NEW_RESPONSE,
+      { responseEmoji: emoji, sessionId }
     );
   }
 

@@ -8,18 +8,19 @@ import { PageProps } from "../PageProps";
 type OnEmojiSubmit = (emoji: string[]) => void;
 
 export function PlayersAnswerPage(props: PageProps) {
-  const [answerSlotsN, setAnswerSlotsN] = useState(5);
-  const [songName, setSongName] = useState("SONG NAME");
-  const onEmojiSubmitted = (a: string[]) => {
-    alert(a.join("_"));
+  const { EmojiGame } = props.state;
+  const answerSlotsN = EmojiGame.Question.EmojiCount;
+  const songTitle = EmojiGame.Question.Prompt || "Loading Song Title";
+
+  const onEmojiSubmitted = (emojiEntries: string[]) => {
+    props.setMessage.SubmitEmojiAnswer({ payload: { emoji: emojiEntries } });
   };
 
   return (
     <div>
       <Branding />
-      <QuestionSection emojiCount={answerSlotsN} songTitle={songName} />
+      <QuestionSection emojiCount={answerSlotsN} songTitle={songTitle} />
       <EmojiAnswerSlots emojiCount={answerSlotsN} onSubmit={onEmojiSubmitted} />
-      <PlayersCompletionPanel />
     </div>
   );
 }
@@ -96,6 +97,7 @@ function EmojiAnswerSlots(props: {
     const incomplete = typedEmoji().some((text) => !text);
     console.log("changed", slotState, "incomplete", incomplete);
     setIsIncomplete(incomplete);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slotState]);
   return (
     <div className="EmojiAnswerSlots">
@@ -141,8 +143,4 @@ function handleSlotChange(
       input.focus();
     }
   }
-}
-
-function PlayersCompletionPanel() {
-  return <div className="PlayersCompletionPanel"></div>;
 }
