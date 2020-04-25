@@ -59,10 +59,10 @@ export class HostClientService {
         break;
       case MessageTypes.PLAYER_LIST:
         state.RoomInfo.players = msg.payload.players.map((player) => {
-          const playerId = player.playerId === null ? -1 : player.playerId + 1;
+          const playerIndex = player.playerId === null ? -1 : player.playerId + 1;
           return {
-            playerId,
-            playerName: player.playerName || `Player ${playerId}`,
+            playerIndex,
+            playerName: player.playerName || `Player ${playerIndex}`,
           };
         });
         this.stateService.pushState(state);
@@ -80,6 +80,30 @@ export class HostClientService {
           initialPromptPlayer.playerName || `Player ${promptPlayerId}`;
         this.stateService.pushState(state);
         this.transitionPage(PageState.PlayersWaitingRoom);
+        break;
+      case MessageTypes.EMOJI_NEW_PROMPT:
+        state.EmojiGame.Question = {
+          TimeoutMs: msg.payload.timeoutMs,
+          Prompt: msg.payload.promptText,
+        }
+        this.stateService.pushState(state);
+        this.transitionPage(PageState.Question);
+        break;
+      case MessageTypes.EMOJI_ALL_RESPONSES:
+        state.EmojiGame.PlayerAnswers = msg.payload.emojiResponses.map(emojiResponse => (
+          {answer: emojiResponse.responseEmoji.join(""), playerIndex: undefined, playerId: emojiResponse.playerId, votes: undefined}
+        ));
+        this.stateService.pushState(state);
+        this.transitionPage(PageState.Answers);
+        break;
+      case MessageTypes.EMOJI_VOTING_RESULTS:
+        for (const playerAnswer of state.EmojiGame.PlayerAnswers || []) {
+          const playerVotes = msg.payload.votes.find(info => (info.playerId === playerAnswer.playerId));
+          playerAnswer.votes = playerVotes?.voteCount;
+        }
+        this.stateService.pushState(state);
+        this.transitionPage(PageState.Results);
+        break;
     }
   }
 

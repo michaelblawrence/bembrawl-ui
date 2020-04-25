@@ -5,7 +5,6 @@ import "./JoinPage.css";
 import { Button, Input } from "@material-ui/core";
 import { WaitingMessage } from "../../../core-common/WaitingMessage";
 import { Branding } from "../../../core-common/Branding";
-import { PageState } from "../../enums/PageState";
 import { generateMappedInputSetter } from "../../../core/utils/generateMappedInputSetter";
 import { PageProps } from "../PageProps";
 

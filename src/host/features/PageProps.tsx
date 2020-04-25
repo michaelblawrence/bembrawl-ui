@@ -13,17 +13,22 @@ export interface HostState {
       Subject?: string;
       TimeoutMs?: number;
     };
-    PlayerAnswers?: [];
+    PlayerAnswers?: {
+      playerIndex?: number; // TODO: delete when/if no longer in use
+      answer: string;
+      playerId?: string;
+      votes?: number;
+    }[];
   };
   RoomInfo: {
     roomId?: number;
     players: {
-      playerId: number;
+      playerIndex: number;
       playerName: string;
     }[];
     lastJoined?: {
       displayUntilMs: number;
-      playerId: number;
+      playerIndex: number;
     };
   };
 }

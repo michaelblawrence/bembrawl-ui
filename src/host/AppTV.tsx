@@ -3,11 +3,12 @@ import { PageState, Messages } from "./enums/PageState";
 import "./AppTV.css";
 import { Helmet } from "react-helmet";
 import { PlayersWaitingRoomPage } from "./features/PlayersWaitingRoomPage/PlayersWaitingRoomPage";
-import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
 import { InitialHostState, HostState } from "./features/PageProps";
 import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
+import { ResultsPage } from "./features/Results/ResultsPage";
+import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
 
 function AppTV() {
   const [page, state, setMessage] = useServerPageFSM(
@@ -44,6 +45,9 @@ function AppPage(props: {
 
     case PageState.Answers:
       return <AnswerPage setMessage={setMessage} state={state} />;
+
+    case PageState.Results:
+      return <ResultsPage setMessage={setMessage} state={state} />;
 
     default:
       return null;
