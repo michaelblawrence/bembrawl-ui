@@ -1,5 +1,4 @@
 import { Messages } from "../enums/PageState";
-import { PlayerEmojiResponse } from "../../core/server/server.types";
 
 export interface PageProps {
   setMessage: Messages;

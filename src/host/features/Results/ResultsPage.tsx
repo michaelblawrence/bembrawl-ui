@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
 import "./ResultsPage.css";
@@ -11,7 +11,7 @@ export function ResultsPage(props: PageProps) {
   // Todo: refactor state methods (e.g. get user name from ID)
   const playerAnswersWithNames = playerAnswers?.map((answer) => {
     const playerName = RoomInfo.players.find(
-      (player) => player.playerIndex == answer.playerIndex
+      (player) => player.playerIndex === answer.playerIndex
     )?.playerName;
     return { ...answer, playerName: playerName };
   });

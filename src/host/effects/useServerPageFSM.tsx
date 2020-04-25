@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Messages } from "../enums/PageState";
 import { HostClientService } from "../HostClientService";
 import { PageState } from "../enums/PageState";

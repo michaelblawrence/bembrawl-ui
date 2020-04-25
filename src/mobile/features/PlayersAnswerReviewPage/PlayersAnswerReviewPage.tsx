@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./PlayersAnswerReviewPage.css";
 import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";

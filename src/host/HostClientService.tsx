@@ -98,7 +98,7 @@ export class HostClientService {
         break;
       case MessageTypes.EMOJI_VOTING_RESULTS:
         for (const playerAnswer of state.EmojiGame.PlayerAnswers || []) {
-          const playerVotes = msg.payload.votes.find(info => (info.playerId == playerAnswer.playerId));
+          const playerVotes = msg.payload.votes.find(info => (info.playerId === playerAnswer.playerId));
           playerAnswer.votes = playerVotes?.voteCount;
         }
         this.stateService.pushState(state);
