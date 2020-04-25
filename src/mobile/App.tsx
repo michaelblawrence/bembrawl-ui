@@ -7,13 +7,11 @@ import { PlayersAnswerReviewPage } from "./features/PlayersAnswerReviewPage/Play
 import { PageState } from "./enums/PageState";
 import { useFullScreen } from "../core/effects/useFullScreen";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
-import { PlayerState, InitialPlayerState } from "./features/PageProps";
+import { InitialPlayerState } from "./features/PageProps";
 
 function App() {
-  const [page, setPage] = useState(PageState.JoinRoom);
-  const [state, setState] = useState<PlayerState>(InitialPlayerState);
+  const [page, state, setMessage] = useServerPageFSM(PageState.JoinRoom, InitialPlayerState);
   useFullScreen(page);
-  const [setMessage] = useServerPageFSM(page, setPage, setState);
   return (
     <div className="Window">
       {page === PageState.JoinRoom && (

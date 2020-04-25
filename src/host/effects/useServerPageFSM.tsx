@@ -5,10 +5,11 @@ import { PageState } from "../enums/PageState";
 import { HostState } from "../features/PageProps";
 
 export function useServerPageFSM(
-  page: PageState,
-  setPage: React.Dispatch<React.SetStateAction<PageState>>,
-  setState: React.Dispatch<React.SetStateAction<HostState>>
-): [Messages] {
+  initialPage: PageState,
+  initialState: HostState
+): [PageState, HostState, Messages] {
+  const [page, setPage] = useState(initialPage);
+  const [state, setState] = useState<HostState>(initialState);
   const [svc, setSvc] = useState<HostClientService | null>(null);
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export function useServerPageFSM(
     }
   }, [page, setPage, svc]);
 
-  return [mapServiceToMessages(svc)];
+  return [page, state, mapServiceToMessages(svc)];
 }
 
 const defaultMessages: Messages = {
