@@ -5,7 +5,7 @@ import { asyncWait } from "../utils/asyncWait";
 import { HostConnectionConfig } from "../configs/HostConnectionConfig";
 import { ClientMessage, MessageTypes } from "./server.types";
 
-export type PageSetter<TPageState> = React.Dispatch<
+export type StateSetter<TPageState> = React.Dispatch<
   React.SetStateAction<TPageState>
 >;
 
@@ -59,6 +59,7 @@ export class HostClientConnection {
         {
           deviceId: this.deviceGuid,
           sessionId: this.sessionGuid,
+          // TODO: add roomid to rejoin?
         }
       );
       this.pushMessageToObservers({
@@ -71,6 +72,7 @@ export class HostClientConnection {
         return await this.connect();
       } else {
         alert("Lost connection to server. Please try refreshing to reconnect.");
+        this.promptReconnect();
         throw ex;
       }
     }
