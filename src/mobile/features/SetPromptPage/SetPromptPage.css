@@ -1,0 +1,54 @@
+.SetPrompt {
+  text-align: center;
+}
+
+.SetPrompt-header {
+  background-color: #282c34;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.QuestionSection1 {
+  margin: 8vh 0;
+}
+
+.QuestionSection1-header {
+  background-color: #3e4252;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.QuestionSection1-question {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #c6cede;
+}
+
+.EmojiAnswerSlots {
+  background-color: #3d465a;
+  height: 18vh;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.EmojiAnswerButton {
+  top: 18px;
+}

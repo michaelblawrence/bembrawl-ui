@@ -1,11 +1,10 @@
 import React from "react";
-import { PageState } from "./enums/PageState";
+import { PageState, Messages } from "./enums/PageState";
 import "./AppTV.css";
 import { Helmet } from "react-helmet";
 import { PlayersWaitingRoomPage } from "./features/PlayersWaitingRoomPage/PlayersWaitingRoomPage";
-// import { WaitingForUsersPage } from "./features/WaitingForUsersPAge/WaitingForUsersPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
-import { InitialHostState } from "./features/PageProps";
+import { InitialHostState, HostState } from "./features/PageProps";
 import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 import { ResultsPage } from "./features/Results/ResultsPage";
@@ -20,25 +19,39 @@ function AppTV() {
     <div className="Window">
       <Helmet>
         <meta charSet="utf-8" />
-        <title>BembrawlTV</title>
+        <title>Bembrawl TV</title>
       </Helmet>
-      {page === PageState.PlayersWaitingRoom && (
-        <PlayersWaitingRoomPage setMessage={setMessage} state={state} />
-      )}
-      {page === PageState.WaitingForUsers && (
-        <WaitingForUsersPage setMessage={setMessage} state={state} />
-      )}
-      {page === PageState.Question && (
-        <QuestionPage setMessage={setMessage} state={state} />
-      )}
-      {page === PageState.Answers && (
-        <AnswerPage setMessage={setMessage} state={state} />
-      )}
-      {page === PageState.Results && (
-        <ResultsPage setMessage={setMessage} state={state} />
-      )}
+      <AppPage page={page} setMessage={setMessage} state={state} />
     </div>
   );
+}
+
+function AppPage(props: {
+  page: PageState;
+  state: HostState;
+  setMessage: Messages;
+}) {
+  const { page, state, setMessage } = props;
+
+  switch (page) {
+    case PageState.WaitingForUsers:
+      return <WaitingForUsersPage setMessage={setMessage} state={state} />;
+
+    case PageState.PlayersWaitingRoom:
+      return <PlayersWaitingRoomPage setMessage={setMessage} state={state} />;
+
+    case PageState.Question:
+      return <QuestionPage setMessage={setMessage} state={state} />;
+
+    case PageState.Answers:
+      return <AnswerPage setMessage={setMessage} state={state} />;
+
+    case PageState.Results:
+      return <ResultsPage setMessage={setMessage} state={state} />;
+
+    default:
+      return null;
+  }
 }
 
 export default AppTV;

@@ -21,6 +21,7 @@ export class PlayersClientConstants {
   public static readonly URL_API_ROUTE_JOIN_ROOM = "/players/join";
   public static readonly URL_API_ROUTE_COMPLETE_ROOM = "/players/complete";
   public static readonly URL_API_ROUTE_PLAYER_CHANGE_NAME = "/players/name";
+  public static readonly URL_API_ROUTE_PLAYER_NEW_PROMPT = "/emoji/prompt";
   public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
 }
 
@@ -36,6 +37,10 @@ interface CompleteRoomRequest {
 interface ChangePlayerNameRequest {
   playerName: string;
   sessionId: string;
+}
+interface NewPromptReq {
+    sessionId: string;
+    playerPrompt: string;
 }
 
 export class HostClientService {
@@ -72,13 +77,13 @@ export class HostClientService {
   }
 
   private onMessageReceived(msg: ClientMessage) {
+    const state = this.stateService.getState();
     switch (msg.type) {
       case MessageTypes.ROOM_READY:
-        this.transitionPage(PageState.PlayersAnswer);
+        this.transitionPage(PageState.WaitingRoom);
         break;
 
       case MessageTypes.JOINED_PLAYER:
-        const state = this.stateService.getState();
         const playerIndex =
           msg.payload.playerJoinOrder === null
             ? -1
@@ -95,6 +100,29 @@ export class HostClientService {
         };
         state.RoomInfo.playerCount = msg.payload.playerCount;
         this.stateService.pushState(state);
+        break;
+
+      case MessageTypes.EMOJI_GAME_STARTED:
+        const isPromptPlayer =
+          this.connectionInfo?.deviceGuid ===
+          msg.payload.initialPromptPlayer.playerId;
+
+        if (isPromptPlayer) {
+          this.transitionPage(PageState.SetPrompt);
+        } else {
+          this.transitionPage(PageState.WaitingRoom);
+        }
+        break;
+
+      case MessageTypes.EMOJI_NEW_PROMPT:
+        const wasPromptPlayer =
+          this.connectionInfo?.deviceGuid === msg.payload.promptFromPlayerId;
+
+        if (wasPromptPlayer) {
+          this.transitionPage(PageState.WaitingRoom);
+        } else {
+          this.transitionPage(PageState.PlayersAnswer);
+        }
         break;
     }
   }
@@ -114,7 +142,7 @@ export class HostClientService {
     if (!this.connectionInfo) return false;
     this.transitionPage(PageState.WaitingRoom);
     this.connectionHealthTracker.addConnectionAttempts();
-    
+
     try {
       const { sessionGuid } = this.connectionInfo;
       const joinResult = await this.client.joinRoom(roomId, sessionGuid);
@@ -166,6 +194,13 @@ export class HostClientService {
     await this.client.changePlayerName(playerName, sessionGuid);
   }
 
+  public async submitNewPrompt(promptResponse: string) {
+    if (!this.connectionInfo) return;
+
+    const { sessionGuid } = this.connectionInfo;
+    await this.client.newPrompt(promptResponse, sessionGuid);
+  }
+
   public registerPage(page: PageState, setPage: StateSetter<PageState>) {
     this.pageSetter = setPage;
     this.currentPage = page;
@@ -198,6 +233,13 @@ export class HostClient {
     await HttpClient.postJson<ChangePlayerNameRequest, boolean>(
       PlayersClientConstants.URL_API_ROUTE_PLAYER_CHANGE_NAME,
       { playerName, sessionId }
+    );
+  }
+
+  public async newPrompt(playerPrompt: string, sessionId: string) {
+    await HttpClient.postJson<NewPromptReq, boolean>(
+      PlayersClientConstants.URL_API_ROUTE_PLAYER_NEW_PROMPT,
+      { playerPrompt, sessionId }
     );
   }
 
