@@ -6,7 +6,14 @@ export interface PageProps {
 }
 
 export interface HostState {
-  EmojiGame: { QuestionPrompt?: string };
+  EmojiGame: {
+    Question: {
+      Prompt?: string;
+      Subject?: string;
+      TimeoutMs?: number;
+    };
+    PlayerAnswers?: [];
+  };
   RoomInfo: {
     roomId?: number;
     players: {
@@ -20,7 +27,7 @@ export interface HostState {
 }
 
 export const InitialHostState: HostState = {
-  EmojiGame: {},
+  EmojiGame: { Question: {} },
   RoomInfo: {
     players: [],
   },

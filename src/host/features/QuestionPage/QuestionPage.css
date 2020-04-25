@@ -23,6 +23,14 @@
   text-align: center;
 }
 
+.SubjectString {
+  text-align: center;
+}
+
+.Timer {
+  text-align: center;
+}
+
 .Answers {
   background-color: whitesmoke;
   color: black;

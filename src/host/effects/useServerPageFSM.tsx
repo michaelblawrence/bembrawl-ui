@@ -41,5 +41,5 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
 
 async function startHostClientService(hostClientService: HostClientService) {
   if (!hostClientService) return;
-  await hostClientService.connect();
+  // await hostClientService.connect();
 }
