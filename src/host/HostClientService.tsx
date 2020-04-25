@@ -71,23 +71,23 @@ export class HostClientService {
         this.registerEmojiGame();
         break;
       case MessageTypes.EMOJI_GAME_STARTED:
-        this.transitionPage(PageState.QuestionsAndAnswers);
+        this.transitionPage(PageState.PlayersWaitingRoom);
     }
   }
 
   private async registerEmojiGame() {
-    this.transitionPage(PageState.QuestionsAndAnswers);
     const { RoomInfo } = this.stateService.getState();
     if (!RoomInfo.roomId) {
       console.error("register game without room id");
       return this.transitionPage(PageState.WaitingForUsers);
     }
-
+    
     const success = await this.client.emojiRegister(RoomInfo.roomId);
     if (!success) {
       console.error("register failed");
       return this.transitionPage(PageState.WaitingForUsers);
     }
+    this.transitionPage(PageState.PlayersWaitingRoom);
   }
 
   public dispose() {

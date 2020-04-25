@@ -1,0 +1,1 @@
+const PLAYERS=10;

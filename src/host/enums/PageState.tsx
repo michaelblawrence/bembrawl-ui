@@ -1,9 +1,11 @@
 export enum PageState {
   WaitingForUsers,
   PlayersWaitingRoom,
-  QuestionsAndAnswers,
-  QuestionResults,
+  Question,
+  Answers,
+  Results,
   FinalResults
+
 }
 
 export interface Message<T> {
