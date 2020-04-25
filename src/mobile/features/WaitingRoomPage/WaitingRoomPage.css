@@ -16,3 +16,11 @@
 .WaitingRoom-header-container {
   padding: 0 10px 80px;
 }
+
+.WaitingRoom-header-container h3 {
+  margin-top: 0;
+}
+
+.WaitingRoom-header-container h3 span {
+  color: #9fcdf5;
+}

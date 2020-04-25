@@ -5,6 +5,11 @@ export interface PageProps {
   state: PlayerState;
 }
 
+export enum LastJoinedPlayerNotification {
+  Joined = 'joined',
+  NameChange = 'changed name'
+}
+
 export interface PlayerState {
   PlayerInfo: {
     isMaster: boolean;
@@ -16,7 +21,8 @@ export interface PlayerState {
     playerCount: number;
     lastJoined?: {
       displayUntilMs: number;
-      playerId: number;
+      playerName: string;
+      eventNotificationType: LastJoinedPlayerNotification;
     };
   };
 }

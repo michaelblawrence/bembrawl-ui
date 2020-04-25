@@ -19,7 +19,21 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #ffffff;
+  color: #c4c8d4;
+}
+
+.WaitingForUsers h3 {
+  margin: 0.2em 1em;
+}
+
+.WaitingForUsers h2 {
+  margin: 0.2em 1em;
+  font-size: 1.5em;
+  color: #b5e4d4;
+}
+
+.WaitingForUsers h1 span {
+  color: #b5e4d4;
 }
 
 [class^="player-"] {

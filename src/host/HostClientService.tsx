@@ -54,9 +54,13 @@ export class HostClientService {
         this.stateService.pushState(state);
         break;
       case MessageTypes.PLAYER_LIST:
-        state.RoomInfo.players = msg.payload.players.map((player) => ({
-          playerId: player.playerId === null ? -1 : player.playerId + 1,
-        }));
+        state.RoomInfo.players = msg.payload.players.map((player) => {
+          const playerId = player.playerId === null ? -1 : player.playerId + 1;
+          return {
+            playerId,
+            playerName: player.playerName || `Player ${playerId}`,
+          };
+        });
         this.stateService.pushState(state);
         break;
       case MessageTypes.ROOM_READY:

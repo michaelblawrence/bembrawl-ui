@@ -30,6 +30,7 @@ export function useServerPageFSM(
 const defaultMessages: Messages = {
   JoinRoom: () => {},
   CloseRoom: () => {},
+  ChangePlayerName: () => {},
 };
 
 function mapServiceToMessages(svc: HostClientService | null): Messages {
@@ -37,6 +38,7 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
   return {
     JoinRoom: (msg) => svc.joinRoom(msg.payload.roomId),
     CloseRoom: () => svc.closeRoom(),
+    ChangePlayerName: (msg) => svc.changePlayerName(msg.payload.playerName),
   };
 }
 

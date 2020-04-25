@@ -25,6 +25,13 @@ export function JoinPage(props: PageProps) {
       payload: { roomId: `${roomId}` },
     });
   };
+  const submitEnabled = !!(roomId && roomId > 999 && roomId < 10000);
+  const onRoomIdKey = (ev: React.KeyboardEvent<HTMLDivElement>) => {
+    if (submitEnabled && ev.key === "Enter") {
+      submit();
+      ev.preventDefault();
+    }
+  };
   return (
     <div className="App">
       <Branding />
@@ -33,11 +40,12 @@ export function JoinPage(props: PageProps) {
         <Input
           placeholder="XXXX"
           onChange={onRoomIdChange}
+          onKeyPress={onRoomIdKey}
           inputProps={{ inputMode: "numeric", style: { textAlign: "center" } }}
           style={{ color: "white" }}
           value={roomId || ""}
         />
-        <Button style={{ color: "white" }} onClick={submit}>
+        <Button disabled={!submitEnabled} onClick={submit}>
           Enter
         </Button>
       </div>
