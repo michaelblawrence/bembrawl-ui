@@ -18,9 +18,11 @@ export function QuestionPage(props: PageProps) {
   const [counterEndTimeMs, setCounterEndMsTime] = useState<number>(
     EmojiGame.Question.TimeoutMs || 0
   );
-  const duration = (new Date().getUTCMilliseconds() - counterEndTimeMs) / 1000;
+  const nowMs = Date.now();
+  const duration = (counterEndTimeMs - nowMs) / 1000;
+
   useEffect(() => {
-    const now: number = new Date().getTime();
+    const now: number = Date.now();
     if (EmojiGame.Question.TimeoutMs && EmojiGame.Question.TimeoutMs > now) {
       setCounterEndMsTime(EmojiGame.Question.TimeoutMs);
     }

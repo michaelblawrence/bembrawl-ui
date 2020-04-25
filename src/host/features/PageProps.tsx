@@ -1,4 +1,5 @@
 import { Messages } from "../enums/PageState";
+import { PlayerEmojiResponse } from "../../core/server/server.types";
 
 export interface PageProps {
   setMessage: Messages;
@@ -14,9 +15,10 @@ export interface HostState {
       TimeoutMs?: number;
     };
     PlayerAnswers?: {
-      playerIndex: number;
+      playerIndex?: number; // TODO: delete when/if no longer in use
       answer: string;
-      votes: number;
+      playerId?: string;
+      votes?: number;
     }[];
   };
   RoomInfo: {

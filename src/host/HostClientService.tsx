@@ -90,9 +90,18 @@ export class HostClientService {
         this.transitionPage(PageState.Question);
         break;
       case MessageTypes.EMOJI_ALL_RESPONSES:
+        state.EmojiGame.PlayerAnswers = msg.payload.emojiResponses.map(emojiResponse => (
+          {answer: emojiResponse.responseEmoji.join(""), playerIndex: undefined, playerId: emojiResponse.playerId, votes: undefined}
+        ));
+        this.stateService.pushState(state);
         this.transitionPage(PageState.Answers);
         break;
       case MessageTypes.EMOJI_VOTING_RESULTS:
+        for (const playerAnswer of state.EmojiGame.PlayerAnswers || []) {
+          const playerVotes = msg.payload.votes.find(info => (info.playerId == playerAnswer.playerId));
+          playerAnswer.votes = playerVotes?.voteCount;
+        }
+        this.stateService.pushState(state);
         this.transitionPage(PageState.Results);
         break;
     }

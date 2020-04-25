@@ -8,7 +8,7 @@ export default function Timer({duration}: {duration: number} ) {
     React.useEffect(() => {
 
       if (counter > 0){
-        const timer = setInterval(() => {setCounter(counter - 1);}, 1000);
+        const timer = setInterval(() => {setCounter(Math.round(counter - 1));}, 1000);
         return () => clearInterval(timer);
 
       }
@@ -16,7 +16,7 @@ export default function Timer({duration}: {duration: number} ) {
   
     return (
       <div className="Timer">
-        <div>Countdown: {counter}</div>
+        <div>Countdown: {Math.round(counter)}</div>
       </div>
     );
   }

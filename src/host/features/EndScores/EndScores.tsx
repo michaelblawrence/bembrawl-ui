@@ -27,7 +27,7 @@ export function ResultsPage(props: PageProps) {
         className="ResultsTable"
         alignItems="center"
       >
-        <Grid container direction="row">
+        {/* <Grid container direction="row">
           <Grid className="ColumnTitle">
             <h1>Player</h1>
           </Grid>
@@ -37,32 +37,50 @@ export function ResultsPage(props: PageProps) {
           <Grid className="ColumnTitle">
             <h1>Votes</h1>
           </Grid>
-        </Grid>
-        {playerAnswersWithNames?.map((answer) => (
+        </Grid> */}
+        {/* {playerAnswersWithNames?.map((answer) => (
           <Row
             playerName={answer.playerName || "Unknown"}
-            playerAnswer={answer.answer || "Unknown"} 
-            answerVotes={answer.votes || null}
+            playerAnswer={answer.answer}
+            answerVotes={answer.votes}
           />
         )) || ( // TODO: add a separate component for Waiting message? like the branding banner?
           <Row playerName={""} playerAnswer={"Waiting..."} answerVotes={null} />
-        )}
+        )} */}
       </Grid>
     </div>
   );
 }
 
-function Row(props: {
-  playerName: String;
-  playerAnswer: String;
-  answerVotes: Number | null;
-}) {
-  const { playerName, playerAnswer, answerVotes } = props;
+// function Row(props: {
+//   playerName: String;
+//   playerAnswer: String;
+//   answerVotes: Number | null;
+// }) {
+//   const { playerName, playerAnswer, answerVotes } = props;
+//   return (
+//     <Grid container direction="row">
+//       <Grid className="Cell">{playerName}</Grid>
+//       <Grid className="Cell">{playerAnswer}</Grid>
+//       <Grid className="Cell">{answerVotes || ""}</Grid>
+//     </Grid>
+//   );
+// }
+
+function ScoreRow() {
   return (
     <Grid container direction="row">
-      <Grid className="Cell">{playerName}</Grid>
-      <Grid className="Cell">{playerAnswer}</Grid>
-      <Grid className="Cell">{answerVotes || ""}</Grid>
+      
     </Grid>
-  );
+  )
+}
+
+function ScoreCard() {
+  return (
+    
+    <Grid container direction="column" >
+      <Grid>player-name</Grid>
+      <Grid>player-score</Grid>
+    </Grid>
+  )
 }
