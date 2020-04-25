@@ -3,13 +3,14 @@ import { useState } from "react";
 import { PageState } from "./enums/PageState";
 import "./AppTV.css";
 import { Helmet } from "react-helmet";
-import { QuestionsAndAnswersPage } from "./features/QuestionAndAnswersPage/QuestionsAndAnswersPage";
-import { WaitingForUsersPage } from "./features/WaitingForUsersPAge/WaitingForUsersPage";
+import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
 import { HostState, InitialHostState } from "./features/PageProps";
+import { QuestionPage } from "./features/QuestionPage/QuestionPage";
+import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 
 function AppTV() {
-  const [page, setPage] = useState(PageState.WaitingForUsers);
+  const [page, setPage] = useState(PageState.Question);
   const [state, setState] = useState<HostState>(InitialHostState);
   const [setMessage] = useServerPageFSM(page, setPage, setState);
   return (
@@ -21,8 +22,11 @@ function AppTV() {
       {page === PageState.WaitingForUsers && (
         <WaitingForUsersPage setMessage={setMessage} state={state} />
       )}
-      {page === PageState.QuestionsAndAnswers && (
-        <QuestionsAndAnswersPage setMessage={setMessage} state={state} />
+      {page === PageState.Question && (
+        <QuestionPage setMessage={setMessage} state={state} />
+      )}
+      {page === PageState.Answers && (
+        <AnswerPage setMessage={setMessage} state={state} />
       )}
     </div>
   );

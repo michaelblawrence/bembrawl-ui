@@ -1,0 +1,28 @@
+.Question {
+    background-color: #3e4252;
+    display:table;
+    width:100%;
+}
+
+.Answers {
+    background-color: #282c34;
+    color: white;
+    display:table;
+    flex-direction: column;
+    height: 80vh;
+}
+
+.Waiting {
+    background-color: #3e4252;
+    color: black;
+    /* display:table; */
+    flex-direction: column;
+    height: 80vh;
+
+}
+
+.AnswerList {
+    padding-top: 5%;
+    padding-bottom: 5%;
+    align-content: center;
+}

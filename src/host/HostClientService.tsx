@@ -64,7 +64,10 @@ export class HostClientService {
         this.stateService.pushState(state);
         break;
       case MessageTypes.ROOM_READY:
-        this.transitionPage(PageState.QuestionsAndAnswers);
+        this.transitionPage(PageState.Question);
+        break;
+      case MessageTypes.ROOM_READY:
+        this.transitionPage(PageState.Answers);
         break;
     }
   }

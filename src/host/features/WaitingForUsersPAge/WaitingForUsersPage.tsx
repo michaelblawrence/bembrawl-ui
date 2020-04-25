@@ -57,7 +57,7 @@ function PlayersList(props: { playerNames: string[]; defaultMessage: string }) {
       style={{ height: "100%" }}
     >
       <Grid container direction="column">
-        {playerNames.length > 0 && (
+        {displayPlayers.length > 0 && (
           <Grid xl={6} spacing={10}>
             <h2>Ready players:</h2>
           </Grid>
