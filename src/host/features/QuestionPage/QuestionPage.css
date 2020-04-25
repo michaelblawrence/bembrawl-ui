@@ -13,8 +13,12 @@
   color: white;
 }
 
+.WaitingMessage {
+  background-color: #282c34;
+}
+
 .Question {
-  background-color: grey;
+  background-color: #3e4252;
   display: table;
   width: 100%;
 }
@@ -32,7 +36,7 @@
 }
 
 .Answers {
-  background-color: whitesmoke;
+  background-color: #3e4252;
   color: black;
   display: table;
   flex-direction: column;
@@ -40,7 +44,7 @@
 }
 
 .Waiting {
-  background-color: whitesmoke;
+  background-color: #3e4252;
   color: black;
   /* display:table; */
   flex-direction: column;

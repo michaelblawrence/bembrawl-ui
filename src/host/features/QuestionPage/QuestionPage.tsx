@@ -30,7 +30,7 @@ export function QuestionPage(props: PageProps) {
     <Grid container justify="center" className="Page">
       <Branding />
       <Question questionString={questionString} subjectString={subjectString} />
-      <NoAnswersMessage duration={duration} />
+      <WaitingMessage duration={duration} />
     </Grid>
   );
 }
@@ -45,7 +45,7 @@ function Question(props: { questionString: String; subjectString: String }) {
   );
 }
 
-function NoAnswersMessage(props: { duration: number }) {
+function WaitingMessage(props: { duration: number }) {
   const { duration } = props;
 
   return (
@@ -55,6 +55,7 @@ function NoAnswersMessage(props: { duration: number }) {
       justify="center"
       alignContent="center"
       style={{ height: "70vh" }}
+      className="WaitingMessage"
     >
       <h2>Waiting for players to answer</h2>
       <Timer duration={duration} />

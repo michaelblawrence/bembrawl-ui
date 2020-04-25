@@ -7,9 +7,10 @@ import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUs
 import { useServerPageFSM } from "./effects/useServerPageFSM";
 import { HostState, InitialHostState } from "./features/PageProps";
 import { QuestionPage } from "./features/QuestionPage/QuestionPage";
+import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 
 function AppTV() {
-  const [page, setPage] = useState(PageState.QuestionsAndAnswers);
+  const [page, setPage] = useState(PageState.Question);
   const [state, setState] = useState<HostState>(InitialHostState);
   const [setMessage] = useServerPageFSM(page, setPage, setState);
   return (
@@ -21,8 +22,11 @@ function AppTV() {
       {page === PageState.WaitingForUsers && (
         <WaitingForUsersPage setMessage={setMessage} state={state} />
       )}
-      {page === PageState.QuestionsAndAnswers && (
+      {page === PageState.Question && (
         <QuestionPage setMessage={setMessage} state={state} />
+      )}
+      {page === PageState.Answers && (
+        <AnswerPage setMessage={setMessage} state={state} />
       )}
     </div>
   );

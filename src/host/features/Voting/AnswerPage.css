@@ -1,19 +1,19 @@
 .Question {
-    background-color: #3e4252;
+    background-color: grey;
     display:table;
     width:100%;
 }
 
 .Answers {
-    background-color: #282c34;
-    color: white;
+    background-color: whitesmoke;
+    color: black;
     display:table;
     flex-direction: column;
     height: 80vh;
 }
 
 .Waiting {
-    background-color: #3e4252;
+    background-color: whitesmoke;
     color: black;
     /* display:table; */
     flex-direction: column;
