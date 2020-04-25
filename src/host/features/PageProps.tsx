@@ -9,6 +9,7 @@ export interface HostState {
   EmojiGame: {
     Question: {
       Prompt?: string;
+      PromptPlayerName?: string;
       Subject?: string;
       TimeoutMs?: number;
     };

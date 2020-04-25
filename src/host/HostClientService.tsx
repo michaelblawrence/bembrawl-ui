@@ -71,6 +71,14 @@ export class HostClientService {
         this.registerEmojiGame();
         break;
       case MessageTypes.EMOJI_GAME_STARTED:
+        const { initialPromptPlayer } = msg.payload;
+        const promptPlayerId =
+          initialPromptPlayer.playerId === null
+            ? -1
+            : initialPromptPlayer.playerId + 1;
+        state.EmojiGame.Question.PromptPlayerName =
+          initialPromptPlayer.playerName || `Player ${promptPlayerId}`;
+        this.stateService.pushState(state);
         this.transitionPage(PageState.PlayersWaitingRoom);
     }
   }
@@ -81,13 +89,13 @@ export class HostClientService {
       console.error("register game without room id");
       return this.transitionPage(PageState.WaitingForUsers);
     }
-    
+
     const success = await this.client.emojiRegister(RoomInfo.roomId);
     if (!success) {
       console.error("register failed");
+      this.connection.reconnect();
       return this.transitionPage(PageState.WaitingForUsers);
     }
-    this.transitionPage(PageState.PlayersWaitingRoom);
   }
 
   public dispose() {

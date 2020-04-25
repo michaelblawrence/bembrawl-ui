@@ -103,7 +103,7 @@ export class HostClientConnection {
     }
   }
 
-  private reconnect() {
+  public reconnect() {
     this.connected = false;
     this.connect();
   }

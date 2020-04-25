@@ -31,5 +31,5 @@ function isHost() {
   const trimmed = href.endsWith("/")
     ? href.substring(0, href.length - 1)
     : href;
-  return trimmed.endsWith("tv");
+  return trimmed.endsWith("/tv") || trimmed.includes("/tv/");
 }

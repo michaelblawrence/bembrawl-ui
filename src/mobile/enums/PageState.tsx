@@ -1,8 +1,9 @@
 export enum PageState {
   JoinRoom,
   WaitingRoom,
+  SetPrompt,
   PlayersAnswer,
-  PlayersAnswerReview
+  PlayersAnswerReview,
 }
 
 export interface Message<T> {
@@ -18,6 +19,10 @@ export interface ChangePlayerNameMessage {
   playerName: string;
 }
 
+export interface SubmitNewPromptMessage {
+  promptResponse: string;
+}
+
 export const Nothing = { payload: {} };
 export interface EmptyMessage {}
 
@@ -25,5 +30,5 @@ export type Messages = {
   JoinRoom: MessageSetter<JoinRoomMessage>;
   CloseRoom: MessageSetter<EmptyMessage>;
   ChangePlayerName: MessageSetter<ChangePlayerNameMessage>;
+  SubmitNewPrompt: MessageSetter<SubmitNewPromptMessage>;
 };
-

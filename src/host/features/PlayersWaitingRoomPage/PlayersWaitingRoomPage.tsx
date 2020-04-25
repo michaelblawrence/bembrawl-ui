@@ -6,7 +6,7 @@ import "./PlayersWaitingRoomPage.css";
 import { PageProps } from "../PageProps";
 
 export function PlayersWaitingRoomPage(props: PageProps) {
-  const { RoomInfo } = props.state;
+  const { EmojiGame, RoomInfo } = props.state;
   const [playerNames, setPlayerNames] = useState<string[]>([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function PlayersWaitingRoomPage(props: PageProps) {
       <Branding />
       <div className={"root-tv"}>
         <Grid container spacing={3}>
-          <WaitingRoomMessage promptPlayerName={"samplePlayer"} />
+          <WaitingRoomMessage promptPlayerName={EmojiGame.Question.PromptPlayerName || null} />
           <Grid item xs={6} spacing={3}>
             <PlayersList
               playerNames={playerNames}

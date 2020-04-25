@@ -32,6 +32,7 @@ const defaultMessages: Messages = {
   JoinRoom: () => {},
   CloseRoom: () => {},
   ChangePlayerName: () => {},
+  SubmitNewPrompt: () => {},
 };
 
 function mapServiceToMessages(svc: HostClientService | null): Messages {
@@ -40,6 +41,7 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
     JoinRoom: (msg) => svc.joinRoom(msg.payload.roomId),
     CloseRoom: () => svc.closeRoom(),
     ChangePlayerName: (msg) => svc.changePlayerName(msg.payload.playerName),
+    SubmitNewPrompt: (msg) => svc.submitNewPrompt(msg.payload.promptResponse),
   };
 }
 
