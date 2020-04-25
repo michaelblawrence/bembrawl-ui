@@ -11,10 +11,31 @@ import { ResultsPage } from "./features/Results/ResultsPage";
 import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
 
 function AppTV() {
-  const [page, state, setMessage] = useServerPageFSM(
+  let [page, state, setMessage] = useServerPageFSM(
     PageState.WaitingForUsers,
     InitialHostState
   );
+
+  if (isDev()){  
+    const href = document.location.href;
+    // const keys = Object.keys(PageState).filter(k => typeof PageState[k as any] === "number"); // ["A", "B"]
+    // const values = keys.map(k => PageState[k as any]); // [0, 1]
+    
+    const lastPath = href.split("/")[-1]
+
+    const re = RegExp(lastPath, "g")
+    const pages = Object.keys(PageState).map((item) => {
+      if (re.exec(item)) {
+        
+        page = PageState[item]
+      }
+        // return item;
+        
+      // pages.forEach(pageName => {
+      // });
+    });
+  }
+
   return (
     <div className="Window">
       <Helmet>
@@ -52,6 +73,15 @@ function AppPage(props: {
     default:
       return null;
   }
+}
+
+
+function isDev() {
+  const href = document.location.href;
+  const trimmed = href.endsWith("/")
+    ? href.substring(0, href.length - 1)
+    : href;
+  return trimmed.includes("/dev/");
 }
 
 export default AppTV;
