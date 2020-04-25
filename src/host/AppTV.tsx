@@ -9,10 +9,11 @@ import { InitialHostState } from "./features/PageProps";
 import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 import { ResultsPage } from "./features/Results/ResultsPage";
+import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
 
 function AppTV() {
   const [page, state, setMessage] = useServerPageFSM(
-    PageState.PlayersWaitingRoom,
+    PageState.WaitingForUsers,
     InitialHostState
   );
   return (
@@ -21,11 +22,11 @@ function AppTV() {
         <meta charSet="utf-8" />
         <title>BembrawlTV</title>
       </Helmet>
-      {/* {page === PageState.WaitingForUsers && (
-        <WaitingForUsersPage setMessage={setMessage} state={state} />
-      )} */}
       {page === PageState.PlayersWaitingRoom && (
         <PlayersWaitingRoomPage setMessage={setMessage} state={state} />
+      )}
+      {page === PageState.WaitingForUsers && (
+        <WaitingForUsersPage setMessage={setMessage} state={state} />
       )}
       {page === PageState.Question && (
         <QuestionPage setMessage={setMessage} state={state} />
