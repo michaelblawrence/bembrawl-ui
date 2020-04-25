@@ -6,11 +6,27 @@ export interface PageProps {
 }
 
 export enum LastJoinedPlayerNotification {
-  Joined = 'joined',
-  NameChange = 'changed name'
+  Joined = "joined",
+  NameChange = "changed name",
+}
+
+export interface EmojiAnswer {
+  playerId: string;
+  responseEmoji: string[];
 }
 
 export interface PlayerState {
+  EmojiGame: {
+    Question: {
+      Prompt?: string;
+      PromptPlayerName?: string;
+      Subject?: string;
+      EmojiCount: number;
+      TimeoutMs?: number;
+    };
+    AnswerEmoji: EmojiAnswer[];
+    promptPlayerAnswersEmoji?: boolean;
+  };
   PlayerInfo: {
     isMaster: boolean;
     playerId?: number;
@@ -28,6 +44,12 @@ export interface PlayerState {
 }
 
 export const InitialPlayerState: PlayerState = {
+  EmojiGame: {
+    Question: {
+      EmojiCount: 5,
+    },
+    AnswerEmoji: [],
+  },
   PlayerInfo: {
     isMaster: false,
   },

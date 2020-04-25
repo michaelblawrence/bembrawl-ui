@@ -23,6 +23,10 @@ export interface SubmitNewPromptMessage {
   promptResponse: string;
 }
 
+export interface SubmitEmojiAnswerMessage {
+  emoji: string[];
+}
+
 export const Nothing = { payload: {} };
 export interface EmptyMessage {}
 
@@ -31,4 +35,5 @@ export type Messages = {
   CloseRoom: MessageSetter<EmptyMessage>;
   ChangePlayerName: MessageSetter<ChangePlayerNameMessage>;
   SubmitNewPrompt: MessageSetter<SubmitNewPromptMessage>;
+  SubmitEmojiAnswer: MessageSetter<SubmitEmojiAnswerMessage>;
 };
