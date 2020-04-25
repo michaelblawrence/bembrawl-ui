@@ -1,10 +1,9 @@
-.QuestionSection {
-  margin: 8vh 100;
+.QuestionSectionReview {
   flex: auto;
   flex-direction: column;
 }
 
-.QuestionSection-header {
+.QuestionSectionReview-header {
   background-color: #3e4252;
   min-height: 30vh;
   display: flex;
@@ -15,7 +14,7 @@
   color: white;
 }
 
-.QuestionSection-question {
+.QuestionSectionReview-question {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,8 +24,9 @@
 }
 
 .EmojiAnswerDisplay {
-  background-color: #3d465a;
-  height: 64vh;
+  background-color: #3e4252;
+  height: 50vh;
+  width: 90vw;
   min-height: 100px;
   display: flex;
   flex-direction: column;
@@ -39,4 +39,9 @@
 .EmojiAnswer {
   top: 18px;
   text-align: center;
+}
+
+.EmojiAnswer-Item {
+  border: #3e4252 solid 1px;
+  background-color: #111522;
 }

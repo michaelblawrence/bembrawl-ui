@@ -34,6 +34,7 @@ const defaultMessages: Messages = {
   ChangePlayerName: () => {},
   SubmitNewPrompt: () => {},
   SubmitEmojiAnswer: () => {},
+  submitEmojiVotes: () => {},
 };
 
 function mapServiceToMessages(svc: HostClientService | null): Messages {
@@ -44,6 +45,7 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
     ChangePlayerName: (msg) => svc.changePlayerName(msg.payload.playerName),
     SubmitNewPrompt: (msg) => svc.submitNewPrompt(msg.payload.promptResponse),
     SubmitEmojiAnswer: (msg) => svc.submitResponseEmoji(msg.payload.emoji),
+    submitEmojiVotes: (msg) => svc.SubmitEmojiVotes(msg.payload.playerIdVotes),
   };
 }
 

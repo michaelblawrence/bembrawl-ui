@@ -10,9 +10,13 @@ import { useFullScreen } from "../core/effects/useFullScreen";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
 import { InitialPlayerState, PlayerState } from "./features/PageProps";
 
+const testingPage = document.location.pathname.endsWith("/test")
+  ? PageState.PlayersAnswerReview
+  : null;
+
 function App() {
   const [page, state, setMessage] = useServerPageFSM(
-    PageState.JoinRoom,
+    testingPage || PageState.JoinRoom,
     InitialPlayerState
   );
   useFullScreen(page);

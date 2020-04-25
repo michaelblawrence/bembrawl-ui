@@ -13,6 +13,7 @@ export enum LastJoinedPlayerNotification {
 export interface EmojiAnswer {
   playerId: string;
   responseEmoji: string[];
+  sessionVotes?: number;
 }
 
 export interface PlayerState {
@@ -24,8 +25,9 @@ export interface PlayerState {
       EmojiCount: number;
       TimeoutMs?: number;
     };
-    AnswerEmoji: EmojiAnswer[];
+    AnswerEmoji?: EmojiAnswer[];
     promptPlayerAnswersEmoji?: boolean;
+    maxAvailableVotes?: number;
   };
   PlayerInfo: {
     isMaster: boolean;
@@ -48,7 +50,6 @@ export const InitialPlayerState: PlayerState = {
     Question: {
       EmojiCount: 5,
     },
-    AnswerEmoji: [],
   },
   PlayerInfo: {
     isMaster: false,

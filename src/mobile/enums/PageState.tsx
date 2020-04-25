@@ -27,6 +27,10 @@ export interface SubmitEmojiAnswerMessage {
   emoji: string[];
 }
 
+export interface SubmitEmojiVotesMessage {
+  playerIdVotes: [string, number][];
+}
+
 export const Nothing = { payload: {} };
 export interface EmptyMessage {}
 
@@ -36,4 +40,5 @@ export type Messages = {
   ChangePlayerName: MessageSetter<ChangePlayerNameMessage>;
   SubmitNewPrompt: MessageSetter<SubmitNewPromptMessage>;
   SubmitEmojiAnswer: MessageSetter<SubmitEmojiAnswerMessage>;
+  submitEmojiVotes: MessageSetter<SubmitEmojiVotesMessage>;
 };

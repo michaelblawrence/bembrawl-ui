@@ -21,8 +21,9 @@ export class PlayersClientConstants {
   public static readonly URL_API_ROUTE_JOIN_ROOM = "/players/join";
   public static readonly URL_API_ROUTE_COMPLETE_ROOM = "/players/complete";
   public static readonly URL_API_ROUTE_PLAYER_CHANGE_NAME = "/players/name";
-  public static readonly URL_API_ROUTE_PLAYER_NEW_PROMPT = "/emoji/prompt";
-  public static readonly URL_API_ROUTE_PLAYER_NEW_RESPONSE = "/emoji/response";
+  public static readonly URL_API_ROUTE_EMOJI_NEW_PROMPT = "/emoji/prompt";
+  public static readonly URL_API_ROUTE_EMOJI_NEW_RESPONSE = "/emoji/response";
+  public static readonly URL_API_ROUTE_EMOJI_NEW_VOTES = "/emoji/votes";
   public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
 }
 
@@ -47,6 +48,11 @@ interface NewPromptReq {
 interface NewResponseReq {
   sessionId: string;
   responseEmoji: string[];
+}
+
+interface NewVotesReq {
+  sessionId: string;
+  votedPlayerIds: string[];
 }
 
 export class HostClientService {
@@ -227,6 +233,17 @@ export class HostClientService {
     this.transitionPage(PageState.WaitingRoom);
   }
 
+  public async SubmitEmojiVotes(playerIdVotes: [string, number][]) {
+    if (!this.connectionInfo) return;
+    this.transitionPage(PageState.WaitingRoom);
+
+    const { sessionGuid } = this.connectionInfo;
+    const votes = playerIdVotes.flatMap(([playerId, count]) =>
+      new Array(count).fill(playerId)
+    );
+    await this.client.emojiVotesResponse(votes, sessionGuid);
+  }
+
   public registerPage(page: PageState, setPage: StateSetter<PageState>) {
     this.pageSetter = setPage;
     this.currentPage = page;
@@ -264,15 +281,22 @@ export class HostClient {
 
   public async newPrompt(playerPrompt: string, sessionId: string) {
     await HttpClient.postJson<NewPromptReq, boolean>(
-      PlayersClientConstants.URL_API_ROUTE_PLAYER_NEW_PROMPT,
+      PlayersClientConstants.URL_API_ROUTE_EMOJI_NEW_PROMPT,
       { playerPrompt, sessionId }
     );
   }
 
   public async newEmojiResponse(emoji: string[], sessionId: string) {
     return await HttpClient.postJson<NewResponseReq, boolean>(
-      PlayersClientConstants.URL_API_ROUTE_PLAYER_NEW_RESPONSE,
+      PlayersClientConstants.URL_API_ROUTE_EMOJI_NEW_RESPONSE,
       { responseEmoji: emoji, sessionId }
+    );
+  }
+
+  public async emojiVotesResponse(votes: string[], sessionId: string) {
+    return await HttpClient.postJson<NewVotesReq, boolean>(
+      PlayersClientConstants.URL_API_ROUTE_EMOJI_NEW_VOTES,
+      { votedPlayerIds: votes, sessionId }
     );
   }
 
