@@ -19,7 +19,7 @@ export interface HostState {
       playerId?: string;
       votes?: number;
     }[];
-    GameDetails: {
+    GameDetails?: {
       PlayerScores: {
         playerId: string;
         playerScore: number;
