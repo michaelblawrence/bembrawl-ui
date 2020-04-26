@@ -4,6 +4,12 @@ import "./PlayersAnswerPage.css";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
+// import Picker, { IEmojiData } from "emoji-picker-react";
+
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+// import { Picker } from 'emoji-mart'
+
 
 type OnEmojiSubmit = (emoji: string[]) => void;
 
@@ -11,7 +17,6 @@ export function PlayersAnswerPage(props: PageProps) {
   const { EmojiGame } = props.state;
   const answerSlotsN = EmojiGame.Question.EmojiCount;
   const songTitle = EmojiGame.Question.Prompt || "Loading Song Title";
-
   const onEmojiSubmitted = (emojiEntries: string[]) => {
     props.setMessage.SubmitEmojiAnswer({ payload: { emoji: emojiEntries } });
   };
@@ -19,7 +24,11 @@ export function PlayersAnswerPage(props: PageProps) {
   return (
     <div>
       <Branding />
+
       <QuestionSection emojiCount={answerSlotsN} songTitle={songTitle} />
+      <Grid>
+        {/* {chosenEmoji} */}
+      </Grid>
       <EmojiAnswerSlots emojiCount={answerSlotsN} onSubmit={onEmojiSubmitted} />
     </div>
   );
@@ -50,6 +59,15 @@ function EmojiAnswerSlots(props: {
   onSubmit: OnEmojiSubmit;
 }) {
   const { emojiCount: rawEmojiCount, onSubmit } = props;
+
+
+  const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
+
+  const onEmojiClick = (event: MouseEvent, emojiObject: string) => {
+    setChosenEmoji(emojiObject);
+  };
+
+
   const slotRefs = [
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
@@ -111,6 +129,10 @@ function EmojiAnswerSlots(props: {
       >
         Done
       </Button>
+      
+      <Grid container justify="center" spacing={2}>
+        <Picker  style={{ position: 'absolute', bottom: '20px', right: '20px' }} title='Pick your emoji…' emoji='point_up'  />
+      </Grid>
     </div>
   );
 }

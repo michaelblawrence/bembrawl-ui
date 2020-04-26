@@ -7,6 +7,7 @@ import { PageProps, EmojiAnswer } from "../PageProps";
 type VoteStateStore = Map<string, { id: string; votes: number }>;
 
 export function PlayersAnswerReviewPage(props: PageProps) {
+  
   const { EmojiGame } = props.state;
   const emojiCount = Math.max(0, Math.min(6, EmojiGame.Question.EmojiCount));
   const defaultAnswers: EmojiAnswer[] = [
