@@ -74,7 +74,9 @@ export function PlayersAnswerReviewPage(props: PageProps) {
             votes={voteMap}
             onVoteChanged={onVoteChanged}
           />
-          <Button onClick={onConfirm}>Confirm</Button>
+          <Button onClick={onConfirm} variant="contained">
+            Confirm
+          </Button>
         </header>
       </div>
     </div>

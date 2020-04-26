@@ -16,6 +16,10 @@
     width: 67.5vh;
 }
 
+.Row {
+    margin: 20px 0px;
+}
+
 .Waiting {
     
     text-align: center;

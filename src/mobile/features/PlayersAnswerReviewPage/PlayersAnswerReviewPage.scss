@@ -1,17 +1,19 @@
+@import "../../../core/styles/variables.sass";
+
 .QuestionSectionReview {
   flex: auto;
   flex-direction: column;
 }
 
 .QuestionSectionReview-header {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   min-height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: $text-light;
 }
 
 .QuestionSectionReview-question {
@@ -20,11 +22,11 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #c6cede;
+  color: $question-color-txt;
 }
 
 .EmojiAnswerDisplay {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   height: 50vh;
   width: 90vw;
   min-height: 100px;
@@ -33,7 +35,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: $text-light;
 }
 
 .EmojiAnswer {
@@ -42,6 +44,6 @@
 }
 
 .EmojiAnswer-Item {
-  border: #3e4252 solid 1px;
-  background-color: #111522;
+  border: $page-bg-color solid 1px;
+  background-color: $vote-slot-color;
 }

@@ -16,7 +16,7 @@ function AppTV() {
     InitialHostState
   );
   return (
-    <div className="Window">
+    <div className="Window-AppTv">
       <Helmet>
         <meta charSet="utf-8" />
         <title>Bembrawl TV</title>

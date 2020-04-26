@@ -1,12 +1,13 @@
-.Window {
+.Window-AppTv {
   background-color: #2c2c2e;
   min-height: 100vh;
   max-height: 100vh;
   color: white;
+  text-align: center;
   overflow: hidden;
 }
 
-.App-header {
+.AppTv-header {
   background-color: #282c34;
   min-height: 60vh;
   display: flex;
@@ -17,12 +18,12 @@
   color: white;
 }
 
-.App-header-h2 {
+.AppTv-header-h2 {
   font-size: medium;
   color: rgb(155, 155, 155);
 }
 
-.App-link {
+.AppTv-link {
   color: #61dafb;
 }
 

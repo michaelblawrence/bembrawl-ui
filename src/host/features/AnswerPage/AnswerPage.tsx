@@ -10,7 +10,7 @@ export function AnswerPage(props: PageProps) {
   );
   const [questionString] = useState<String>("Enter a song name");
   return (
-    <div className="App">
+    <div className="AppTv">
       <Branding />
       <Question questionString={questionString} />
       <div className="AnswersContainer" style={{ maxHeight: "-webkit-fill-available" }}>

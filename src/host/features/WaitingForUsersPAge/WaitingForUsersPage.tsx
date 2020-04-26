@@ -23,7 +23,7 @@ export function WaitingForUsersPage(props: PageProps) {
   }, [RoomInfo]);
 
   return (
-    <div className="App">
+    <div className="AppTv">
       <Branding />
       <div className={"root-tv"}>
         <Grid container spacing={3}>

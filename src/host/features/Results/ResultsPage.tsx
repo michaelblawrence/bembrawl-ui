@@ -29,13 +29,13 @@ export function ResultsPage(props: PageProps) {
         alignItems="center"
       >
         <Grid container direction="row">
-          <Grid className="ColumnTitle">
+          <Grid item xs={4} className="ColumnTitle">
             <h1>Player</h1>
           </Grid>
-          <Grid className="ColumnTitle">
+          <Grid item xs={4} className="ColumnTitle">
             <h1>Answer</h1>
           </Grid>
-          <Grid className="ColumnTitle">
+          <Grid item xs={4} className="ColumnTitle">
             <h1>Votes</h1>
           </Grid>
         </Grid>
@@ -66,10 +66,18 @@ function Row(props: {
 }) {
   const { playerName, playerAnswer, answerVotes, hideScores } = props;
   return (
-    <Grid container direction="row">
-      <Grid className="Cell">{playerName}</Grid>
-      <Grid className="Cell">{playerAnswer}</Grid>
-      {!hideScores && <Grid className="Cell">{answerVotes}</Grid>}
+    <Grid container direction="row" className="Row">
+      <Grid item xs={4} className="Cell">
+        {playerName}
+      </Grid>
+      <Grid item xs={4} className="Cell">
+        {playerAnswer}
+      </Grid>
+      {!hideScores && (
+        <Grid item xs={4} className="Cell">
+          {answerVotes}
+        </Grid>
+      )}
     </Grid>
   );
 }
