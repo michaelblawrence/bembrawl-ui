@@ -2,8 +2,9 @@ import { uuidv4 } from "../utils/uuidv4";
 import { setTimeout } from "timers";
 import { HttpClient } from "../utils/HttpClient";
 import { asyncWait } from "../utils/asyncWait";
-import { HostConnectionConfig } from "../configs/HostConnectionConfig";
+import { HostConnectionConfig, ConnectionInfo } from "../configs/HostConnectionConfig";
 import { ClientMessage, MessageTypes } from "./server.types";
+import { ConnectionHealthTracker } from "./ConnectionHealthTracker";
 
 export type StateSetter<TPageState> = React.Dispatch<
   React.SetStateAction<TPageState>
@@ -14,12 +15,7 @@ export interface RegisterClientRequest {
   sessionId: string;
 }
 
-export interface ConnectionInfo {
-  deviceGuid: string;
-  sessionGuid: string;
-}
-
-class HostClientConstants {
+export class HostClientConstants {
   public static readonly LOCAL_STORAGE_GUID = "GUID";
   public static readonly MAX_API_ATTEMPTS = 5;
   public static readonly INTERVAL_API_RECONNECT = 4000;
@@ -185,20 +181,10 @@ export class HostClientConnection {
 
   private promptReconnect() {
     if (this.config.promptReconnect) {
-      this.config.promptReconnect();
+      const info = this.getConnectionIds();
+      this.config.promptReconnect(info);
+    } else {
+      console.warn("could not trigger service reconnect");
     }
-  }
-}
-
-export class ConnectionHealthTracker {
-  private connectAttempts: number = 0;
-  public addSuccessfulAttempt() {
-    this.connectAttempts = 0;
-  }
-  public addConnectionAttempts() {
-    this.connectAttempts++;
-  }
-  public hasExceededAttempts() {
-    return this.connectAttempts >= HostClientConstants.MAX_API_ATTEMPTS;
   }
 }

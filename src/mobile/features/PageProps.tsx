@@ -32,6 +32,7 @@ export interface PlayerState {
   PlayerInfo: {
     isMaster: boolean;
     playerId?: number;
+    playerName?: string;
   };
   RoomInfo: {
     roomId?: string;
