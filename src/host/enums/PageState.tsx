@@ -1,11 +1,10 @@
 export enum PageState {
-  WaitingForUsers,
-  PlayersWaitingRoom,
-  Question,
-  Answers,
-  Results,
-  FinalResults
-
+  WaitingForUsers = "WaitingForUsers",
+  PlayersWaitingRoom = "PlayersWaitingRoom",
+  Question = "Question",
+  Answers = "Answers",
+  Results = "Results",
+  EndScores = "EndScores"
 }
 
 export interface Message<T> {

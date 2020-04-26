@@ -9,6 +9,7 @@ import Timer from "./Timer";
 
 export function QuestionPage(props: PageProps) {
   const { EmojiGame } = props.state;
+  const nowMs = Date.now();
   const [questionString] = useState<String>(
     EmojiGame.Question.Prompt || "Loading question..."
   );
@@ -16,9 +17,8 @@ export function QuestionPage(props: PageProps) {
     EmojiGame.Question.Subject || "Loading subject..."
   );
   const [counterEndTimeMs, setCounterEndMsTime] = useState<number>(
-    EmojiGame.Question.TimeoutMs || 0
+    EmojiGame.Question.TimeoutMs || nowMs + 30*1000
   );
-  const nowMs = Date.now();
   const duration = (counterEndTimeMs - nowMs) / 1000;
 
   useEffect(() => {

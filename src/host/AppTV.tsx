@@ -9,12 +9,26 @@ import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 import { ResultsPage } from "./features/Results/ResultsPage";
 import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
+import { EndScores } from "./features/EndScores/EndScores";
 
 function AppTV() {
-  const [page, state, setMessage] = useServerPageFSM(
+  let [page, state, setMessage] = useServerPageFSM(
     PageState.WaitingForUsers,
     InitialHostState
   );
+  
+  if (isDev()){  
+    const href = document.location.href;
+    let splitUrl = href.split("/")
+    const lastPath = splitUrl[splitUrl.length-1]
+    const re = RegExp(lastPath, "g")
+    Object.values(PageState).map(item => {
+      if (re.exec(item.toLowerCase())) {
+        page = PageState[item];
+      }
+    });
+  }
+
   return (
     <div className="Window">
       <Helmet>
@@ -49,9 +63,21 @@ function AppPage(props: {
     case PageState.Results:
       return <ResultsPage setMessage={setMessage} state={state} />;
 
+    case PageState.EndScores:
+      return <EndScores setMessage={setMessage} state={state} />;
+      
     default:
       return null;
   }
+}
+
+
+function isDev() {
+  const href = document.location.href;
+  const trimmed = href.endsWith("/")
+    ? href.substring(0, href.length - 1)
+    : href;
+  return trimmed.includes("/dev/");
 }
 
 export default AppTV;

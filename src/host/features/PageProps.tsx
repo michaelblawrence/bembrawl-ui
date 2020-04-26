@@ -19,6 +19,14 @@ export interface HostState {
       playerId?: string;
       votes?: number;
     }[];
+    GameDetails: {
+      PlayerScores: {
+        playerId: string;
+        playerScore: number;
+      }
+      CurrentRound: number;
+      TotalRounds: number;
+    }
   };
   RoomInfo: {
     roomId?: number;
