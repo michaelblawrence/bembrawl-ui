@@ -28,7 +28,7 @@ export function WaitingForUsersPage(props: PageProps) {
       <div className={"root-tv"}>
         <Grid container spacing={3}>
           <WaitingForUsers roomId={roomId} />
-          <Grid item xs={6} spacing={3}>
+          <Grid item xs={6}>
             <PlayersList
               playerNames={playerNames}
               defaultMessage="Waiting for players"
@@ -58,11 +58,11 @@ function PlayersList(props: { playerNames: string[]; defaultMessage: string }) {
     >
       <Grid container direction="column">
         {displayPlayers.length > 0 && (
-          <Grid xl={6} spacing={10}>
+          <Grid xl={6}>
             <h2>Ready players:</h2>
           </Grid>
         )}
-        <Grid xl={6} spacing={10}>
+        <Grid xl={6}>
           <div className="PlayersList-div">{players}</div>
         </Grid>
       </Grid>

@@ -13,7 +13,7 @@ export function AnswerPage(props: PageProps) {
     <div className="App">
       <Branding />
       <Question questionString={questionString} />
-      <div style={{ maxHeight: "-webkit-fill-available" }}>
+      <div className="AnswersContainer" style={{ maxHeight: "-webkit-fill-available" }}>
         <Answers answerList={answerList} />
       </div>
     </div>

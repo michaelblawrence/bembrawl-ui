@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./PlayersAnswerReviewPage.css";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, Button } from "@material-ui/core";
@@ -35,27 +35,30 @@ export function PlayersAnswerReviewPage(props: PageProps) {
     });
   };
 
-  const onVoteChanged = (playerId: string, votesIncrement: number) => {
-    setVotesUsed((votes) => {
-      const nextVoteCount = votes + votesIncrement;
-      if (nextVoteCount > maxAvailableVotes) {
-        return votes;
-      }
-      const playersNextVotes = {
-        id: playerId,
-        votes: (voteMap.get(playerId)?.votes || 0) + votesIncrement,
-      };
-      setVoteMap(
-        new Map<string, { id: string; votes: number }>(voteMap).set(
-          playerId,
-          playersNextVotes
-        )
-      );
-      return nextVoteCount;
-    });
+  const onVoteChanged = async (playerId: string, votesIncrement: number) => {
+    return await new Promise<boolean>((res) =>
+      setVotesUsed((votes) => {
+        const nextVoteCount = votes + votesIncrement;
+        if (nextVoteCount > maxAvailableVotes) {
+          res(false);
+          return votes;
+        }
+        const playersNextVotes = {
+          id: playerId,
+          votes: (voteMap.get(playerId)?.votes || 0) + votesIncrement,
+        };
+        setVoteMap(
+          new Map<string, { id: string; votes: number }>(voteMap).set(
+            playerId,
+            playersNextVotes
+          )
+        );
+        res(true);
+        return nextVoteCount;
+      })
+    );
   };
 
-  const votesLeft = maxAvailableVotes - votesUsed;
   return (
     <div>
       <Branding />
@@ -64,13 +67,12 @@ export function PlayersAnswerReviewPage(props: PageProps) {
           <h1 className="QuestionSectionReview-question">
             Describe a song in {emojiCount} emoji...
           </h1>
-          <h2>You have {votesLeft} votes left to use</h2>
+          <h2>You have {maxAvailableVotes - votesUsed} votes left to use</h2>
           <h2>{songTitle}</h2>
           <EmojiAnswerPrompt
             answers={answers}
             votes={voteMap}
             onVoteChanged={onVoteChanged}
-            maxVotes={votesLeft}
           />
           <Button onClick={onConfirm}>Confirm</Button>
         </header>
@@ -82,16 +84,15 @@ export function PlayersAnswerReviewPage(props: PageProps) {
 function EmojiAnswerPrompt(props: {
   answers: EmojiAnswer[];
   votes: VoteStateStore;
-  onVoteChanged: (playerId: string, votesIncrement: number) => void;
-  maxVotes: number;
+  onVoteChanged: (playerId: string, votesIncrement: number) => Promise<boolean>;
 }) {
-  const { answers, votes, onVoteChanged, maxVotes } = props;
+  const { answers, votes, onVoteChanged } = props;
 
   const slots = answers.map((answer, idx) => {
     const currentVotes = votes.get(answer.playerId)?.votes || 0;
-    const onSlotClick = () => {
-      const nextVotes = (currentVotes + 1) % maxVotes;
-      onVoteChanged(answer.playerId, nextVotes - currentVotes);
+    const onSlotClick = async () => {
+      const didChange = await onVoteChanged(answer.playerId, 1);
+      if (!didChange) await onVoteChanged(answer.playerId, -currentVotes);
     };
     return (
       <Grid
