@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./PlayersAnswerReviewPage.css";
+import "./PlayersAnswerReviewPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, Button } from "@material-ui/core";
 import { PageProps, EmojiAnswer } from "../PageProps";

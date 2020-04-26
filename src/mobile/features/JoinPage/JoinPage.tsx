@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import "../../App.css";
-import "./JoinPage.css";
+import "../../App.scss";
+import "./JoinPage.scss";
 import { Button, Input } from "@material-ui/core";
 import { WaitingMessage } from "../../../core-common/WaitingMessage";
 import { Branding } from "../../../core-common/Branding";
