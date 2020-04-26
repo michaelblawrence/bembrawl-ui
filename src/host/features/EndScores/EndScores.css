@@ -1,22 +1,23 @@
-.ResultsTable {
+.ScoreRow {
     background-color: #282c34;
-    height: 90vh;
-    width: 100vh;
+    height: 45vh;
     font-size: calc(10px + 2vmin);
+    padding-right: 10%;
+    padding-left: 10%;
+    justify-content: center;
 }
 
-.ColumnTitle {
-    padding-bottom: 2 vh;
-    text-align: center;
-    width: 67.5vh;
+.ScoreCard {
+    width: 100px;
 }
 
-.Cell {
+.ScoreCardCenter  {
+    background-color: #3e4252;
+    justify-content: center;
     text-align: center;
-    width: 67.5vh;
-}
-
-.Waiting {
-    
-    text-align: center;
+    font-size: calc(10px + 2vmin);
+    padding-left: 12%;
+    padding-right: 12%;
+    padding-bottom: 5%;
+    padding-top: 5%;
 }

@@ -4,7 +4,7 @@ export enum PageState {
   Question = "Question",
   Answers = "Answers",
   Results = "Results",
-  FinalResults = "FinalResults"
+  EndScores = "EndScores"
 }
 
 export interface Message<T> {

@@ -9,30 +9,23 @@ import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 import { ResultsPage } from "./features/Results/ResultsPage";
 import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
+import { EndScores } from "./features/EndScores/EndScores";
 
 function AppTV() {
   let [page, state, setMessage] = useServerPageFSM(
     PageState.WaitingForUsers,
     InitialHostState
   );
-
+  
   if (isDev()){  
     const href = document.location.href;
-    // const keys = Object.keys(PageState).filter(k => typeof PageState[k as any] === "number"); // ["A", "B"]
-    // const values = keys.map(k => PageState[k as any]); // [0, 1]
-    
-    const lastPath = href.split("/")[-1]
-
+    let splitUrl = href.split("/")
+    const lastPath = splitUrl[splitUrl.length-1]
     const re = RegExp(lastPath, "g")
-    const pages = Object.keys(PageState).map((item) => {
-      if (re.exec(item)) {
-        
-        page = PageState[item]
+    Object.values(PageState).map(item => {
+      if (re.exec(item.toLowerCase())) {
+        page = PageState[item];
       }
-        // return item;
-        
-      // pages.forEach(pageName => {
-      // });
     });
   }
 
@@ -70,6 +63,9 @@ function AppPage(props: {
     case PageState.Results:
       return <ResultsPage setMessage={setMessage} state={state} />;
 
+    case PageState.EndScores:
+      return <EndScores setMessage={setMessage} state={state} />;
+      
     default:
       return null;
   }

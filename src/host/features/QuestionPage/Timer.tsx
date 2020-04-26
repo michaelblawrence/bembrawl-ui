@@ -1,23 +1,27 @@
 import React from "react";
+import { LinearProgress } from "@material-ui/core";
 
-export default function Timer({duration}: {duration: number} ) {
-    const [counter, setCounter] = React.useState(duration);
-    // const [timeLeft, setTimeLeft] = React.useState(0);
-    // let timeLeft = 60;
+export default function Timer({ duration }: { duration: number }) {
+  const [counterMs, setCounterMs] = React.useState(duration * 1000);
+  // const [timeLeft, setTimeLeft] = React.useState(0);
+  // let timeLeft = 60;
 
-    React.useEffect(() => {
+  React.useEffect(() => {
+    if (counterMs > 0) {
+      const timer = setInterval(() => {
+        setCounterMs(Math.round(counterMs - 250));
+      }, 250);
+      return () => clearInterval(timer);
+    }
+  }, [counterMs]);
 
-      if (counter > 0){
-        const timer = setInterval(() => {setCounter(Math.round(counter - 1));}, 1000);
-        return () => clearInterval(timer);
-
-      }
-    }, [counter]);
-  
-    return (
-      <div className="Timer">
-        <div>Countdown: {Math.round(counter)}</div>
-      </div>
-    );
-  }
-  
+  return (
+    <div className="Timer">
+      <div>{Math.round(counterMs / 1000)}</div>
+      <LinearProgress
+        variant="buffer"
+        value={(1 - counterMs / 1000 / duration) * 100}
+      />
+    </div>
+  );
+}

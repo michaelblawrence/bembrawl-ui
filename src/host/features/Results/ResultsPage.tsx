@@ -23,9 +23,9 @@ export function ResultsPage(props: PageProps) {
         container
         direction="column"
         alignContent="center"
+        alignItems="center"
         justify="center"
         className="ResultsTable"
-        alignItems="center"
       >
         <Grid container direction="row">
           <Grid className="ColumnTitle">
