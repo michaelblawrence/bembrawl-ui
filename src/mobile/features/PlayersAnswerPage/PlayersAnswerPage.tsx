@@ -6,10 +6,16 @@ import { Grid, TextField, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
 // import Picker, { IEmojiData } from "emoji-picker-react";
 
-import 'emoji-mart/css/emoji-mart.css'
-import { Picker } from 'emoji-mart'
-// import { Picker } from 'emoji-mart'
+import "emoji-mart/css/emoji-mart.css";
+// import { BaseEmoji, EmojiData } from "emoji-mart/dist-es/utils/emoji-index/nimble-emoji-index";
+import { BaseEmoji, EmojiData, Emoji } from "emoji-mart";
+import { Picker } from "emoji-mart";
+// import { Emoji } from "emoji-mart/dist-es/utils/data";
 
+// import { Picker } from "emoji-mart";
+// import { EmojiData } from "emoji-mart";
+// import { BaseEmoji } from "emoji-mart";
+// import { Picker } from 'emoji-mart'
 
 type OnEmojiSubmit = (emoji: string[]) => void;
 
@@ -26,9 +32,7 @@ export function PlayersAnswerPage(props: PageProps) {
       <Branding />
 
       <QuestionSection emojiCount={answerSlotsN} songTitle={songTitle} />
-      <Grid>
-        {/* {chosenEmoji} */}
-      </Grid>
+      <Grid>{/* {chosenEmoji} */}</Grid>
       <EmojiAnswerSlots emojiCount={answerSlotsN} onSubmit={onEmojiSubmitted} />
     </div>
   );
@@ -59,14 +63,6 @@ function EmojiAnswerSlots(props: {
   onSubmit: OnEmojiSubmit;
 }) {
   const { emojiCount: rawEmojiCount, onSubmit } = props;
-
-
-  const [chosenEmoji, setChosenEmoji] = useState<string | null>(null);
-
-  const onEmojiClick = (event: MouseEvent, emojiObject: string) => {
-    setChosenEmoji(emojiObject);
-  };
-
 
   const slotRefs = [
     useRef<HTMLDivElement>(null),
@@ -117,8 +113,15 @@ function EmojiAnswerSlots(props: {
     setIsIncomplete(incomplete);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slotState]);
+
+  const [chosenEmoji, setChosenEmoji] = useState<EmojiData>();
+  const onEmojiClick = (emojiData: EmojiData) => {
+    setChosenEmoji(emojiData);
+  };
+
   return (
     <div className="EmojiAnswerSlots">
+
       <Grid container justify="center" spacing={2}>
         {slots}
       </Grid>
@@ -129,10 +132,18 @@ function EmojiAnswerSlots(props: {
       >
         Done
       </Button>
-      
+
       <Grid container justify="center" spacing={2}>
-        <Picker  style={{ position: 'absolute', bottom: '20px', right: '20px' }} title='Pick your emoji…' emoji='point_up'  />
+        <Picker
+          style={{ position: "absolute", bottom: "20px", right: "20px" }}
+          title="Pick your emoji…"
+          emoji="point_up"
+          showPreview={false}
+          onSelect={onEmojiClick}
+        />
       </Grid>
+      <Emoji emoji={chosenEmoji || 'santa'} size={16} />
+
     </div>
   );
 }
