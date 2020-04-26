@@ -16,9 +16,7 @@ export function WaitingForUsersPage(props: PageProps) {
       setRoomId(RoomInfo.roomId);
     }
     if (RoomInfo.players.length) {
-      setPlayerNames(
-        RoomInfo.players.map((player) => player.playerName)
-      );
+      setPlayerNames(RoomInfo.players.map((player) => player.playerName));
     }
   }, [RoomInfo]);
 

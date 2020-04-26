@@ -1,5 +1,5 @@
 class HttpClientConfig {
-  public static readonly URL_API_ROOT = "http://192.168.1.80:4000/api/v2";
+  public static readonly URL_API_ROOT = process.env.REACT_APP_API_URL || "http://192.168.1.66:4000/api/v2";
 }
 
 export class HttpClient {
