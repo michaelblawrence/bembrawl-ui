@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Branding } from "../../../core-common/Branding";
-import { Grid, Card, Box } from "@material-ui/core";
+import { Grid, Box } from "@material-ui/core";
 import "./EndScores.css";
 import { PageProps } from "../PageProps";
 
 export function EndScores(props: PageProps) {
-  const { EmojiGame, RoomInfo } = props.state;
+  // const { EmojiGame, RoomInfo } = props.state;
   
   return (
     <div className="ResultsPage">

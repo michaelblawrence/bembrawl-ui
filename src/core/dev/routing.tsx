@@ -12,7 +12,6 @@ export function isDev() {
 // TODO: merge two functions below
 
 export function setHostPage() {
-  {
     let page = HostPageState.WaitingForUsers;
     const href = document.location.href;
     let splitUrl = href.split("/");
@@ -25,11 +24,9 @@ export function setHostPage() {
       }
     });
     return page;
-  }
 }
 
 export function setMobilePage() {
-  {
     let page = MobilePageState.JoinRoom;
     const href = document.location.href;
     let splitUrl = href.split("/");
@@ -42,5 +39,4 @@ export function setMobilePage() {
       }
     });
     return page;
-  }
 }

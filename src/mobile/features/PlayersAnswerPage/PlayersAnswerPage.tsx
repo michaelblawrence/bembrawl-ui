@@ -4,18 +4,9 @@ import "./PlayersAnswerPage.css";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
-// import Picker, { IEmojiData } from "emoji-picker-react";
-
 import "emoji-mart/css/emoji-mart.css";
-// import { BaseEmoji, EmojiData } from "emoji-mart/dist-es/utils/emoji-index/nimble-emoji-index";
-import { BaseEmoji, EmojiData, Emoji } from "emoji-mart";
+import { BaseEmoji } from "emoji-mart";
 import { Picker } from "emoji-mart";
-// import { Emoji } from "emoji-mart/dist-es/utils/data";
-
-// import { Picker } from "emoji-mart";
-// import { EmojiData } from "emoji-mart";
-// import { BaseEmoji } from "emoji-mart";
-// import { Picker } from 'emoji-mart'
 
 type OnEmojiSubmit = (emoji: string[]) => void;
 
@@ -30,9 +21,7 @@ export function PlayersAnswerPage(props: PageProps) {
   return (
     <div>
       <Branding />
-
       <QuestionSection emojiCount={answerSlotsN} songTitle={songTitle} />
-      <Grid>{/* {chosenEmoji} */}</Grid>
       <EmojiAnswerSlots emojiCount={answerSlotsN} onSubmit={onEmojiSubmitted} />
     </div>
   );
@@ -82,11 +71,25 @@ function EmojiAnswerSlots(props: {
   ];
   const emojiCount = Math.max(0, Math.min(slotRefs.length, rawEmojiCount));
 
+  const [emojiIndex, setEmojiIndex] = useState<number>(0);
+
   const onSlotChange = (idx: number) => (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
+    console.log(idx);
     const text = (e && e.target && e.target.value) || "";
     handleSlotChange(text, idx, emojiCount, slotRefs, slotState);
+  };
+
+  const onSlotSelect = (idx: number) => (
+    e: React.SyntheticEvent<HTMLDivElement, Event>    
+  ) => {
+    setEmojiIndex(idx);
+    console.log(idx);
+    console.log(89);
+    // setEmojiIndex(idx);
+    // const text = (e && e.target && e.target.value) || "";
+    // handleSlotChange(text, idx, emojiCount, slotRefs, slotState);
   };
 
   const slots = new Array(emojiCount).fill(0).map((_, idx) => (
@@ -95,9 +98,10 @@ function EmojiAnswerSlots(props: {
         fullWidth={true}
         ref={slotRefs[idx]}
         onChange={onSlotChange(idx)}
+        onSelect={onSlotSelect(idx)}
         inputProps={{ inputMode: "search", style: { textAlign: "center" } }}
         value={slotState[idx][0]}
-        autoFocus={idx === 0}
+        // autoFocus={idx === 0}
       />
     </Grid>
   ));
@@ -114,14 +118,48 @@ function EmojiAnswerSlots(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slotState]);
 
-  const [chosenEmoji, setChosenEmoji] = useState<EmojiData>();
-  const onEmojiClick = (emojiData: EmojiData) => {
-    setChosenEmoji(emojiData);
+  // const onEmojiSelect = (emojiData: BaseEmoji) => {
+  //   slotState[emojiIndex][1](emojiData.native || "");
+  //   setEmojiIndex(emojiIndex + 1);
+  // };
+  
+  const onEmojiClick = (emojiData: BaseEmoji) => {
+    console.log(`set index ${emojiIndex}`)
+    slotState[emojiIndex][1](emojiData.native || "");
+
+    const nextEmptyN = !emojiIndex ? emojiIndex + 1 : emojiIndex;
+
+    console.log(nextEmptyN);
+
+    const nextIdx = slotState.findIndex(([slot]) => !slot);
+
+
+    
+    console.log(nextIdx)
+    if (nextIdx >=0 && nextIdx < slotState.length - 1) {
+
+      console.log("131")
+      setEmojiIndex(nextIdx);
+      console.log(`next index ${emojiIndex}`)
+
+    }  
+    else {
+      setEmojiIndex(slotState.length - 2);
+    }
+    console.log(emojiIndex)
+
+
+    // slotState.forEach(([slot, setSlot], idx) => {
+    //   if (slot === "") {
+    //     console.log(idx)
+    //     setEmojiIndex(idx)
+    //   }
+    // });
+    // setEmojiIndex(emojiIndex + 1);
   };
 
   return (
     <div className="EmojiAnswerSlots">
-
       <Grid container justify="center" spacing={2}>
         {slots}
       </Grid>
@@ -133,17 +171,16 @@ function EmojiAnswerSlots(props: {
         Done
       </Button>
 
-      <Grid container justify="center" spacing={2}>
-        <Picker
-          style={{ position: "absolute", bottom: "20px", right: "20px" }}
-          title="Pick your emoji…"
-          emoji="point_up"
-          showPreview={false}
-          onSelect={onEmojiClick}
-        />
-      </Grid>
-      <Emoji emoji={chosenEmoji || 'santa'} size={16} />
-
+      <Picker
+        perLine={11}
+        sheetSize={32}
+        title={undefined}
+        emoji="point_up"
+        showSkinTones={false} // both of these required
+        showPreview={false} // to remove bottom tab
+        // onSelect={onEmojiSelect}
+        onClick={onEmojiClick}
+      />
     </div>
   );
 }
@@ -155,14 +192,14 @@ function handleSlotChange(
   slotRefs: React.RefObject<HTMLDivElement>[],
   slotState: [string, React.Dispatch<React.SetStateAction<string>>][]
 ) {
-  if (!text || !isEmoji(text)) {
+  if (text !== "" && (!text || !isEmoji(text))) {
     return;
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setSlotText] = slotState[idx];
   setSlotText(text);
 
-  const nextIdx = idx + 1;
+  const nextIdx = text === "" ? idx : idx + 1;
   const nextRef =
     nextIdx < totalCount && slotRefs[nextIdx] && slotRefs[nextIdx].current;
 
