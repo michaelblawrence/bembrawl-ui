@@ -1,7 +1,7 @@
 import React from "react";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, Box } from "@material-ui/core";
-import "./EndScores.css";
+import "./EndScores.scss";
 import { PageProps } from "../PageProps";
 
 export function EndScores(props: PageProps) {

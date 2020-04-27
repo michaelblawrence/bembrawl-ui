@@ -1,6 +1,18 @@
+@import "../../../core/styles/variables.sass";
+
 .ScoreRow {
     background-color: #282c34;
     height: 45vh;
+    font-size: calc(10px + 2vmin);
+    padding-right: 10%;
+    padding-left: 10%;
+    justify-content: center;
+}
+
+.ResultsTable {
+    background-color: $header-color;
+    height: 90vh;
+    width: 100vh;
     font-size: calc(10px + 2vmin);
     padding-right: 10%;
     padding-left: 10%;
@@ -20,4 +32,13 @@
     padding-right: 12%;
     padding-bottom: 5%;
     padding-top: 5%;
+}
+
+.Row {
+    margin: 20px 0px;
+}
+
+.Waiting {
+    
+    text-align: center;
 }

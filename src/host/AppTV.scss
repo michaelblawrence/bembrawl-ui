@@ -1,33 +1,40 @@
-.Window {
-  background-color: #2c2c2e;
+@import "../core/styles/variables.sass";
+
+.Window-AppTv {
+  background-color: $window-color;
   min-height: 100vh;
   max-height: 100vh;
-  color: white;
-  overflow: hidden;
-}
-
-.App {
+  color: $text-light;
   text-align: center;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.App-header {
-  background-color: #282c34;
+.AppTv {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+.AppTv-header {
+  background-color: $header-color;
   min-height: 60vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: $text-light;
 }
 
-.App-header-h2 {
+.AppTv-header-h2 {
   font-size: medium;
   color: rgb(155, 155, 155);
 }
 
-.App-link {
-  color: #61dafb;
+.AppTv-link {
+  color: $answers-color-txt;
 }
 
 .Branding {
@@ -35,14 +42,19 @@
 }
 
 .Branding-header {
-  background-color: #282c34;
+  background-color: $header-color;
   min-height: 15vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: $text-light;
+}
+
+.root-tv {
+  flex: auto;
+  display: flex;
 }
 
 .Answers {
@@ -50,18 +62,18 @@
 }
 
 .Answers-header {
-  background-color: #282c34;
+  background-color: $header-color;
   min-height: 70vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: $text-light;
 }
 
 .Answers-link {
-  color: #61dafb;
+  color: $answers-color-txt;
 }
 
 @keyframes App-logo-spin {

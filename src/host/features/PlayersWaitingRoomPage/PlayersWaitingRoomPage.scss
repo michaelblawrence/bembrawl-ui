@@ -1,26 +1,28 @@
+@import "../../../core/styles/variables.sass";
+
 /* duplicate? */
 .players { 
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #ffffff;
+  color: $text-light;
   padding-top: 30%;
   padding-bottom: 30%;
 }
 
 .WaitingRoomMessage {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(5px + 2vmin);
-  color: #c4c8d4;
+  color: $text-light;
 }
 
 .WaitingRoomMessage h3 {
@@ -30,11 +32,11 @@
 .WaitingRoomMessage h2 {
   margin: 0.2em 1em;
   font-size: 1.5em;
-  color: #ffffff;
+  color: $text-light;
 }
 
 .WaitingRoomMessage h1 span {
-  color: #ffffff;
+  color: $text-light;
 }
 
 [class^="player-"] {

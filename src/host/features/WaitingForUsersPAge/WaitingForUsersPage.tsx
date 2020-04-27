@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
-import "./WaitingForUsersPage.css";
+import "./WaitingForUsersPage.scss";
 import { PageProps } from "../PageProps";
 
 export function WaitingForUsersPage(props: PageProps) {
@@ -21,12 +21,12 @@ export function WaitingForUsersPage(props: PageProps) {
   }, [RoomInfo]);
 
   return (
-    <div className="App">
+    <div className="AppTv">
       <Branding />
       <div className={"root-tv"}>
-        <Grid container spacing={3}>
+        <Grid container>
           <WaitingForUsers roomId={roomId} />
-          <Grid item xs={6} spacing={3}>
+          <Grid item xs={6}>
             <PlayersList
               playerNames={playerNames}
               defaultMessage="Waiting for players"
@@ -49,18 +49,19 @@ function PlayersList(props: { playerNames: string[]; defaultMessage: string }) {
   return (
     <Grid
       container
-      direction="row"
+      direction="column"
       alignContent="center"
       justify="center"
       style={{ height: "100%" }}
+      className="PlayersList"
     >
-      <Grid container direction="column">
+      <Grid container direction="column" justify="center" style={{ flex: "auto" }}>
         {displayPlayers.length > 0 && (
-          <Grid xl={6} spacing={10}>
+          <Grid xl={6}>
             <h2>Ready players:</h2>
           </Grid>
         )}
-        <Grid xl={6} spacing={10}>
+        <Grid xl={6}>
           <div className="PlayersList-div">{players}</div>
         </Grid>
       </Grid>

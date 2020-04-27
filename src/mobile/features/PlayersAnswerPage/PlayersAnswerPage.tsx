@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./PlayersAnswerPage.css";
+import "./PlayersAnswerPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
@@ -12,7 +12,9 @@ type OnEmojiSubmit = (emoji: string[]) => void;
 export function PlayersAnswerPage(props: PageProps) {
   const { EmojiGame } = props.state;
   const answerSlotsN = EmojiGame.Question.EmojiCount;
-  const songTitle = EmojiGame.Question.Prompt || "Loading Song Title";
+  const prompt = EmojiGame.Question.Prompt || "Loading Song Title";
+  const subject = EmojiGame.Question.Subject || "Describe something";
+
   const onEmojiSubmitted = (emojiEntries: string[]) => {
     props.setMessage.SubmitEmojiAnswer({ payload: { emoji: emojiEntries } });
   };
@@ -20,22 +22,23 @@ export function PlayersAnswerPage(props: PageProps) {
   return (
     <div>
       <Branding />
-      <QuestionSection emojiCount={answerSlotsN} songTitle={songTitle} />
+      {/* <QuestionSection emojiCount={answerSlotsN} songTitle={songTitle} /> */}
+      <QuestionSection emojiCount={answerSlotsN} playerPrompt={prompt} subject={subject} />
       <EmojiAnswerSlots emojiCount={answerSlotsN} onSubmit={onEmojiSubmitted} />
     </div>
   );
 }
 
-function QuestionSection(props: { emojiCount: number; songTitle: string }) {
-  const { emojiCount: rawEmojiCount, songTitle } = props;
+function QuestionSection(props: { emojiCount: number; playerPrompt: string, subject: string }) {
+  const { emojiCount: rawEmojiCount, playerPrompt, subject } = props;
   const emojiCount = Math.max(0, Math.min(6, rawEmojiCount));
   return (
     <div className="QuestionSection">
       <header className="QuestionSection-header">
         <h1 className="QuestionSection-question">
-          Describe a song in {emojiCount} emoji...
+          "{subject}" in {emojiCount} emoji...
         </h1>
-        <h2>{songTitle}</h2>
+        <h2>{playerPrompt}</h2>
       </header>
     </div>
   );

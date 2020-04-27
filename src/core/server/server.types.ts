@@ -62,6 +62,7 @@ export type EmojiGameStartedMessage = {
         gameStartTimeMs: number;
         initialPromptPlayer: {
             playerId: string;
+            playerJoinId: number;
             playerName: string | null;
         };
         promptPlayerAnswersEmoji: boolean;
@@ -72,6 +73,7 @@ export type EmojiNewPromptMessage = {
     type: MessageTypes.EMOJI_NEW_PROMPT;
     payload: {
         promptText: string;
+        promptSubject: string;
         promptFromPlayerId: string;
         timeoutMs: number;
     };
@@ -81,6 +83,7 @@ export type EmojiAllResponsesMessage = {
     type: MessageTypes.EMOJI_ALL_RESPONSES;
     payload: {
         promptText: string;
+        promptSubject: string;
         promptFromPlayerId: string;
         emojiResponses: PlayerEmojiResponse[];
     };
@@ -103,5 +106,6 @@ export type PlayerVotingResult = {
 
 export type PlayerEmojiResponse = {
     playerId: string;
+    playerJoinId: number;
     responseEmoji: string[];
 };

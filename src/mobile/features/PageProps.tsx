@@ -22,6 +22,7 @@ export interface PlayerState {
       Prompt?: string;
       PromptPlayerName?: string;
       Subject?: string;
+      SubjectChoices: string[];
       EmojiCount: number;
       TimeoutMs?: number;
     };
@@ -32,10 +33,12 @@ export interface PlayerState {
   PlayerInfo: {
     isMaster: boolean;
     playerId?: number;
+    playerName?: string;
   };
   RoomInfo: {
     roomId?: string;
     isJoining: boolean;
+    isOpen?: boolean;
     playerCount: number;
     lastJoined?: {
       displayUntilMs: number;
@@ -49,6 +52,12 @@ export const InitialPlayerState: PlayerState = {
   EmojiGame: {
     Question: {
       EmojiCount: 5,
+      SubjectChoices: [
+        "Song name",
+        "Film name",
+        "Someone in the room",
+        "Something in the room",
+      ],
     },
   },
   PlayerInfo: {

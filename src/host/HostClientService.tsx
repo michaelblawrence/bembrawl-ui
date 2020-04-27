@@ -1,15 +1,15 @@
 import { PageState } from "./enums/PageState";
 import {
   HostClientConnection,
-  ConnectionInfo,
-  ConnectionHealthTracker,
   StateSetter,
   ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
+import { ConnectionHealthTracker } from "../core/server/ConnectionHealthTracker";
 import { HostState, InitialHostState } from "./features/PageProps";
 import { HostClientStateService } from "../core/server/HostClientStateService";
 import { MessageTypes, ClientMessage } from "../core/server/server.types";
 import { HttpClient } from "../core/utils/HttpClient";
+import { ConnectionInfo } from "../core/configs/HostConnectionConfig";
 
 export class HostClientConstants {
   public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/hosts/register";
@@ -57,9 +57,11 @@ export class HostClientService {
         state.RoomInfo.roomId = msg.payload.joinId;
         this.stateService.pushState(state);
         break;
+
       case MessageTypes.PLAYER_LIST:
         state.RoomInfo.players = msg.payload.players.map((player) => {
-          const playerIndex = player.playerId === null ? -1 : player.playerId + 1;
+          const playerIndex =
+            player.playerId === null ? -1 : player.playerId + 1;
           return {
             playerIndex,
             playerName: player.playerName || `Player ${playerIndex}`,
@@ -67,38 +69,49 @@ export class HostClientService {
         });
         this.stateService.pushState(state);
         break;
+
       case MessageTypes.ROOM_READY:
         this.registerEmojiGame();
         break;
+
       case MessageTypes.EMOJI_GAME_STARTED:
         const { initialPromptPlayer } = msg.payload;
-        const promptPlayerId =
-          initialPromptPlayer.playerId === null
-            ? -1
-            : initialPromptPlayer.playerId + 1;
+        const promptPlayerId = initialPromptPlayer.playerJoinId + 1;
         state.EmojiGame.Question.PromptPlayerName =
           initialPromptPlayer.playerName || `Player ${promptPlayerId}`;
         this.stateService.pushState(state);
         this.transitionPage(PageState.PlayersWaitingRoom);
         break;
+
       case MessageTypes.EMOJI_NEW_PROMPT:
         state.EmojiGame.Question = {
           TimeoutMs: msg.payload.timeoutMs,
           Prompt: msg.payload.promptText,
-        }
+          Subject: msg.payload.promptSubject,
+        };
         this.stateService.pushState(state);
         this.transitionPage(PageState.Question);
         break;
+
       case MessageTypes.EMOJI_ALL_RESPONSES:
-        state.EmojiGame.PlayerAnswers = msg.payload.emojiResponses.map(emojiResponse => (
-          {answer: emojiResponse.responseEmoji.join(""), playerIndex: undefined, playerId: emojiResponse.playerId, votes: undefined}
-        ));
+        state.EmojiGame.PlayerAnswers = msg.payload.emojiResponses.map(
+          (emojiResponse) => ({
+            answer: emojiResponse.responseEmoji.join(""),
+            Subject: msg.payload.promptSubject,
+            playerIndex: emojiResponse.playerJoinId,
+            playerId: emojiResponse.playerId,
+            votes: undefined,
+          })
+        );
         this.stateService.pushState(state);
         this.transitionPage(PageState.Answers);
         break;
+
       case MessageTypes.EMOJI_VOTING_RESULTS:
         for (const playerAnswer of state.EmojiGame.PlayerAnswers || []) {
-          const playerVotes = msg.payload.votes.find(info => (info.playerId === playerAnswer.playerId));
+          const playerVotes = msg.payload.votes.find(
+            (info) => info.playerId === playerAnswer.playerId
+          );
           playerAnswer.votes = playerVotes?.voteCount;
         }
         this.stateService.pushState(state);

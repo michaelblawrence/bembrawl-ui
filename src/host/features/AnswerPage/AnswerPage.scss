@@ -1,0 +1,46 @@
+@import "../../../core/styles/variables.sass";
+
+.Question {
+    background-color: $page-bg-color;
+    display:table;
+    width:100%;
+}
+
+.Answers {
+    background-color: $header-color;
+    color: $text-light;
+    display:table;
+    flex-direction: column;
+    height: 80vh;
+}
+
+.Waiting {
+    background-color: $page-bg-color;
+    color: black;
+    /* display:table; */
+    flex-direction: column;
+    height: 80vh;
+
+}
+
+.AnswerList {
+    padding-top: 5%;
+    padding-bottom: 5%;
+    align-content: center;
+}
+.AnswersContainer ul
+{
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+.AnswersContainer li
+{
+    display: table-row;
+}
+.AnswersContainer span
+{
+    vertical-align: middle;
+}
