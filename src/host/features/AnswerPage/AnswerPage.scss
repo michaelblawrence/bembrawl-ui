@@ -1,19 +1,21 @@
+@import "../../../core/styles/variables.sass";
+
 .Question {
-    background-color: #3e4252;
+    background-color: $page-bg-color;
     display:table;
     width:100%;
 }
 
 .Answers {
-    background-color: #282c34;
-    color: white;
+    background-color: $header-color;
+    color: $text-light;
     display:table;
     flex-direction: column;
     height: 80vh;
 }
 
 .Waiting {
-    background-color: #3e4252;
+    background-color: $page-bg-color;
     color: black;
     /* display:table; */
     flex-direction: column;

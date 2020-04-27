@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./SetPromptPage.css";
+import "./SetPromptPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";

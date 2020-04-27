@@ -1,6 +1,6 @@
 import React from "react";
 import { PageState, Messages } from "./enums/PageState";
-import "./AppTV.css";
+import "./AppTV.scss";
 import { Helmet } from "react-helmet";
 import { PlayersWaitingRoomPage } from "./features/PlayersWaitingRoomPage/PlayersWaitingRoomPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
@@ -16,7 +16,7 @@ function AppTV() {
     InitialHostState
   );
   return (
-    <div className="Window">
+    <div className="Window-AppTv">
       <Helmet>
         <meta charSet="utf-8" />
         <title>Bembrawl TV</title>

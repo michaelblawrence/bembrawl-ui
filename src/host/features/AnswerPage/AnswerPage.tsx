@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
-import "./AnswerPage.css";
+import "./AnswerPage.scss";
 import { PageProps } from "../PageProps";
 
 export function AnswerPage(props: PageProps) {
@@ -10,7 +10,7 @@ export function AnswerPage(props: PageProps) {
   );
   const [questionString] = useState<String>("Enter a song name");
   return (
-    <div className="App">
+    <div className="AppTv">
       <Branding />
       <Question questionString={questionString} />
       <div className="AnswersContainer" style={{ maxHeight: "-webkit-fill-available" }}>

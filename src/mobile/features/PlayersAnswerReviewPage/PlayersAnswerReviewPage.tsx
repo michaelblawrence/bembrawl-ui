@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./PlayersAnswerReviewPage.css";
+import "./PlayersAnswerReviewPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, Button } from "@material-ui/core";
 import { PageProps, EmojiAnswer } from "../PageProps";
@@ -60,23 +60,23 @@ export function PlayersAnswerReviewPage(props: PageProps) {
   };
 
   return (
-    <div>
+    <div className="QuestionSectionReview">
       <Branding />
-      <div className="QuestionSectionReview">
-        <header className="QuestionSectionReview-header">
-          <h1 className="QuestionSectionReview-question">
-            Describe a song in {emojiCount} emoji...
-          </h1>
-          <h2>You have {maxAvailableVotes - votesUsed} votes left to use</h2>
-          <h2>{songTitle}</h2>
-          <EmojiAnswerPrompt
-            answers={answers}
-            votes={voteMap}
-            onVoteChanged={onVoteChanged}
-          />
-          <Button onClick={onConfirm}>Confirm</Button>
-        </header>
-      </div>
+      <header className="QuestionSectionReview-header">
+        <h1 className="QuestionSectionReview-question">
+          Describe a song in {emojiCount} emoji...
+        </h1>
+        <h2>You have {maxAvailableVotes - votesUsed} votes left to use</h2>
+        <h2>{songTitle}</h2>
+        <EmojiAnswerPrompt
+          answers={answers}
+          votes={voteMap}
+          onVoteChanged={onVoteChanged}
+        />
+        <Button onClick={onConfirm} variant="contained">
+          Confirm
+        </Button>
+      </header>
     </div>
   );
 }

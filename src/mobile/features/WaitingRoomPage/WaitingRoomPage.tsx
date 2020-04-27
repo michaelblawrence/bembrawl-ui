@@ -1,5 +1,5 @@
 import React, {  } from "react";
-import "./WaitingRoomPage.css";
+import "./WaitingRoomPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { PageProps, PlayerState } from "../PageProps";
 import {

@@ -1,18 +1,20 @@
+@import "../../../core/styles/variables.sass";
+
 .players {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);;
-  color: #ffffff;
+  color: $text-light;
   padding-top: 30%;
   padding-bottom: 30%;
 }
 
 .WaitingForUsers {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   min-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -29,11 +31,11 @@
 .WaitingForUsers h2 {
   margin: 0.2em 1em;
   font-size: 1.5em;
-  color: #b5e4d4;
+  color: $host-room-info-color-txt;
 }
 
 .WaitingForUsers h1 span {
-  color: #b5e4d4;
+  color: $host-room-info-color-txt;
 }
 
 [class^="player-"] {
