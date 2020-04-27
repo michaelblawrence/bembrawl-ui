@@ -11,7 +11,7 @@ import { useServerPageFSM } from "./effects/useServerPageFSM";
 import { InitialPlayerState, PlayerState } from "./features/PageProps";
 
 const testingPage = document.location.pathname.endsWith("/test")
-  ? PageState.PlayersAnswerReview
+  ? PageState.SetPrompt
   : null;
 
 function App() {

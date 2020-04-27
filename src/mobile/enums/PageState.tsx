@@ -21,6 +21,7 @@ export interface ChangePlayerNameMessage {
 
 export interface SubmitNewPromptMessage {
   promptResponse: string;
+  promptSubject: string;
 }
 
 export interface SubmitEmojiAnswerMessage {

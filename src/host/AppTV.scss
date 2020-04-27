@@ -7,6 +7,14 @@
   color: $text-light;
   text-align: center;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.AppTv {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
 }
 
 .AppTv-header {
@@ -42,6 +50,11 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: $text-light;
+}
+
+.root-tv {
+  flex: auto;
+  display: flex;
 }
 
 .Answers {

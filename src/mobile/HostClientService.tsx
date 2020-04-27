@@ -107,6 +107,7 @@ export class HostClientService {
       case MessageTypes.EMOJI_NEW_PROMPT:
         const wasPromptPlayer =
           this.connectionInfo?.deviceGuid === msg.payload.promptFromPlayerId;
+        state.EmojiGame.Question.Subject = msg.payload.promptSubject;
         state.EmojiGame.Question.Prompt = msg.payload.promptText;
         this.stateService.pushState(state);
 
@@ -202,12 +203,12 @@ export class HostClientService {
     this.stateService.pushState(state);
   }
 
-  public async submitNewPrompt(promptResponse: string) {
+  public async submitNewPrompt(promptResponse: string, promptSubject: string) {
     if (!this.connectionInfo) return;
 
     this.transitionPage(PageState.WaitingRoom);
     const { sessionGuid } = this.connectionInfo;
-    await this.client.newPrompt(promptResponse, sessionGuid);
+    await this.client.newPrompt(promptResponse, promptSubject, sessionGuid);
   }
 
   public async submitResponseEmoji(emoji: string[]) {

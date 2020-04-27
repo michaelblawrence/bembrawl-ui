@@ -27,10 +27,10 @@ export class PlayerHostClient {
       { playerName, sessionId }
     );
   }
-  public async newPrompt(playerPrompt: string, sessionId: string) {
+  public async newPrompt(playerPrompt: string, promptSubject: string, sessionId: string) {
     await HttpClient.postJson<NewPromptReq, boolean>(
       PlayerClientRoutes.URL_API_ROUTE_EMOJI_NEW_PROMPT,
-      { playerPrompt, sessionId }
+      { playerPrompt, promptSubject, sessionId }
     );
   }
   public async newEmojiResponse(emoji: string[], sessionId: string) {
@@ -79,6 +79,7 @@ export interface ChangePlayerNameRequest {
 
 export interface NewPromptReq {
   sessionId: string;
+  promptSubject: string;
   playerPrompt: string;
 }
 

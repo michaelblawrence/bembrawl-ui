@@ -16,6 +16,7 @@ export function PlayersAnswerReviewPage(props: PageProps) {
   ];
   const answers = EmojiGame.AnswerEmoji || defaultAnswers;
   const songTitle = EmojiGame.Question.Prompt || "Loading Song Title";
+  const subject = EmojiGame.Question.Subject || "Describe something";
   const maxAvailableVotes = EmojiGame.maxAvailableVotes || 3;
 
   const [votesUsed, setVotesUsed] = useState(0);
@@ -64,7 +65,7 @@ export function PlayersAnswerReviewPage(props: PageProps) {
       <Branding />
       <header className="QuestionSectionReview-header">
         <h1 className="QuestionSectionReview-question">
-          Describe a song in {emojiCount} emoji...
+          "{subject}" in {emojiCount} emoji...
         </h1>
         <h2>You have {maxAvailableVotes - votesUsed} votes left to use</h2>
         <h2>{songTitle}</h2>

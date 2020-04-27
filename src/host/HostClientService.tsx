@@ -87,6 +87,7 @@ export class HostClientService {
         state.EmojiGame.Question = {
           TimeoutMs: msg.payload.timeoutMs,
           Prompt: msg.payload.promptText,
+          Subject: msg.payload.promptSubject,
         };
         this.stateService.pushState(state);
         this.transitionPage(PageState.Question);
@@ -96,6 +97,7 @@ export class HostClientService {
         state.EmojiGame.PlayerAnswers = msg.payload.emojiResponses.map(
           (emojiResponse) => ({
             answer: emojiResponse.responseEmoji.join(""),
+            Subject: msg.payload.promptSubject,
             playerIndex: emojiResponse.playerJoinId,
             playerId: emojiResponse.playerId,
             votes: undefined,

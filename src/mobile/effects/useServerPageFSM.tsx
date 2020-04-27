@@ -43,7 +43,7 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
     JoinRoom: (msg) => svc.joinRoom(msg.payload.roomId),
     CloseRoom: () => svc.closeRoom(),
     ChangePlayerName: (msg) => svc.changePlayerName(msg.payload.playerName),
-    SubmitNewPrompt: (msg) => svc.submitNewPrompt(msg.payload.promptResponse),
+    SubmitNewPrompt: (msg) => svc.submitNewPrompt(msg.payload.promptResponse, msg.payload.promptSubject),
     SubmitEmojiAnswer: (msg) => svc.submitResponseEmoji(msg.payload.emoji),
     submitEmojiVotes: (msg) => svc.submitEmojiVotes(msg.payload.playerIdVotes),
   };
