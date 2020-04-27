@@ -56,15 +56,23 @@ export class HostClientService {
     const state = this.stateService.getState();
     switch (msg.type) {
       case MessageTypes.ROOM_READY:
+        state.RoomInfo.isJoining = false;
         this.transitionPage(PageState.WaitingRoom);
         break;
 
       case MessageTypes.JOINED_PLAYER:
+        state.RoomInfo.playerCount = msg.payload.playerCount;
+        if (
+          msg.payload.playerJoinOrder === null &&
+          msg.payload.playerJoinName === null
+        ) {
+          this.stateService.pushState(state);
+          break;
+        }
         const playerIndex =
           msg.payload.playerJoinOrder === null
             ? -1
             : msg.payload.playerJoinOrder + 1;
-        state.RoomInfo.playerCount = msg.payload.playerCount;
         const playerName =
           msg.payload.playerJoinName || `Player ${playerIndex}`;
         const displayTimeout =
@@ -143,6 +151,7 @@ export class HostClientService {
 
       const state = this.stateService.getState();
       state.PlayerInfo.isMaster = joinResult.isMaster;
+      state.RoomInfo.isOpen = joinResult.isOpen;
       if (joinResult.playerIdx != null) {
         state.PlayerInfo.playerId = joinResult.playerIdx + 1;
       } else {
@@ -173,6 +182,7 @@ export class HostClientService {
         return false;
       }
 
+      state.RoomInfo.isOpen = false;
       state.RoomInfo.isJoining = true;
       this.stateService.pushState(state);
     } catch (ex) {

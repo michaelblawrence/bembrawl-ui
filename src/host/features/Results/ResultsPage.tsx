@@ -17,6 +17,10 @@ export function ResultsPage(props: PageProps) {
     return { ...answer, playerName: playerName };
   });
 
+  const sortedResults = playerAnswersWithNames
+    ?.slice(0)
+    .sort((p1, p2) => (p2.votes || 0) - (p1.votes || 0));
+
   return (
     <div className="ResultsPage">
       <Branding />
@@ -39,7 +43,7 @@ export function ResultsPage(props: PageProps) {
             <h1>Votes</h1>
           </Grid>
         </Grid>
-        {playerAnswersWithNames?.map((answer) => (
+        {sortedResults?.map((answer) => (
           <Row
             playerName={answer.playerName || "Unknown"}
             playerAnswer={answer.answer || "Unknown"}

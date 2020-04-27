@@ -51,6 +51,7 @@ export class PlayerHostClient {
       {
         success: boolean;
         isMaster: boolean;
+        isOpen: boolean;
         playerIdx: number | null;
         playerName: string | null;
       }

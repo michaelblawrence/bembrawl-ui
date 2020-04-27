@@ -37,6 +37,7 @@ export interface PlayerState {
   RoomInfo: {
     roomId?: string;
     isJoining: boolean;
+    isOpen?: boolean;
     playerCount: number;
     lastJoined?: {
       displayUntilMs: number;

@@ -72,7 +72,7 @@ function WaitingRoomContainer(props: {
     openEditName,
   } = props;
   const {PlayerInfo, RoomInfo} = state;
-  const isMaster = PlayerInfo.isMaster;
+  const canCloseRoom = PlayerInfo.isMaster && RoomInfo.isOpen;
   const isJoinDisabled = RoomInfo.isJoining || RoomInfo.playerCount < 2;
   return (
     <div className="WaitingRoom-header-container">
@@ -93,7 +93,7 @@ function WaitingRoomContainer(props: {
       )}
       <h1>YOU IN THE WAITING ROOM</h1>
       <h2>Check out the big screen!</h2>
-      {isMaster && (
+      {canCloseRoom && (
         <Button
           disabled={isJoinDisabled}
           onClick={onCloseRoom}
