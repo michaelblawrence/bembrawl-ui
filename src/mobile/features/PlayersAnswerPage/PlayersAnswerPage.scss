@@ -1,31 +1,33 @@
+@import "../../../core/styles/variables.sass";
+
 .PlayersAnswer {
   text-align: center;
 }
 
 .PlayersAnswer-header {
-  background-color: #282c34;
+  background-color: $header-color;
   min-height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: $text-light;
 }
 
 .QuestionSection {
-  margin: 4vh 0;
+  margin: 0 0 8vh 0;
 }
 
 .QuestionSection-header {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   min-height: 15vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: $text-light;
 }
 
 .QuestionSection-question {
@@ -34,11 +36,11 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #c6cede;
+  color: $question-color-txt;
 }
 
 .EmojiAnswerSlots {
-  background-color: #3d465a;
+  background-color: $input-slot-color;
   height: 63vh;
   min-height: 100px;
   display: flex;
@@ -46,8 +48,8 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
   padding-bottom: 2vh;
+  color: $text-light;
 }
 
 .EmojiAnswerButton {

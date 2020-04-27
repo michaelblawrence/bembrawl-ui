@@ -1,24 +1,26 @@
+@import "../../../core/styles/variables.sass";
+
 .Page {
   font-size: calc(10px + 2vmin);
 }
 
 .QuestionPage {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   /* justify-content: center; */
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: $text-light;
 }
 
 .WaitingMessage {
-  background-color: #282c34;
+  background-color: $header-color;
 }
 
 .Question {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   display: table;
   width: 100%;
 }
@@ -36,7 +38,7 @@
 }
 
 .Answers {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   color: black;
   display: table;
   flex-direction: column;
@@ -44,7 +46,7 @@
 }
 
 .Waiting {
-  background-color: #3e4252;
+  background-color: $page-bg-color;
   color: black;
   /* display:table; */
   flex-direction: column;

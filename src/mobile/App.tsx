@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./App.scss";
 import { JoinPage } from "./features/JoinPage/JoinPage";
 import { WaitingRoomPage } from "./features/WaitingRoomPage/WaitingRoomPage";
 import { PlayersAnswerPage } from "./features/PlayersAnswerPage/PlayersAnswerPage";
@@ -12,7 +12,7 @@ import { InitialPlayerState, PlayerState } from "./features/PageProps";
 import { isDev, setMobilePage } from "../core/dev/routing";
 
 const testingPage = document.location.pathname.endsWith("/test")
-  ? PageState.PlayersAnswerReview
+  ? PageState.SetPrompt
   : null;
 
 function App() {
