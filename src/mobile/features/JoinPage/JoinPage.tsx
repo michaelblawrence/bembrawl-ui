@@ -52,6 +52,7 @@ export function JoinPage(props: PageProps) {
         <h1>Lets get going</h1>
         <WaitingMessage />
       </header>
+      {/* <img src="/splash-logo.jpg" alt="" style={{ height: "41vw" }} /> */}
     </div>
   );
 }

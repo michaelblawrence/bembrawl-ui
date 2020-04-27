@@ -6,6 +6,8 @@
   max-height: 100vh;
   color: $text-light;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .App {
