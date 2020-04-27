@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
-import "./PlayersWaitingRoomPage.css";
+import "./PlayersWaitingRoomPage.scss";
 import { PageProps } from "../PageProps";
 
 export function PlayersWaitingRoomPage(props: PageProps) {

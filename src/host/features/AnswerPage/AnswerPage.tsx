@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
-import "./AnswerPage.css";
+import "./AnswerPage.scss";
 import { PageProps } from "../PageProps";
 
 export function AnswerPage(props: PageProps) {

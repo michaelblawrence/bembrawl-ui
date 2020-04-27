@@ -1,7 +1,7 @@
 import React from "react";
 import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
-import "./ResultsPage.css";
+import "./ResultsPage.scss";
 import { PageProps } from "../PageProps";
 
 export function ResultsPage(props: PageProps) {

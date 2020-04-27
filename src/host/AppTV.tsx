@@ -1,6 +1,6 @@
 import React from "react";
 import { PageState, Messages } from "./enums/PageState";
-import "./AppTV.css";
+import "./AppTV.scss";
 import { Helmet } from "react-helmet";
 import { PlayersWaitingRoomPage } from "./features/PlayersWaitingRoomPage/PlayersWaitingRoomPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";

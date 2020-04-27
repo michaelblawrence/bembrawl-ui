@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
-import "./QuestionPage.css";
+import "./QuestionPage.scss";
 import { PageProps } from "../PageProps";
 import Timer from "./Timer";
 // import { Timer } from "./Timer";

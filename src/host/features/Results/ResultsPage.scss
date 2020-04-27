@@ -1,3 +1,5 @@
+@import "../../../core/styles/variables.sass";
+
 .ResultsTable {
     background-color: $header-color;
     height: 90vh;
@@ -14,6 +16,10 @@
 .Cell {
     text-align: center;
     width: 67.5vh;
+}
+
+.Row {
+    margin: 20px 0px;
 }
 
 .Waiting {
