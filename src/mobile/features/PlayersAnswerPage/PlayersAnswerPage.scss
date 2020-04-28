@@ -44,6 +44,11 @@
 }
 
 // fit Pixel 2 XL
+@media (max-height: 1400px) {
+  .emoji-mart-scroll { height: 800px }
+}
+
+// fit Pixel 2 XL
 @media (max-height: 823px) {
   .emoji-mart-scroll { height: 300px }
 }

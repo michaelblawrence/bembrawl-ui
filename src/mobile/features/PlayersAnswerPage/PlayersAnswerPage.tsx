@@ -17,62 +17,7 @@ export function PlayersAnswerPage(props: PageProps) {
   const prompt = EmojiGame.Question.Prompt || "Loading Song Title";
   const subject = EmojiGame.Question.Subject || "Describe something";
   const { height, width } = useWindowDimensions();
-
-  const onEmojiSubmitted = (emojiEntries: string[]) => {
-    props.setMessage.SubmitEmojiAnswer({ payload: { emoji: emojiEntries } });
-  };
-
-  console.log(width, height)
-  const {perLine, emojiSize} = mapDimensionsToEmojiSizes(height, width);
-
-  return (
-    <div className="PlayersAnswerPage">
-      <Branding />
-      <QuestionSection
-        emojiCount={answerSlotsN}
-        playerPrompt={prompt}
-        subject={subject}
-      />
-      <EmojiAnswerSlots emojiCount={answerSlotsN} onSubmit={onEmojiSubmitted} />
-      <Grid container justify={"center"}>
-        <Picker
-          perLine={perLine}
-          emojiSize={emojiSize}
-          showSkinTones={false} // both of these required
-          showPreview={false} // to remove bottom tab
-          // onClick={onEmojiClick}
-          darkMode={true}
-          sheetSize={64}
-        />
-      </Grid>
-    </div>
-  );
-}
-
-function QuestionSection(props: {
-  emojiCount: number;
-  playerPrompt: string;
-  subject: string;
-}) {
-  const { emojiCount: rawEmojiCount, playerPrompt, subject } = props;
-  const emojiCount = Math.max(0, Math.min(6, rawEmojiCount));
-  return (
-    <div className="QuestionSection">
-      <header className="QuestionSection-header">
-        <h1 className="QuestionSection-question">
-          "{subject}" in {emojiCount} emoji...
-        </h1>
-        <h2>{playerPrompt}</h2>
-      </header>
-    </div>
-  );
-}
-
-function EmojiAnswerSlots(props: {
-  emojiCount: number;
-  onSubmit: OnEmojiSubmit;
-}) {
-  const { emojiCount: rawEmojiCount, onSubmit } = props;
+  const { perLine, emojiSize } = mapDimensionsToEmojiSizes(height, width);
 
   const slotRefs = [
     useRef<HTMLDivElement>(null),
@@ -90,6 +35,9 @@ function EmojiAnswerSlots(props: {
     useState<string>(""),
     useState<string>(""),
   ];
+
+  const rawEmojiCount = answerSlotsN;
+
   const emojiCount = Math.max(0, Math.min(slotRefs.length, rawEmojiCount));
 
   const [emojiIndex, setEmojiIndex] = useState<number>(0);
@@ -105,7 +53,6 @@ function EmojiAnswerSlots(props: {
       <TextField // TODO stop keyboard showing up when text box clicked
         fullWidth={true}
         ref={slotRefs[idx]}
-        // onChange={onSlotChange(idx)}
         onSelect={onSlotSelect(idx)}
         inputProps={{ inputMode: "search", style: { textAlign: "center" } }}
         value={slotState[idx][0]}
@@ -117,7 +64,7 @@ function EmojiAnswerSlots(props: {
     slotState.slice(0, emojiCount).map((state) => state[0]);
 
   const [isIncomplete, setIsIncomplete] = useState(true);
-  const onSubmitClick = () => onSubmit(typedEmoji());
+  const onSubmitClick = () => onEmojiSubmitted(typedEmoji());
   useEffect(() => {
     const incomplete = typedEmoji().some((text) => !text);
     setIsIncomplete(incomplete);
@@ -140,6 +87,48 @@ function EmojiAnswerSlots(props: {
     }
   };
 
+  const onEmojiSubmitted = (emojiEntries: string[]) => {
+    props.setMessage.SubmitEmojiAnswer({ payload: { emoji: emojiEntries } });
+  };
+
+  console.log(perLine)
+
+  return (
+    <div className="PlayersAnswerPage">
+      <Branding />
+      <QuestionSection
+        emojiCount={answerSlotsN}
+        playerPrompt={prompt}
+        subject={subject}
+      />
+      <AnswerSlots
+        slots={slots}
+        isIncomplete={isIncomplete}
+        onSubmitClick={onSubmitClick}
+      />
+      <Grid container justify={"center"}>
+        <Picker
+          perLine={perLine}
+          emojiSize={emojiSize}
+          showSkinTones={false} // both of these required
+          showPreview={false} // to remove bottom tab
+          onClick={onEmojiClick}
+          darkMode={true}
+          sheetSize={64}
+          set={"apple"}
+        />
+      </Grid>
+    </div>
+  );
+}
+
+function AnswerSlots(props: {
+  slots: JSX.Element[];
+  isIncomplete: boolean;
+  onSubmitClick: () => void;
+}) {
+  const { slots, isIncomplete, onSubmitClick } = props;
+  // (slots: JSX.Element[], isIncomplete: boolean, onSubmitClick: () => void) {
   return (
     <div className="EmojiAnswerSlots">
       <Grid container justify="center" spacing={2}>
@@ -152,6 +141,25 @@ function EmojiAnswerSlots(props: {
       >
         Done
       </Button>
+    </div>
+  );
+}
+
+function QuestionSection(props: {
+  emojiCount: number;
+  playerPrompt: string;
+  subject: string;
+}) {
+  const { emojiCount: rawEmojiCount, playerPrompt, subject } = props;
+  const emojiCount = Math.max(0, Math.min(6, rawEmojiCount));
+  return (
+    <div className="QuestionSection">
+      <header className="QuestionSection-header">
+        <h1 className="QuestionSection-question">
+          "{subject}" in {emojiCount} emoji...
+        </h1>
+        <h2>{playerPrompt}</h2>
+      </header>
     </div>
   );
 }

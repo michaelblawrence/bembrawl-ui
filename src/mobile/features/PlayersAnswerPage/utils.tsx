@@ -41,11 +41,18 @@ export function mapDimensionsToEmojiSizes(height: number, width: number) {
       emojiSize: 24,
     };
   }
-  if (width > 400) {
+  if (width < 600) {
     console.log(`medium ${width}`)
     return {
       perLine: 11,
       emojiSize: 24,
+    };
+  }
+  if (width > 800) {
+    console.log(`medium ${width}`)
+    return {
+      perLine: 15,
+      emojiSize: 48,
     };
   }
   console.log(`default ${width}`)
