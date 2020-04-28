@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
+import "emoji-mart/css/emoji-mart.css";
 import "./PlayersAnswerPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
-import "emoji-mart/css/emoji-mart.css";
 import { BaseEmoji } from "emoji-mart";
 import { Picker } from "emoji-mart";
+import useWindowDimensions, { mapDimensionsToEmojiSizes } from "./utils";
+import { prependListener } from "process";
 
 type OnEmojiSubmit = (emoji: string[]) => void;
 
@@ -14,22 +16,44 @@ export function PlayersAnswerPage(props: PageProps) {
   const answerSlotsN = EmojiGame.Question.EmojiCount;
   const prompt = EmojiGame.Question.Prompt || "Loading Song Title";
   const subject = EmojiGame.Question.Subject || "Describe something";
+  const { height, width } = useWindowDimensions();
 
   const onEmojiSubmitted = (emojiEntries: string[]) => {
     props.setMessage.SubmitEmojiAnswer({ payload: { emoji: emojiEntries } });
   };
 
+  console.log(width, height)
+  const {perLine, emojiSize} = mapDimensionsToEmojiSizes(height, width);
+
   return (
-    <div>
+    <div className="PlayersAnswerPage">
       <Branding />
-      {/* <QuestionSection emojiCount={answerSlotsN} songTitle={songTitle} /> */}
-      <QuestionSection emojiCount={answerSlotsN} playerPrompt={prompt} subject={subject} />
+      <QuestionSection
+        emojiCount={answerSlotsN}
+        playerPrompt={prompt}
+        subject={subject}
+      />
       <EmojiAnswerSlots emojiCount={answerSlotsN} onSubmit={onEmojiSubmitted} />
+      <Grid container justify={"center"}>
+        <Picker
+          perLine={perLine}
+          emojiSize={emojiSize}
+          showSkinTones={false} // both of these required
+          showPreview={false} // to remove bottom tab
+          // onClick={onEmojiClick}
+          darkMode={true}
+          sheetSize={64}
+        />
+      </Grid>
     </div>
   );
 }
 
-function QuestionSection(props: { emojiCount: number; playerPrompt: string, subject: string }) {
+function QuestionSection(props: {
+  emojiCount: number;
+  playerPrompt: string;
+  subject: string;
+}) {
   const { emojiCount: rawEmojiCount, playerPrompt, subject } = props;
   const emojiCount = Math.max(0, Math.min(6, rawEmojiCount));
   return (
@@ -114,7 +138,6 @@ function EmojiAnswerSlots(props: {
     } else {
       setEmojiIndex(slotState.length - 2);
     }
-
   };
 
   return (
@@ -129,16 +152,6 @@ function EmojiAnswerSlots(props: {
       >
         Done
       </Button>
-
-      <Picker
-        perLine={11}
-        sheetSize={32}
-        title={undefined}
-        emoji="point_up"
-        showSkinTones={false} // both of these required
-        showPreview={false} // to remove bottom tab
-        onClick={onEmojiClick}
-      />
     </div>
   );
 }

@@ -1,27 +1,8 @@
 @import "../../../core/styles/variables.sass";
 
-.PlayersAnswer {
-  text-align: center;
-}
-
-.PlayersAnswer-header {
-  background-color: $header-color;
-  min-height: 30vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: $text-light;
-}
-
-.QuestionSection {
-  margin: 0 0 8vh 0;
-}
-
 .QuestionSection-header {
   background-color: $page-bg-color;
-  min-height: 15vh;
+  min-height: 4vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,7 +21,7 @@
 }
 
 .EmojiAnswerSlots {
-  height: 13vh;
+  height: 8vh;
   background-color: $input-slot-color;
   min-height: 100px;
   display: flex;
@@ -54,26 +35,25 @@
 
 .EmojiAnswerButton {
   top: 18px;
-  height: 40vh;
-}
-
-.EmojiKeyboard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: #c6cede;
-  margin: 1;
-  width: "100%";
-  /* height: fit-content; */
-  /* position: "fixed",
-  bottom:  2,
-  right:  3 */
+  height: 30vh;
 }
 
 .emoji-mart {
   position: absolute;
-  bottom: 10px;
-  /* right: 10px; */
+  bottom: 0;
+}
+
+// fit Pixel 2 XL
+@media (max-height: 823px) {
+  .emoji-mart-scroll { height: 300px }
+}
+
+// fit Moto G4
+@media (max-height: 640px) {
+  .emoji-mart-scroll { height: 200px }
+}
+
+// fit iPhone SE
+@media (max-height: 568px) {
+  .emoji-mart-scroll { height: 160px }
 }
