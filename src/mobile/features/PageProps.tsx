@@ -1,8 +1,8 @@
 import { Messages } from "../enums/PageState";
 
 export interface PageProps {
-  setMessage: Messages;
-  state: PlayerState;
+  setMessage: Readonly<Messages>;
+  state: Readonly<PlayerState>;
 }
 
 export enum LastJoinedPlayerNotification {
@@ -24,6 +24,9 @@ export interface PlayerState {
       Subject?: string;
       SubjectChoices: string[];
       EmojiCount: number;
+      SecretGame: boolean;
+      EmojiInputRequired: boolean;
+      Secret?: string;
       TimeoutMs?: number;
     };
     AnswerEmoji?: EmojiAnswer[];
@@ -51,13 +54,16 @@ export interface PlayerState {
 export const InitialPlayerState: PlayerState = {
   EmojiGame: {
     Question: {
-      EmojiCount: 5,
+      EmojiCount: 4,
       SubjectChoices: [
         "Song name",
         "Film name",
+        "Historic Figures",
         "Someone in the room",
         "Something in the room",
       ],
+      SecretGame: true,
+      EmojiInputRequired: false,
     },
   },
   PlayerInfo: {

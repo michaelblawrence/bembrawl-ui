@@ -1,0 +1,58 @@
+.players {
+  background-color: #3e4252;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: $text-light;
+  padding-top: 30%;
+  padding-bottom: 30%;
+}
+
+.WaitingForUsers {
+  background-color: #3e4252;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: $text-light;
+}
+
+.WaitingForUsers h3 {
+  margin: 0.2em 1em;
+}
+
+.WaitingForUsers h2 {
+  margin: 0.2em 1em;
+  font-size: 1.5em;
+  color: #b5e4d4;
+}
+
+.WaitingForUsers h1 span {
+  color: #b5e4d4;
+}
+
+.PlayersList {
+  background-color: $header-color;
+}
+
+[class^="player-"] {
+  flex: auto;
+  flex-direction: column;
+}
+
+[class^="PlayerList-grid-"] {
+  min-height: 40vh;
+  flex: auto;
+  min-height: 15%;
+}
+
+[class^="PlayersList-div-"] {
+  min-height: 40vh;
+  flex: auto;
+  min-height: 15%;
+}

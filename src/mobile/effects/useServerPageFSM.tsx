@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PageState, Messages } from "../enums/PageState";
+import { PageState, Messages, DefaultMessages } from "../enums/PageState";
 import { HostClientService } from "../HostClientService";
 import { PlayerState } from "../features/PageProps";
 
@@ -28,24 +28,23 @@ export function useServerPageFSM(
   return [page, state, mapServiceToMessages(svc)];
 }
 
-const defaultMessages: Messages = {
-  JoinRoom: () => {},
-  CloseRoom: () => {},
-  ChangePlayerName: () => {},
-  SubmitNewPrompt: () => {},
-  SubmitEmojiAnswer: () => {},
-  submitEmojiVotes: () => {},
-};
-
 function mapServiceToMessages(svc: HostClientService | null): Messages {
-  if (!svc) return defaultMessages;
+  if (!svc) return DefaultMessages;
   return {
-    JoinRoom: (msg) => svc.joinRoom(msg.payload.roomId),
+    JoinRoom: ({ payload }) => svc.joinRoom(payload.roomId),
     CloseRoom: () => svc.closeRoom(),
-    ChangePlayerName: (msg) => svc.changePlayerName(msg.payload.playerName),
-    SubmitNewPrompt: (msg) => svc.submitNewPrompt(msg.payload.promptResponse, msg.payload.promptSubject),
-    SubmitEmojiAnswer: (msg) => svc.submitResponseEmoji(msg.payload.emoji),
-    submitEmojiVotes: (msg) => svc.submitEmojiVotes(msg.payload.playerIdVotes),
+    ChangePlayerName: ({ payload }) => svc.changePlayerName(payload.playerName),
+    SubmitNewPrompt: ({ payload }) =>
+      svc.submitNewPrompt(payload.promptResponse, payload.promptSubject),
+    SubmitPromptMatch: ({ payload }) =>
+      svc.submitPromptMatch(
+        payload.promptAnswer,
+        payload.promptEmoji,
+        payload.promptSubject
+      ),
+    SubmitEmojiAnswer: ({ payload }) => svc.submitResponseEmoji(payload.emoji),
+    submitEmojiVotes: ({ payload }) =>
+      svc.submitEmojiVotes(payload.playerIdVotes),
   };
 }
 

@@ -40,7 +40,7 @@ export function QuestionPage(props: PageProps) {
 function Question(props: { questionString: String; subjectString: String }) {
   const { questionString, subjectString } = props;
   return (
-    <Grid className="Question" justify="center">
+    <Grid className="Question">
       <h3 className="SubjectString">{subjectString}</h3>
       <h2 className="QuestionString">{questionString}</h2>
     </Grid>

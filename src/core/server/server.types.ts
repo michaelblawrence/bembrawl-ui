@@ -5,6 +5,7 @@ export enum MessageTypes {
     CONNECT_SUCCESS = "CONNECT_SUCCESS",
     EMOJI_GAME_STARTED = "EMOJI_GAME_STARTED",
     EMOJI_NEW_PROMPT = "EMOJI_NEW_PROMPT",
+    EMOJI_MATCH_PROMPT = "EMOJI_MATCH_PROMPT",
     EMOJI_ALL_RESPONSES = "EMOJI_ALL_RESPONSES",
     EMOJI_VOTING_RESULTS = "EMOJI_VOTING_RESULTS",
 }
@@ -16,6 +17,7 @@ export type ClientMessage =
     | ConnectSuccessMessage
     | EmojiGameStartedMessage
     | EmojiNewPromptMessage
+    | EmojiMatchPromptMessage
     | EmojiAllResponsesMessage
     | EmojiVotingResultsMessage;
 
@@ -75,6 +77,17 @@ export type EmojiNewPromptMessage = {
         promptText: string;
         promptSubject: string;
         promptFromPlayerId: string;
+        timeoutMs: number;
+    };
+};
+
+export type EmojiMatchPromptMessage = {
+    type: MessageTypes.EMOJI_MATCH_PROMPT;
+    payload: {
+        promptText: string;
+        promptSubject: string;
+        promptFromPlayerId: string;
+        promptEmoji: string;
         timeoutMs: number;
     };
 };

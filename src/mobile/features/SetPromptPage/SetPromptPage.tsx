@@ -35,7 +35,7 @@ function PromptInput(props: {
   const { onSubmit, subjectChoices } = props;
   const [songName, setSongName] = useState("");
   const [subject, setSubject] = React.useState("Song name");
-  const [emojiCount] = React.useState(5);
+  const [emojiCount] = React.useState(4);
 
   const handleSongName = generateInputSetter(setSongName);
   const submitEnabled = songName.length > 0;

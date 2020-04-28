@@ -7,6 +7,7 @@ export class PlayerClientRoutes {
   public static readonly URL_API_ROUTE_COMPLETE_ROOM = "/players/complete";
   public static readonly URL_API_ROUTE_PLAYER_CHANGE_NAME = "/players/name";
   public static readonly URL_API_ROUTE_EMOJI_NEW_PROMPT = "/emoji/prompt";
+  public static readonly URL_API_ROUTE_EMOJI_PROMPT_MATCH = "/emoji/match";
   public static readonly URL_API_ROUTE_EMOJI_NEW_RESPONSE = "/emoji/response";
   public static readonly URL_API_ROUTE_EMOJI_NEW_VOTES = "/emoji/votes";
 }
@@ -27,10 +28,30 @@ export class PlayerHostClient {
       { playerName, sessionId }
     );
   }
-  public async newPrompt(playerPrompt: string, promptSubject: string, sessionId: string) {
+  public async newPrompt(
+    playerPrompt: string,
+    promptSubject: string,
+    sessionId: string
+  ) {
     await HttpClient.postJson<NewPromptReq, boolean>(
       PlayerClientRoutes.URL_API_ROUTE_EMOJI_NEW_PROMPT,
       { playerPrompt, promptSubject, sessionId }
+    );
+  }
+  public async promptMatch(
+    promptAnswer: string,
+    promptEmoji: string,
+    promptSubject: string,
+    sessionId: string
+  ) {
+    await HttpClient.postJson<PromptMatchReq, boolean>(
+      PlayerClientRoutes.URL_API_ROUTE_EMOJI_PROMPT_MATCH,
+      {
+        promptAnswer,
+        promptEmoji,
+        promptSubject,
+        sessionId,
+      }
     );
   }
   public async newEmojiResponse(emoji: string[], sessionId: string) {
@@ -81,6 +102,13 @@ export interface NewPromptReq {
   sessionId: string;
   promptSubject: string;
   playerPrompt: string;
+}
+
+export interface PromptMatchReq {
+  sessionId: string;
+  promptSubject: string;
+  promptEmoji: string;
+  promptAnswer: string;
 }
 
 export interface NewResponseReq {

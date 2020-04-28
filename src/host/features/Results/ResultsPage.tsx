@@ -48,6 +48,7 @@ export function ResultsPage(props: PageProps) {
             playerName={answer.playerName || "Unknown"}
             playerAnswer={answer.answer || "Unknown"}
             answerVotes={answer.votes || 0}
+            key={answer.playerName + "|" + answer.answer}
           />
         )) || ( // TODO: add a separate component for Waiting message? like the branding banner?
           <Row

@@ -47,15 +47,15 @@ function Answers(props: { answerList: String[] | undefined }) {
     >
       {answerList &&
         answerList.map((answer, idx) => (
-          <li style={{ alignContent: "centre" }}>
-            <text
+          <li style={{ alignContent: "centre" }} key={idx}>
+            <text // replace tags?
               style={{
                 fontSize: "1.5rem",
                 height: "0.8vh",
               }}
             >
               {answer}
-            </text>
+            </text> // replace tags?
           </li>
         ))}
     </ul>

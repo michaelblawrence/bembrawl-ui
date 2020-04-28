@@ -95,6 +95,9 @@ export class HostClientService {
 
         state.EmojiGame.promptPlayerAnswersEmoji =
           msg.payload.promptPlayerAnswersEmoji;
+        const secretGame = true;
+        state.EmojiGame.Question.SecretGame = secretGame;
+        state.EmojiGame.Question.EmojiInputRequired = secretGame!;
         this.stateService.pushState(state);
 
         if (isPromptPlayer) {
@@ -112,6 +115,22 @@ export class HostClientService {
         this.stateService.pushState(state);
 
         if (wasPromptPlayer && !state.EmojiGame.promptPlayerAnswersEmoji) {
+          this.transitionPage(PageState.WaitingRoom);
+        } else {
+          this.transitionPage(PageState.PlayersAnswer);
+        }
+        break;
+
+      case MessageTypes.EMOJI_MATCH_PROMPT:
+        const wasMatchPromptPlayer =
+          this.connectionInfo?.deviceGuid === msg.payload.promptFromPlayerId;
+        state.EmojiGame.Question.Subject = msg.payload.promptSubject;
+        state.EmojiGame.Question.Prompt = msg.payload.promptEmoji;
+        state.EmojiGame.Question.Secret = msg.payload.promptText;
+        state.EmojiGame.Question.EmojiInputRequired = false;
+        this.stateService.pushState(state);
+
+        if (wasMatchPromptPlayer && !state.EmojiGame.promptPlayerAnswersEmoji) {
           this.transitionPage(PageState.WaitingRoom);
         } else {
           this.transitionPage(PageState.PlayersAnswer);
@@ -206,9 +225,34 @@ export class HostClientService {
   public async submitNewPrompt(promptResponse: string, promptSubject: string) {
     if (!this.connectionInfo) return;
 
+    const state = this.stateService.getState();
+    if (state.EmojiGame.Question.SecretGame) {
+      state.EmojiGame.Question.Prompt = promptResponse;
+      state.EmojiGame.Question.Subject = promptSubject;
+      this.stateService.pushState(state);
+      this.transitionPage(PageState.PlayersAnswer);
+      return;
+    }
     this.transitionPage(PageState.WaitingRoom);
     const { sessionGuid } = this.connectionInfo;
     await this.client.newPrompt(promptResponse, promptSubject, sessionGuid);
+  }
+
+  public async submitPromptMatch(
+    promptAnswer: string,
+    promptEmoji: string,
+    promptSubject: string
+  ) {
+    if (!this.connectionInfo) return;
+
+    this.transitionPage(PageState.WaitingRoom);
+    const { sessionGuid } = this.connectionInfo;
+    await this.client.promptMatch(
+      promptAnswer,
+      promptEmoji,
+      promptSubject,
+      sessionGuid
+    );
   }
 
   public async submitResponseEmoji(emoji: string[]) {

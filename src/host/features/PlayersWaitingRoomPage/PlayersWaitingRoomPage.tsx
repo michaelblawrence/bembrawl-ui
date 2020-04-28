@@ -21,7 +21,7 @@ export function PlayersWaitingRoomPage(props: PageProps) {
       <div className={"root-tv"}>
         <Grid container spacing={3}>
           <WaitingRoomMessage promptPlayerName={EmojiGame.Question.PromptPlayerName || null} />
-          <Grid item xs={6} spacing={3}>
+          <Grid item xs={6}>
             <PlayersList
               playerNames={playerNames}
               defaultMessage="Players List"
