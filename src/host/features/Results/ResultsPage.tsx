@@ -3,6 +3,7 @@ import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
 import "./ResultsPage.scss";
 import { PageProps } from "../PageProps";
+import { Emoji } from "emoji-mart";
 
 export function ResultsPage(props: PageProps) {
   const { EmojiGame, RoomInfo } = props.state;
@@ -20,6 +21,22 @@ export function ResultsPage(props: PageProps) {
   const sortedResults = playerAnswersWithNames
     ?.slice(0)
     .sort((p1, p2) => (p2.votes || 0) - (p1.votes || 0));
+
+  console.log(sortedResults);
+  const sortedModifiedResults = sortedResults?.map((answer) => {
+    let emojiList = [];
+  for (var i = 0; i < answer.answer.length; i++) {
+    const emoji = answer.answer.charAt(i)
+    emojiList.push(emoji)
+  }
+    // let normalisedAnswer = "";
+
+    answer = {...answer,
+              answerList: emojiList
+              }
+    return answer
+  });
+
 
   return (
     <div className="ResultsPage">
@@ -46,13 +63,13 @@ export function ResultsPage(props: PageProps) {
         {sortedResults?.map((answer) => (
           <Row
             playerName={answer.playerName || "Unknown"}
-            playerAnswer={answer.answer || "Unknown"}
+            playerAnswer={answer.answerList && answer.answerList}
             answerVotes={answer.votes || 0}
           />
         )) || ( // TODO: add a separate component for Waiting message? like the branding banner?
           <Row
             playerName={""}
-            playerAnswer={"Waiting..."}
+            playerAnswer={undefined}
             answerVotes={0}
             hideScores={true}
           />
@@ -63,9 +80,9 @@ export function ResultsPage(props: PageProps) {
 }
 
 function Row(props: {
-  playerName: String;
-  playerAnswer: String;
-  answerVotes: Number;
+  playerName: string;
+  playerAnswer: string[] | undefined;
+  answerVotes: number;
   hideScores?: boolean;
 }) {
   const { playerName, playerAnswer, answerVotes, hideScores } = props;
@@ -75,7 +92,9 @@ function Row(props: {
         {playerName}
       </Grid>
       <Grid item xs={4} className="Cell">
-        {playerAnswer}
+        {playerAnswer && playerAnswer.map((emoji) => (
+          <Emoji emoji={emoji} set={"apple"} size={40} />
+        )) }
       </Grid>
       {!hideScores && (
         <Grid item xs={4} className="Cell">
@@ -85,3 +104,19 @@ function Row(props: {
     </Grid>
   );
 }
+
+// function normalisedEmojis(props: {
+//   emojis: string
+// }) {
+
+//   for (var i = 0; i < emojis.length; i++) {
+//     const emoji = emojis.charAt(i)
+//     console.log(emoji)
+//     // alert(str.charAt(i));
+//     let emojiO = Emoji({"emoji": emoji, "size": 24})
+//     console.log(emojiO)
+//     const emojiObject = Emoji({"size": 36, "emoji": answer.answer, "set": "apple"})
+//     normalisedAnswer.concat(emojiObject)
+//   }
+  
+// }

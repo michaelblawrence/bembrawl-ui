@@ -33,6 +33,11 @@
   color: $text-light;
 }
 
+[class^="PickedEmoji-"] {
+  text-align: center;
+  padding-top: 20px;
+}
+
 .EmojiAnswerButton {
   top: 18px;
   height: 30vh;
@@ -43,22 +48,15 @@
   bottom: 0;
 }
 
-// fit Pixel 2 XL
-@media (max-height: 1400px) {
-  .emoji-mart-scroll { height: 800px }
+.emoji-mart-scroll {
+  height: 38vh;
 }
 
-// fit Pixel 2 XL
-@media (max-height: 823px) {
-  .emoji-mart-scroll { height: 300px }
-}
-
-// fit Moto G4
-@media (max-height: 640px) {
-  .emoji-mart-scroll { height: 200px }
-}
 
 // fit iPhone SE
 @media (max-height: 568px) {
   .emoji-mart-scroll { height: 160px }
+}
+@media (min-height: 1024px) {
+  .emoji-mart-scroll { height: 500px }
 }

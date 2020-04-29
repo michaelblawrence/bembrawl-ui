@@ -8,7 +8,7 @@ export function AnswerPage(props: PageProps) {
   const answerList = props.state.EmojiGame.PlayerAnswers?.map(
     (answer) => answer.answer
   );
-  const [questionString] = useState<String>("Enter a song name");
+  const [questionString] = useState<string>("Enter a song name");
   return (
     <div className="AppTv">
       <Branding />
@@ -20,7 +20,7 @@ export function AnswerPage(props: PageProps) {
   );
 }
 
-function Question(props: { questionString: String }) {
+function Question(props: { questionString: string }) {
   const { questionString } = props;
   return (
     <div className="Question">
@@ -29,7 +29,7 @@ function Question(props: { questionString: String }) {
   );
 }
 
-function Answers(props: { answerList: String[] | undefined }) {
+function Answers(props: { answerList: string[] | undefined }) {
   const { answerList } = props;
 
   let displacements: number[] = [];

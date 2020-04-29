@@ -27,35 +27,35 @@ export default function useWindowDimensions() {
 
 export function mapDimensionsToEmojiSizes(height: number, width: number) {
   if (width < 340) {
-    // TODO somehow set .emoji-mart-scroll { height: 180px }
-    console.log(`smallest ${width}`)
     return {
       perLine: 8,
       emojiSize: 24,
     };
   }
   if (width < 400) {
-    console.log(`smallest ${width}`)
     return {
       perLine: 9,
       emojiSize: 24,
     };
   }
   if (width < 600) {
-    console.log(`medium ${width}`)
     return {
       perLine: 11,
       emojiSize: 24,
     };
   }
-  if (width > 800) {
-    console.log(`medium ${width}`)
+  if (width > 1000) {
     return {
-      perLine: 15,
+      perLine: 16,
       emojiSize: 48,
     };
   }
-  console.log(`default ${width}`)
+  if (width > 700) {
+    return {
+      perLine: 12,
+      emojiSize: 48,
+    };
+  }
   return {
     perLine: 9,
     emojiSize: 24,

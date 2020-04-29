@@ -10,10 +10,10 @@ import Timer from "./Timer";
 export function QuestionPage(props: PageProps) {
   const { EmojiGame } = props.state;
   const nowMs = Date.now();
-  const [questionString] = useState<String>(
+  const [questionString] = useState<string>(
     EmojiGame.Question.Prompt || "Loading question..."
   );
-  const [subjectString] = useState<String>(
+  const [subjectString] = useState<string>(
     EmojiGame.Question.Subject || "Loading subject..."
   );
   const [counterEndTimeMs, setCounterEndMsTime] = useState<number>(
@@ -37,7 +37,7 @@ export function QuestionPage(props: PageProps) {
   );
 }
 
-function Question(props: { questionString: String; subjectString: String }) {
+function Question(props: { questionString: string; subjectString: string }) {
   const { questionString, subjectString } = props;
   return (
     <Grid className="Question" justify="center">

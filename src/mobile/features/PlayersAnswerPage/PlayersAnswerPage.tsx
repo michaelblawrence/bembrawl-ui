@@ -4,10 +4,9 @@ import "./PlayersAnswerPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
-import { BaseEmoji } from "emoji-mart";
+import { BaseEmoji, Emoji } from "emoji-mart";
 import { Picker } from "emoji-mart";
 import useWindowDimensions, { mapDimensionsToEmojiSizes } from "./utils";
-import { prependListener } from "process";
 
 type OnEmojiSubmit = (emoji: string[]) => void;
 
@@ -38,7 +37,8 @@ export function PlayersAnswerPage(props: PageProps) {
 
   const rawEmojiCount = answerSlotsN;
 
-  const emojiCount = Math.max(0, Math.min(slotRefs.length, rawEmojiCount));
+  const numberOfEmojis = 6;
+  const emojiCount = Math.max(0, Math.min(numberOfEmojis, rawEmojiCount));
 
   const [emojiIndex, setEmojiIndex] = useState<number>(0);
 
@@ -49,14 +49,23 @@ export function PlayersAnswerPage(props: PageProps) {
   };
 
   const slots = new Array(emojiCount).fill(0).map((_, idx) => (
-    <Grid item xs={2} key={idx}>
-      <TextField // TODO stop keyboard showing up when text box clicked
-        fullWidth={true}
-        ref={slotRefs[idx]}
+    <Grid
+      item
+      xs={2}
+      key={idx}
+      direction="column"
+      alignContent="center"
+      className="EmojiSlot"
+    >
+      <div
         onSelect={onSlotSelect(idx)}
-        inputProps={{ inputMode: "search", style: { textAlign: "center" } }}
-        value={slotState[idx][0]}
-      />
+        ref={slotRefs[idx]}
+        onMouseDown={onSlotSelect(idx)}
+        className={`PickedEmoji-${idx}`}
+        style={slotState[idx][0] && emojiIndex === idx  ? { opacity: 0.7 , borderBottom: "dashed" }: {borderBottom: "ridge"}}
+      >
+        <Emoji set={"apple"} emoji={slotState[idx][0] || "grey_question"} size={emojiSize} />
+      </div>
     </Grid>
   ));
 
@@ -72,7 +81,7 @@ export function PlayersAnswerPage(props: PageProps) {
   }, [slotState]);
 
   const onEmojiClick = (emojiData: BaseEmoji) => {
-    slotState[emojiIndex][1](emojiData.native || "");
+    slotState[emojiIndex][1](emojiData.colons || "");
     const nextEmptyN = !slotState[emojiIndex][0] ? true : false;
     let nextIdx = slotState.findIndex(([slot]) => !slot);
 
@@ -90,8 +99,6 @@ export function PlayersAnswerPage(props: PageProps) {
   const onEmojiSubmitted = (emojiEntries: string[]) => {
     props.setMessage.SubmitEmojiAnswer({ payload: { emoji: emojiEntries } });
   };
-
-  console.log(perLine)
 
   return (
     <div className="PlayersAnswerPage">

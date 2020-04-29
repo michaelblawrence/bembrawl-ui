@@ -18,6 +18,7 @@ export interface HostState {
       answer: string;
       playerId?: string;
       votes?: number;
+      answerList?: string[] // TODO get straight from server
     }[];
     GameDetails?: {
       PlayerScores: {
