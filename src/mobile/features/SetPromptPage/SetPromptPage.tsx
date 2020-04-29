@@ -4,7 +4,7 @@ import { Branding } from "../../../core-common/Branding";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
 import { generateInputSetter } from "../../../core/utils/generateInputSetter";
-import { QuestionSubjects } from "../SetPromptPage/QuestionSubjects";
+import { QuestionSubjects } from "./components/QuestionSubjects";
 
 type OnPromptSubmit = (prompt: string, subject: string) => void;
 
