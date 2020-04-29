@@ -12,7 +12,8 @@ import { HttpClient } from "../core/utils/HttpClient";
 import { ConnectionInfo } from "../core/configs/HostConnectionConfig";
 
 export class HostClientConstants {
-  public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/hosts/register";
+  public static readonly URL_API_ROUTE_HOST_REGISTER = "/hosts/register";
+  public static readonly URL_API_ROUTE_HOST_JOIN = "/hosts/join";
   public static readonly URL_API_ROUTE_KEEP_ALIVE = "/hosts/keepalive";
   public static readonly URL_API_ROUTE_EMOJI_REGISTER = "/emoji/register";
 }
@@ -36,7 +37,7 @@ export class HostClientService {
       stateSetter
     );
     this.connection = new HostClientConnection({
-      registerUrl: HostClientConstants.URL_API_ROUTE_PLAYER_REGISTER,
+      registerUrl: getRegisterUrl(document.location),
       keepAliveUrl: HostClientConstants.URL_API_ROUTE_KEEP_ALIVE,
       promptReconnect: () => this.transitionPage(PageState.WaitingForUsers),
     });
@@ -174,4 +175,19 @@ export class HostClient {
       }
     );
   }
+}
+
+function getRegisterUrl(location: Location): string {
+  const extractUrlRoomId = (urlPath: string) => {
+    const matches = /room\/(\d{4})\/?$/.exec(urlPath);
+    return (matches && matches[1]) || null;
+  };
+  const roomId = extractUrlRoomId(location.pathname);
+  if (roomId) {
+    return (
+      HostClientConstants.URL_API_ROUTE_HOST_JOIN +
+      `?createIfNone=1&roomId=${roomId}`
+    );
+  }
+  return HostClientConstants.URL_API_ROUTE_HOST_REGISTER;
 }
