@@ -52,11 +52,14 @@
   height: 38vh;
 }
 
-
 // fit iPhone SE
 @media (max-height: 568px) {
-  .emoji-mart-scroll { height: 160px }
+  .emoji-mart-scroll {
+    height: 160px;
+  }
 }
 @media (min-height: 1024px) {
-  .emoji-mart-scroll { height: 500px }
+  .emoji-mart-scroll {
+    height: 500px;
+  }
 }

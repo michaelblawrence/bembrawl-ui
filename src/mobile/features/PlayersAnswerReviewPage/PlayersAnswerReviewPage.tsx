@@ -3,6 +3,7 @@ import "./PlayersAnswerReviewPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { Grid, Button } from "@material-ui/core";
 import { PageProps, EmojiAnswer } from "../PageProps";
+import { EmojiRow } from "../../../core/components/EmojiGame/EmojiAnswers";
 
 type VoteStateStore = Map<string, { id: string; votes: number }>;
 
@@ -105,7 +106,8 @@ function EmojiAnswerPrompt(props: {
         key={idx}
         onClick={onSlotClick}
       >
-        <h4>{answer.responseEmoji.join(" ")}</h4>
+        {/* <h4>{answer.responseEmoji.join(" ")}</h4> */}
+        <EmojiRow emojiList={answer.responseEmoji} />
         <p>{currentVotes} Votes</p>
       </Grid>
     );

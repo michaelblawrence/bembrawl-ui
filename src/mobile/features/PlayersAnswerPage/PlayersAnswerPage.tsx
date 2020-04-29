@@ -8,8 +8,6 @@ import { BaseEmoji, Emoji } from "emoji-mart";
 import { Picker } from "emoji-mart";
 import useWindowDimensions, { mapDimensionsToEmojiSizes } from "./utils";
 
-type OnEmojiSubmit = (emoji: string[]) => void;
-
 export function PlayersAnswerPage(props: PageProps) {
   const { EmojiGame } = props.state;
   const answerSlotsN = EmojiGame.Question.EmojiCount;
@@ -59,12 +57,19 @@ export function PlayersAnswerPage(props: PageProps) {
     >
       <div
         onSelect={onSlotSelect(idx)}
-        ref={slotRefs[idx]}
         onMouseDown={onSlotSelect(idx)}
         className={`PickedEmoji-${idx}`}
-        style={slotState[idx][0] && emojiIndex === idx  ? { opacity: 0.7 , borderBottom: "dashed" }: {borderBottom: "ridge"}}
+        style={
+          slotState[idx][0] && emojiIndex === idx
+            ? { opacity: 0.7, borderBottom: "dashed" }
+            : { borderBottom: "ridge" }
+        }
       >
-        <Emoji set={"apple"} emoji={slotState[idx][0] || "grey_question"} size={emojiSize} />
+        <Emoji
+          set={"apple"}
+          emoji={slotState[idx][0] || "grey_question"}
+          size={emojiSize}
+        />
       </div>
     </Grid>
   ));
