@@ -1,4 +1,5 @@
 import { HttpClient } from "../core/utils/HttpClient";
+import { ConnectionInfo } from "../core/configs/HostConnectionConfig";
 
 export class PlayerClientRoutes {
   public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/players/register";
@@ -12,40 +13,46 @@ export class PlayerClientRoutes {
 }
 
 export class PlayerHostClient {
-  public async completeRoom(roomId: string, sessionId: string) {
+  public async completeRoom(roomId: string, info: ConnectionInfo) {
     return await HttpClient.postJson<CompleteRoomRequest, boolean>(
       PlayerClientRoutes.URL_API_ROUTE_COMPLETE_ROOM,
-      {
-        roomId: roomId,
-        sessionId,
-      }
+      { roomId: roomId },
+      info.accessToken
     );
   }
-  public async changePlayerName(playerName: string, sessionId: string) {
+  public async changePlayerName(playerName: string, info: ConnectionInfo) {
     await HttpClient.postJson<ChangePlayerNameRequest, boolean>(
       PlayerClientRoutes.URL_API_ROUTE_PLAYER_CHANGE_NAME,
-      { playerName, sessionId }
+      { playerName },
+      info.accessToken
     );
   }
-  public async newPrompt(playerPrompt: string, promptSubject: string, sessionId: string) {
+  public async newPrompt(
+    playerPrompt: string,
+    promptSubject: string,
+    info: ConnectionInfo
+  ) {
     await HttpClient.postJson<NewPromptReq, boolean>(
       PlayerClientRoutes.URL_API_ROUTE_EMOJI_NEW_PROMPT,
-      { playerPrompt, promptSubject, sessionId }
+      { playerPrompt, promptSubject },
+      info.accessToken
     );
   }
-  public async newEmojiResponse(emoji: string[], sessionId: string) {
+  public async newEmojiResponse(emoji: string[], info: ConnectionInfo) {
     return await HttpClient.postJson<NewResponseReq, boolean>(
       PlayerClientRoutes.URL_API_ROUTE_EMOJI_NEW_RESPONSE,
-      { responseEmoji: emoji, sessionId }
+      { responseEmoji: emoji },
+      info.accessToken
     );
   }
-  public async emojiVotesResponse(votes: string[], sessionId: string) {
+  public async emojiVotesResponse(votes: string[], info: ConnectionInfo) {
     return await HttpClient.postJson<NewVotesReq, boolean>(
       PlayerClientRoutes.URL_API_ROUTE_EMOJI_NEW_VOTES,
-      { votedPlayerIds: votes, sessionId }
+      { votedPlayerIds: votes },
+      info.accessToken
     );
   }
-  public async joinRoom(roomId: string, sessionId: string) {
+  public async joinRoom(roomId: string, info: ConnectionInfo) {
     return await HttpClient.postJson<
       JoinRoomRequest,
       {
@@ -55,40 +62,35 @@ export class PlayerHostClient {
         playerIdx: number | null;
         playerName: string | null;
       }
-    >(PlayerClientRoutes.URL_API_ROUTE_JOIN_ROOM, {
-      roomId: roomId,
-      sessionId: sessionId,
-    });
+    >(
+      PlayerClientRoutes.URL_API_ROUTE_JOIN_ROOM,
+      { roomId: roomId },
+      info.accessToken
+    );
   }
 }
 
 export interface JoinRoomRequest {
   roomId: string;
-  sessionId: string;
 }
 
 export interface CompleteRoomRequest {
   roomId: string;
-  sessionId: string;
 }
 
 export interface ChangePlayerNameRequest {
   playerName: string;
-  sessionId: string;
 }
 
 export interface NewPromptReq {
-  sessionId: string;
   promptSubject: string;
   playerPrompt: string;
 }
 
 export interface NewResponseReq {
-  sessionId: string;
   responseEmoji: string[];
 }
 
 export interface NewVotesReq {
-  sessionId: string;
   votedPlayerIds: string[];
 }

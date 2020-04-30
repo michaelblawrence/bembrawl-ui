@@ -122,13 +122,15 @@ export class HostClientService {
   }
 
   private async registerEmojiGame() {
+    if (!this.connectionInfo) return;
     const { RoomInfo } = this.stateService.getState();
     if (!RoomInfo.roomId) {
       console.error("register game without room id");
       return this.transitionPage(PageState.WaitingForUsers);
     }
 
-    const success = await this.client.emojiRegister(RoomInfo.roomId);
+    const info = this.connectionInfo;
+    const success = await this.client.emojiRegister(RoomInfo.roomId, info);
     if (!success) {
       console.error("register failed");
       this.connection.reconnect();
@@ -167,12 +169,13 @@ export class HostClientService {
 }
 
 export class HostClient {
-  public async emojiRegister(roomId: number) {
+  public async emojiRegister(roomId: number, info: ConnectionInfo) {
     return await HttpClient.postJson(
       HostClientConstants.URL_API_ROUTE_EMOJI_REGISTER,
       {
         joinId: roomId,
-      }
+      },
+      info.accessToken
     );
   }
 }

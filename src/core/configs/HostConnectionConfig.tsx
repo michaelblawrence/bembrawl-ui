@@ -1,6 +1,6 @@
 export interface ConnectionInfo {
   deviceGuid: string;
-  sessionGuid: string;
+  accessToken: string | null;
 }
 
 export interface HostConnectionConfig {
