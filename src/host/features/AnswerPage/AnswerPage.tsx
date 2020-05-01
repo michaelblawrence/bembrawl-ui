@@ -1,36 +1,43 @@
 import React from "react";
-import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
 import "./AnswerPage.scss";
 import { PageProps } from "../PageProps";
 import { EmojiRow } from "../../../core/components/EmojiGame/EmojiAnswers";
 
 export function AnswerPage(props: PageProps) {
-  const answerList = props.state.EmojiGame.PlayerAnswers?.map(
+  const { EmojiGame } = props.state;
+  const answerList = EmojiGame.PlayerAnswers?.map(
     (answer) => answer.answerList
   );
-  const [questionString] = useState<string>("Enter a song name");
+  const questionString = EmojiGame.Question.Prompt || 'Loading..';
+  const subjectString = EmojiGame.Question.Subject || 'Use emoji to answer! ';
   return (
     <div className="AppTv">
       <Branding />
-      <Question questionString={questionString} />
-      <div className="AnswersContainer" style={{ maxHeight: "-webkit-fill-available" }}>
+      <Question questionString={questionString} subjectString={subjectString} />
+      <div
+        className="AnswersContainer"
+        style={{ maxHeight: "-webkit-fill-available" }}
+      >
         <Answers playerAnswerList={answerList} />
       </div>
     </div>
   );
 }
 
-function Question(props: { questionString: string }) {
-  const { questionString } = props;
+function Question(props: { questionString: string; subjectString: string; }) {
+  const { questionString, subjectString } = props;
   return (
     <div className="Question">
+      <h3 className="SubjectString">{subjectString}</h3>
       <h2 className="QuestionString">{questionString}</h2>
     </div>
   );
 }
 
-function Answers(props: { playerAnswerList: (string[] | undefined)[] | undefined}) {
+function Answers(props: {
+  playerAnswerList: (string[] | undefined)[] | undefined;
+}) {
   const { playerAnswerList } = props;
 
   let displacements: number[] = [];

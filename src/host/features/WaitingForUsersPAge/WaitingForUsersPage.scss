@@ -1,18 +1,5 @@
 @import "../../../core/styles/variables.sass";
 
-.players {
-  background-color: $page-bg-color;
-  min-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: $text-light;
-  padding-top: 30%;
-  padding-bottom: 30%;
-}
-
 .WaitingForUsers {
   background-color: $page-bg-color;
   min-height: 90vh;
@@ -44,18 +31,5 @@
 }
 
 [class^="player-"] {
-  flex: auto;
-  flex-direction: column;
-}
-
-[class^="PlayerList-grid-"] {
-  min-height: 40vh;
-  flex: auto;
-  min-height: 15%;
-}
-
-[class^="PlayersList-div-"] {
-  min-height: 40vh;
-  flex: auto;
-  min-height: 15%;
+  min-height: 1vh;
 }

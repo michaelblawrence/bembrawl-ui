@@ -5,19 +5,15 @@ import { Grid } from "@material-ui/core";
 import "./QuestionPage.scss";
 import { PageProps } from "../PageProps";
 import Timer from "./Timer";
-// import { Timer } from "./Timer";
 
 export function QuestionPage(props: PageProps) {
   const { EmojiGame } = props.state;
   const nowMs = Date.now();
-  const [questionString] = useState<string>(
-    EmojiGame.Question.Prompt || "Loading question..."
-  );
-  const [subjectString] = useState<string>(
-    EmojiGame.Question.Subject || "Loading subject..."
-  );
+  console.warn('EmojiGame.Question', EmojiGame.Question)
+  const questionString = EmojiGame.Question.Prompt || "Loading question...";
+  const subjectString = EmojiGame.Question.Subject || "Loading subject...";
   const [counterEndTimeMs, setCounterEndMsTime] = useState<number>(
-    EmojiGame.Question.TimeoutMs || nowMs + 30*1000
+    EmojiGame.Question.TimeoutMs || nowMs + 30 * 1000
   );
   const duration = (counterEndTimeMs - nowMs) / 1000;
 
