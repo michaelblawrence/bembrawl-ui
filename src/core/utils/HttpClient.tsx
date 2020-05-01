@@ -5,13 +5,16 @@ class HttpClientConfig {
 export class HttpClient {
   public static async postJson<TReq, TResp>(
     route: string,
-    data: TReq
+    data: TReq,
+    token: string | null = null
   ): Promise<TResp> {
+    const headers: {[key: string]: string} = {
+      accept: "application/json",
+      "Content-Type": "application/json",
+    };
+    if (token) headers['authorization'] = `Bearer ${token}`;
     const res = await fetch(HttpClientConfig.URL_API_ROOT + route, {
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(data),
       method: "POST",
       mode: "cors",
@@ -19,11 +22,16 @@ export class HttpClient {
     return await res.json();
   }
 
-  public static async getJson<TResp>(route: string): Promise<TResp> {
+  public static async getJson<TResp>(
+    route: string,
+    token: string | null = null
+  ): Promise<TResp> {
+    const headers: {[key: string]: string} = {
+      accept: "application/json",
+    };
+    if (token) headers['authorization'] = `Bearer ${token}`;
     const res = await fetch(HttpClientConfig.URL_API_ROOT + route, {
-      headers: {
-        accept: "application/json",
-      },
+      headers: headers,
       method: "GET",
       mode: "no-cors",
     });

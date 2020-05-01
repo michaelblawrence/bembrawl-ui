@@ -2,7 +2,10 @@ import { uuidv4 } from "../utils/uuidv4";
 import { setTimeout } from "timers";
 import { HttpClient } from "../utils/HttpClient";
 import { asyncWait } from "../utils/asyncWait";
-import { HostConnectionConfig, ConnectionInfo } from "../configs/HostConnectionConfig";
+import {
+  HostConnectionConfig,
+  ConnectionInfo,
+} from "../configs/HostConnectionConfig";
 import { ClientMessage, MessageTypes } from "./server.types";
 import { ConnectionHealthTracker } from "./ConnectionHealthTracker";
 
@@ -12,7 +15,11 @@ export type StateSetter<TPageState> = React.Dispatch<
 
 export interface RegisterClientRequest {
   deviceId: string;
-  sessionId: string;
+}
+
+interface PlayersResp {
+  deviceId: string;
+  token: string;
 }
 
 export class HostClientConstants {
@@ -27,16 +34,16 @@ export type ClientMessageSubscription = { unsubscribe: () => void };
 
 export class HostClientConnection {
   private readonly deviceGuid: string;
-  private readonly sessionGuid: string;
   private readonly connectionHealthTracker: ConnectionHealthTracker;
   private readonly observers: Set<ClientMessageObserver>;
   private readonly config: HostConnectionConfig;
   private connected: boolean = false;
   private keepAliveHandle: any;
 
+  private accessToken: string | null = null;
+
   constructor(config: HostConnectionConfig) {
     this.deviceGuid = this.getPersistentGuid();
-    this.sessionGuid = this.getSessionId();
     this.config = config;
     this.connectionHealthTracker = new ConnectionHealthTracker();
     this.observers = new Set<ClientMessageObserver>();
@@ -50,17 +57,16 @@ export class HostClientConnection {
 
     this.connectionHealthTracker.addConnectionAttempts();
     try {
-      const resp = await HttpClient.postJson<RegisterClientRequest, any>(
-        this.config.registerUrl,
-        {
-          deviceId: this.deviceGuid,
-          sessionId: this.sessionGuid,
-          // TODO: add roomid to rejoin?
-        }
-      );
+      const resp = await HttpClient.postJson<
+        RegisterClientRequest,
+        PlayersResp
+      >(this.config.registerUrl, {
+        deviceId: this.deviceGuid,
+      });
+      this.accessToken = resp.token;
       this.pushMessageToObservers({
         type: MessageTypes.CONNECT_SUCCESS,
-        payload: { joinId: (resp || {}).joinId },
+        payload: { joinId: ((resp as any) || {}).joinId }, // fix type
       });
     } catch (ex) {
       if (this.shouldRetry("Can't call connect on server")) {
@@ -88,7 +94,7 @@ export class HostClientConnection {
   private getConnectionIds(): ConnectionInfo {
     return {
       deviceGuid: this.deviceGuid,
-      sessionGuid: this.sessionGuid,
+      accessToken: this.accessToken,
     };
   }
 
@@ -112,10 +118,6 @@ export class HostClientConnection {
     const newGuid = uuidv4();
     localStorage.setItem(HostClientConstants.LOCAL_STORAGE_GUID, newGuid);
     return newGuid;
-  }
-
-  private getSessionId(): string {
-    return "SIDv1|" + uuidv4();
   }
 
   private shouldRetry(errorMsg: string): boolean {
@@ -154,9 +156,12 @@ export class HostClientConnection {
       const resp: {
         valid: boolean;
         messages?: ClientMessage[];
-      } = await HttpClient.postJson(this.config.keepAliveUrl, {
-        sessionId: this.sessionGuid,
-      });
+      } = await HttpClient.postJson(
+        this.config.keepAliveUrl,
+        {
+        },
+        this.accessToken
+      );
       this.connectionHealthTracker.addSuccessfulAttempt();
       if (!resp || !resp.valid) {
         console.warn("Lost connection to party");

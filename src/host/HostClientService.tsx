@@ -12,7 +12,8 @@ import { HttpClient } from "../core/utils/HttpClient";
 import { ConnectionInfo } from "../core/configs/HostConnectionConfig";
 
 export class HostClientConstants {
-  public static readonly URL_API_ROUTE_PLAYER_REGISTER = "/hosts/register";
+  public static readonly URL_API_ROUTE_HOST_REGISTER = "/hosts/register";
+  public static readonly URL_API_ROUTE_HOST_JOIN = "/hosts/join";
   public static readonly URL_API_ROUTE_KEEP_ALIVE = "/hosts/keepalive";
   public static readonly URL_API_ROUTE_EMOJI_REGISTER = "/emoji/register";
 }
@@ -36,7 +37,7 @@ export class HostClientService {
       stateSetter
     );
     this.connection = new HostClientConnection({
-      registerUrl: HostClientConstants.URL_API_ROUTE_PLAYER_REGISTER,
+      registerUrl: getRegisterUrl(document.location),
       keepAliveUrl: HostClientConstants.URL_API_ROUTE_KEEP_ALIVE,
       promptReconnect: () => this.transitionPage(PageState.WaitingForUsers),
     });
@@ -122,13 +123,15 @@ export class HostClientService {
   }
 
   private async registerEmojiGame() {
+    if (!this.connectionInfo) return;
     const { RoomInfo } = this.stateService.getState();
     if (!RoomInfo.roomId) {
       console.error("register game without room id");
       return this.transitionPage(PageState.WaitingForUsers);
     }
 
-    const success = await this.client.emojiRegister(RoomInfo.roomId);
+    const info = this.connectionInfo;
+    const success = await this.client.emojiRegister(RoomInfo.roomId, info);
     if (!success) {
       console.error("register failed");
       this.connection.reconnect();
@@ -167,12 +170,28 @@ export class HostClientService {
 }
 
 export class HostClient {
-  public async emojiRegister(roomId: number) {
+  public async emojiRegister(roomId: number, info: ConnectionInfo) {
     return await HttpClient.postJson(
       HostClientConstants.URL_API_ROUTE_EMOJI_REGISTER,
       {
         joinId: roomId,
-      }
+      },
+      info.accessToken
     );
   }
+}
+
+function getRegisterUrl(location: Location): string {
+  const extractUrlRoomId = (urlPath: string) => {
+    const matches = /room\/(\d{4})\/?$/.exec(urlPath);
+    return (matches && matches[1]) || null;
+  };
+  const roomId = extractUrlRoomId(location.pathname);
+  if (roomId) {
+    return (
+      HostClientConstants.URL_API_ROUTE_HOST_JOIN +
+      `?createIfNone=1&roomId=${roomId}`
+    );
+  }
+  return HostClientConstants.URL_API_ROUTE_HOST_REGISTER;
 }

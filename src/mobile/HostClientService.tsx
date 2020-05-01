@@ -143,8 +143,8 @@ export class HostClientService {
     this.connectionHealthTracker.addConnectionAttempts();
 
     try {
-      const { sessionGuid } = this.connectionInfo;
-      const joinResult = await this.client.joinRoom(roomId, sessionGuid);
+      const info = this.connectionInfo;
+      const joinResult = await this.client.joinRoom(roomId, info);
       if (!joinResult.success) {
         this.transitionPage(PageState.JoinRoom);
         return false;
@@ -176,8 +176,8 @@ export class HostClientService {
       const roomId = state.RoomInfo.roomId;
       if (!roomId) return false;
 
-      const { sessionGuid } = this.connectionInfo;
-      const success = await this.client.completeRoom(roomId, sessionGuid);
+      const info = this.connectionInfo;
+      const success = await this.client.completeRoom(roomId, info);
       if (!success) {
         this.transitionPage(PageState.WaitingRoom);
         return false;
@@ -195,8 +195,8 @@ export class HostClientService {
   public async changePlayerName(playerName: string) {
     if (!this.connectionInfo) return;
 
-    const { sessionGuid } = this.connectionInfo;
-    await this.client.changePlayerName(playerName, sessionGuid);
+    const info = this.connectionInfo;
+    await this.client.changePlayerName(playerName, info);
 
     const state = this.stateService.getState();
     state.PlayerInfo.playerName = playerName;
@@ -207,15 +207,15 @@ export class HostClientService {
     if (!this.connectionInfo) return;
 
     this.transitionPage(PageState.WaitingRoom);
-    const { sessionGuid } = this.connectionInfo;
-    await this.client.newPrompt(promptResponse, promptSubject, sessionGuid);
+    const info = this.connectionInfo;
+    await this.client.newPrompt(promptResponse, promptSubject, info);
   }
 
   public async submitResponseEmoji(emoji: string[]) {
     if (!this.connectionInfo) return;
 
-    const { sessionGuid } = this.connectionInfo;
-    await this.client.newEmojiResponse(emoji, sessionGuid);
+    const info = this.connectionInfo;
+    await this.client.newEmojiResponse(emoji, info);
     this.transitionPage(PageState.WaitingRoom);
   }
 
@@ -223,11 +223,11 @@ export class HostClientService {
     if (!this.connectionInfo) return;
     this.transitionPage(PageState.WaitingRoom);
 
-    const { sessionGuid } = this.connectionInfo;
+    const info = this.connectionInfo;
     const votes = playerIdVotes.flatMap(([playerId, count]) =>
       new Array(count).fill(playerId)
     );
-    await this.client.emojiVotesResponse(votes, sessionGuid);
+    await this.client.emojiVotesResponse(votes, info);
   }
 
   public registerPage(page: PageState, setPage: StateSetter<PageState>) {
