@@ -11,7 +11,6 @@ export function ResultsPage(props: PageProps) {
   const playerAnswers = EmojiGame.PlayerAnswers;
   // Todo: refactor state methods (e.g. get user name from ID)
   const playerAnswersWithNames = playerAnswers?.map((answer) => {
-    console.log(RoomInfo.players, answer.playerIndex);
     const playerName = RoomInfo.players.find(
       (player) => player.playerIndex === answer.playerIndex
     )?.playerName;
@@ -21,22 +20,6 @@ export function ResultsPage(props: PageProps) {
   const sortedResults = playerAnswersWithNames
     ?.slice(0)
     .sort((p1, p2) => (p2.votes || 0) - (p1.votes || 0));
-
-  console.log(sortedResults);
-  const sortedModifiedResults = sortedResults?.map((answer) => {
-    let emojiList = [];
-  for (var i = 0; i < answer.answer.length; i++) {
-    const emoji = answer.answer.charAt(i)
-    emojiList.push(emoji)
-  }
-    // let normalisedAnswer = "";
-
-    answer = {...answer,
-              answerList: emojiList
-              }
-    return answer
-  });
-
 
   return (
     <div className="ResultsPage">
@@ -92,9 +75,10 @@ function Row(props: {
         {playerName}
       </Grid>
       <Grid item xs={4} className="Cell">
-        {playerAnswer && playerAnswer.map((emoji) => (
-          <Emoji emoji={emoji} set={"apple"} size={40} />
-        )) }
+        {playerAnswer &&
+          playerAnswer.map((emoji) => (
+            <Emoji emoji={emoji} set={"apple"} size={40} />
+          ))}
       </Grid>
       {!hideScores && (
         <Grid item xs={4} className="Cell">
@@ -104,19 +88,3 @@ function Row(props: {
     </Grid>
   );
 }
-
-// function normalisedEmojis(props: {
-//   emojis: string
-// }) {
-
-//   for (var i = 0; i < emojis.length; i++) {
-//     const emoji = emojis.charAt(i)
-//     console.log(emoji)
-//     // alert(str.charAt(i));
-//     let emojiO = Emoji({"emoji": emoji, "size": 24})
-//     console.log(emojiO)
-//     const emojiObject = Emoji({"size": 36, "emoji": answer.answer, "set": "apple"})
-//     normalisedAnswer.concat(emojiObject)
-//   }
-  
-// }

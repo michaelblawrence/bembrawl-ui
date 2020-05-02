@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "emoji-mart/css/emoji-mart.css";
 import "./PlayersAnswerPage.scss";
 import { Branding } from "../../../core-common/Branding";
-import { Grid, TextField, Button } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
 import { BaseEmoji, Emoji } from "emoji-mart";
 import { Picker } from "emoji-mart";
@@ -15,15 +15,9 @@ export function PlayersAnswerPage(props: PageProps) {
   const subject = EmojiGame.Question.Subject || "Describe something";
   const { height, width } = useWindowDimensions();
   const { perLine, emojiSize } = mapDimensionsToEmojiSizes(height, width);
+  const numberOfEmojis = 6;
+  const emojiCount = Math.max(0, Math.min(numberOfEmojis, answerSlotsN));
 
-  const slotRefs = [
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-  ];
   const slotState = [
     useState<string>(""),
     useState<string>(""),
@@ -32,11 +26,6 @@ export function PlayersAnswerPage(props: PageProps) {
     useState<string>(""),
     useState<string>(""),
   ];
-
-  const rawEmojiCount = answerSlotsN;
-
-  const numberOfEmojis = 6;
-  const emojiCount = Math.max(0, Math.min(numberOfEmojis, rawEmojiCount));
 
   const [emojiIndex, setEmojiIndex] = useState<number>(0);
 
@@ -140,7 +129,6 @@ function AnswerSlots(props: {
   onSubmitClick: () => void;
 }) {
   const { slots, isIncomplete, onSubmitClick } = props;
-  // (slots: JSX.Element[], isIncomplete: boolean, onSubmitClick: () => void) {
   return (
     <div className="EmojiAnswerSlots">
       <Grid container justify="center" spacing={2}>

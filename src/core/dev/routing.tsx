@@ -17,6 +17,7 @@ export function setHostPage() {
     let splitUrl = href.split("/");
     const lastPath = splitUrl[splitUrl.length - 1];
     const re = RegExp(lastPath, "g");
+    
     Object.values(HostPageState).map((item) => {
       if (re.exec(item.toLowerCase())) {
         page = HostPageState[item];

@@ -15,10 +15,9 @@ export interface HostState {
     };
     PlayerAnswers?: {
       playerIndex?: number; // TODO: delete when/if no longer in use
-      answer: string;
       playerId?: string;
       votes?: number;
-      answerList?: string[] // TODO get straight from server
+      answerList?: string[]
     }[];
     GameDetails?: {
       PlayerScores: {
