@@ -1,21 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { Branding } from "../../../core-common/Branding";
-import { Grid } from "@material-ui/core";
-import "./ResultsPage.scss";
+import { Grid, Box } from "@material-ui/core";
+import "./EndScores.scss";
 import { PageProps } from "../PageProps";
 
-export function ResultsPage(props: PageProps) {
-  const { EmojiGame, RoomInfo } = props.state;
-
-  const playerAnswers = EmojiGame.PlayerAnswers;
-  // Todo: refactor state methods (e.g. get user name from ID)
-  const playerAnswersWithNames = playerAnswers?.map((answer) => {
-    const playerName = RoomInfo.players.find(
-      (player) => player.playerIndex == answer.playerIndex
-    )?.playerName;
-    return { ...answer, playerName: playerName };
-  });
-
+export function EndScores(props: PageProps) {
+  // const { EmojiGame, RoomInfo } = props.state;
+  
   return (
     <div className="ResultsPage">
       <Branding />
@@ -24,63 +15,53 @@ export function ResultsPage(props: PageProps) {
         direction="column"
         alignContent="center"
         justify="center"
-        className="ResultsTable"
         alignItems="center"
+        className="EndScoreTable"
       >
-        {/* <Grid container direction="row">
-          <Grid className="ColumnTitle">
-            <h1>Player</h1>
-          </Grid>
-          <Grid className="ColumnTitle">
-            <h1>Answer</h1>
-          </Grid>
-          <Grid className="ColumnTitle">
-            <h1>Votes</h1>
-          </Grid>
-        </Grid> */}
-        {/* {playerAnswersWithNames?.map((answer) => (
-          <Row
-            playerName={answer.playerName || "Unknown"}
-            playerAnswer={answer.answer}
-            answerVotes={answer.votes}
-          />
-        )) || ( // TODO: add a separate component for Waiting message? like the branding banner?
-          <Row playerName={""} playerAnswer={"Waiting..."} answerVotes={null} />
-        )} */}
+        <Grid container direction="row" className="ScoreRow">
+          <ScoreCard />
+          <ScoreCard />
+          <ScoreCard />
+          <ScoreCard />
+        </Grid>
+
+        <Grid
+          container
+          direction="row"
+          className="ScoreRow"
+        >
+          <ScoreCard />
+          <ScoreCard />
+          <ScoreCard />
+          <ScoreCard />
+        </Grid>
       </Grid>
     </div>
   );
 }
 
-// function Row(props: {
-//   playerName: String;
-//   playerAnswer: String;
-//   answerVotes: Number | null;
-// }) {
-//   const { playerName, playerAnswer, answerVotes } = props;
-//   return (
-//     <Grid container direction="row">
-//       <Grid className="Cell">{playerName}</Grid>
-//       <Grid className="Cell">{playerAnswer}</Grid>
-//       <Grid className="Cell">{answerVotes || ""}</Grid>
-//     </Grid>
-//   );
-// }
-
-function ScoreRow() {
-  return (
-    <Grid container direction="row">
-      
-    </Grid>
-  )
-}
-
 function ScoreCard() {
   return (
-    
-    <Grid container direction="column" >
-      <Grid>player-name</Grid>
-      <Grid>player-score</Grid>
+    <Grid
+      container
+      justify="center"
+      direction="column"
+      alignContent="center"
+      alignItems="center"
+      spacing={4}
+      xs={3}
+      className="ScoreCard"
+    >
+      <Box
+        borderRadius="100%"
+        width={1 / 2}
+        height={3 / 8}
+        className="ScoreCardCenter"
+      >
+        player
+        <br />
+        score
+      </Box>
     </Grid>
-  )
+  );
 }

@@ -1,52 +1,60 @@
 import React from "react";
-import { useState } from "react";
 import { Branding } from "../../../core-common/Branding";
 import "./AnswerPage.scss";
 import { PageProps } from "../PageProps";
+import { EmojiRow } from "../../../core/components/EmojiGame/EmojiAnswers";
 
 export function AnswerPage(props: PageProps) {
-  const answerList = props.state.EmojiGame.PlayerAnswers?.map(
-    (answer) => answer.answer
+  const { EmojiGame } = props.state;
+  const answerList = EmojiGame.PlayerAnswers?.map(
+    (answer) => answer.answerList
   );
-  const [questionString] = useState<String>("Enter a song name");
+  const questionString = EmojiGame.Question.Prompt || 'Loading..';
+  const subjectString = EmojiGame.Question.Subject || 'Use emoji to answer! ';
   return (
     <div className="AppTv">
       <Branding />
-      <Question questionString={questionString} />
-      <div className="AnswersContainer" style={{ maxHeight: "-webkit-fill-available" }}>
-        <Answers answerList={answerList} />
+      <Question questionString={questionString} subjectString={subjectString} />
+      <div
+        className="AnswersContainer"
+        style={{ maxHeight: "-webkit-fill-available" }}
+      >
+        <Answers playerAnswerList={answerList} />
       </div>
     </div>
   );
 }
 
-function Question(props: { questionString: String }) {
-  const { questionString } = props;
+function Question(props: { questionString: string; subjectString: string; }) {
+  const { questionString, subjectString } = props;
   return (
     <div className="Question">
+      <h3 className="SubjectString">{subjectString}</h3>
       <h2 className="QuestionString">{questionString}</h2>
     </div>
   );
 }
 
-function Answers(props: { answerList: String[] | undefined }) {
-  const { answerList } = props;
+function Answers(props: {
+  playerAnswerList: (string[] | undefined)[] | undefined;
+}) {
+  const { playerAnswerList } = props;
 
   let displacements: number[] = [];
 
-  if (answerList) {
-    for (let index = 0; index < answerList.length; index++) {
+  if (playerAnswerList) {
+    for (let index = 0; index < playerAnswerList.length; index++) {
       displacements.push((Math.random() - 0.5) * 150);
     }
   }
 
   const answers = (
     <ul
-      className="AnswerList"
+      className="answerList"
       style={{ listStylePosition: "inside", paddingLeft: 0 }}
     >
-      {answerList &&
-        answerList.map((answer, idx) => (
+      {playerAnswerList &&
+        playerAnswerList.map((answerList) => (
           <li style={{ alignContent: "centre" }}>
             <text
               style={{
@@ -54,7 +62,7 @@ function Answers(props: { answerList: String[] | undefined }) {
                 height: "0.8vh",
               }}
             >
-              {answer}
+              {answerList && <EmojiRow emojiList={answerList} />}
             </text>
           </li>
         ))}

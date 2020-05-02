@@ -1,19 +1,5 @@
 @import "../../../core/styles/variables.sass";
 
-/* duplicate? */
-.players { 
-  background-color: $page-bg-color;
-  min-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: $text-light;
-  padding-top: 30%;
-  padding-bottom: 30%;
-}
-
 .WaitingRoomMessage {
   background-color: $page-bg-color;
   min-height: 90vh;
@@ -23,6 +9,7 @@
   justify-content: center;
   font-size: calc(5px + 2vmin);
   color: $text-light;
+  height: 100%;
 }
 
 .WaitingRoomMessage h3 {
@@ -37,6 +24,10 @@
 
 .WaitingRoomMessage h1 span {
   color: $text-light;
+}
+
+.WaitingPlayersList {
+  background-color: $header-color;
 }
 
 [class^="player-"] {

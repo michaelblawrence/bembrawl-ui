@@ -1,5 +1,11 @@
 @import "../core/styles/variables.sass";
 
+body {
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
 .Window {
   background-color: $window-color;
   min-height: 100vh;

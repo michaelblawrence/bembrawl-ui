@@ -3,6 +3,7 @@ import { Branding } from "../../../core-common/Branding";
 import { Grid } from "@material-ui/core";
 import "./ResultsPage.scss";
 import { PageProps } from "../PageProps";
+import { Emoji } from "emoji-mart";
 
 export function ResultsPage(props: PageProps) {
   const { EmojiGame, RoomInfo } = props.state;
@@ -10,7 +11,6 @@ export function ResultsPage(props: PageProps) {
   const playerAnswers = EmojiGame.PlayerAnswers;
   // Todo: refactor state methods (e.g. get user name from ID)
   const playerAnswersWithNames = playerAnswers?.map((answer) => {
-    console.log(RoomInfo.players, answer.playerIndex);
     const playerName = RoomInfo.players.find(
       (player) => player.playerIndex === answer.playerIndex
     )?.playerName;
@@ -28,9 +28,9 @@ export function ResultsPage(props: PageProps) {
         container
         direction="column"
         alignContent="center"
+        alignItems="center"
         justify="center"
         className="ResultsTable"
-        alignItems="center"
       >
         <Grid container direction="row">
           <Grid item xs={4} className="ColumnTitle">
@@ -46,13 +46,13 @@ export function ResultsPage(props: PageProps) {
         {sortedResults?.map((answer) => (
           <Row
             playerName={answer.playerName || "Unknown"}
-            playerAnswer={answer.answer || "Unknown"}
+            playerAnswer={answer.answerList && answer.answerList}
             answerVotes={answer.votes || 0}
           />
         )) || ( // TODO: add a separate component for Waiting message? like the branding banner?
           <Row
             playerName={""}
-            playerAnswer={"Waiting..."}
+            playerAnswer={undefined}
             answerVotes={0}
             hideScores={true}
           />
@@ -63,9 +63,9 @@ export function ResultsPage(props: PageProps) {
 }
 
 function Row(props: {
-  playerName: String;
-  playerAnswer: String;
-  answerVotes: Number;
+  playerName: string;
+  playerAnswer: string[] | undefined;
+  answerVotes: number;
   hideScores?: boolean;
 }) {
   const { playerName, playerAnswer, answerVotes, hideScores } = props;
@@ -75,7 +75,10 @@ function Row(props: {
         {playerName}
       </Grid>
       <Grid item xs={4} className="Cell">
-        {playerAnswer}
+        {playerAnswer &&
+          playerAnswer.map((emoji) => (
+            <Emoji emoji={emoji} set={"apple"} size={40} />
+          ))}
       </Grid>
       {!hideScores && (
         <Grid item xs={4} className="Cell">
