@@ -4,7 +4,7 @@ import "./AppTV.scss";
 import { Helmet } from "react-helmet";
 import { PlayersWaitingRoomPage } from "./features/PlayersWaitingRoomPage/PlayersWaitingRoomPage";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
-import { InitialHostState, HostState } from "./features/PageProps";
+import { InitialHostState, HostState, TestHostState } from "./features/PageProps";
 import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 import { ResultsPage } from "./features/Results/ResultsPage";
@@ -13,10 +13,18 @@ import { EndScores } from "./features/EndScores/EndScores";
 import { isDev, setHostPage } from "../core/dev/routing";
 
 function AppTV() {
+  if (process.env.REACT_APP_TEST_MODE){
+    
+  }
+  else {}
+
+  const HostState = process.env.REACT_APP_TEST_MODE ? TestHostState :InitialHostState   
+
   let [page, state, setMessage] = useServerPageFSM(
     PageState.WaitingForUsers,
-    InitialHostState
+    HostState
   );
+
 
   return (
     <div className="Window-AppTv">

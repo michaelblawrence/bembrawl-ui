@@ -66,6 +66,7 @@ export class HostClientService {
           return {
             playerIndex,
             playerName: player.playerName || `Player ${playerIndex}`,
+            // playerId: player.playerId
           };
         });
         this.stateService.pushState(state);

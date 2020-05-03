@@ -42,5 +42,5 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
 
 async function startHostClientService(hostClientService: HostClientService) {
   if (!hostClientService) return;
-  await hostClientService.connect();
+  if (!process.env.REACT_APP_TEST_MODE) await hostClientService.connect();
 }

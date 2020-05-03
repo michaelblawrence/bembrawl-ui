@@ -1,1 +1,0 @@
-const PLAYERS=10;

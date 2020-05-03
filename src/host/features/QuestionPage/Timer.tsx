@@ -3,8 +3,6 @@ import { LinearProgress } from "@material-ui/core";
 
 export default function Timer({ duration }: { duration: number }) {
   const [counterMs, setCounterMs] = React.useState(duration * 1000);
-  // const [timeLeft, setTimeLeft] = React.useState(0);
-  // let timeLeft = 60;
 
   React.useEffect(() => {
     if (counterMs > 0) {

@@ -2,6 +2,8 @@ import { PageState as HostPageState } from "../../host/enums/PageState";
 import { PageState as MobilePageState } from "../../mobile/enums/PageState";
 
 export function isDev() {
+  if (process.env.REACT_APP_TEST_MODE) return true
+  // Deprecated: set environment variable instead?
   const href = document.location.href;
   const trimmed = href.endsWith("/")
     ? href.substring(0, href.length - 1)
@@ -16,6 +18,7 @@ export function setHostPage() {
     const href = document.location.href;
     let splitUrl = href.split("/");
     const lastPath = splitUrl[splitUrl.length - 1];
+    if (!lastPath) return page
     const re = RegExp(lastPath, "g");
     
     Object.values(HostPageState).map((item) => {
@@ -32,6 +35,7 @@ export function setMobilePage() {
     const href = document.location.href;
     let splitUrl = href.split("/");
     const lastPath = splitUrl[splitUrl.length - 1];
+    if (!lastPath) return page
     const re = RegExp(lastPath, "g");
     Object.values(MobilePageState).map((item) => {
       if (re.exec(item.toLowerCase())) {
