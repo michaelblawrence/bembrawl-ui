@@ -1444,10 +1444,10 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
-"@types/emoji-mart@2.11.3":
-  version "2.11.3"
-  resolved "https://registry.yarnpkg.com/@types/emoji-mart/-/emoji-mart-2.11.3.tgz#9949f6a8a231aea47aac1b2d4212597b41140b07"
-  integrity sha512-pRlU6+CFIB+9+FwjGGCVtDQq78u7N0iUijrO0Qh1j9RJ6T23DSNNfe0X6kf81N4ubVhF9jVckCI1M3kHpkwjqA==
+"@types/emoji-mart@2.11.2":
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/@types/emoji-mart/-/emoji-mart-2.11.2.tgz#2971ef096645d71f8a3de13b8bad4f08017d075f"
+  integrity sha512-IH6qxSRrmOCWoZrJp8+BmxxEDkpOlo0Ui4/vdf5Ks/uJtMHLi1dh06XCpBRUU6lkrcKDI8Akmbuunk+yG9/WNg==
   dependencies:
     "@types/react" "*"
 
@@ -3949,7 +3949,7 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-emoji-mart@2.11.3:
+emoji-mart@2.11.2:
   version "2.11.2"
   resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-2.11.2.tgz#ed331867f7f55bb33c8421c9a493090fa4a378c7"
   integrity sha512-IdHZR5hc3mipTY/r0ergtqBgQ96XxmRdQDSg7fsL+GiJQQ4akMws6+cjLSyIhGQxtvNuPVNaEQiAlU00NsyZUg==
