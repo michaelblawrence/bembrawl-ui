@@ -1,0 +1,41 @@
+@import "../../../../core/styles/variables.sass";
+
+.PromptInputSlot {
+  background-color: $input-slot-color;
+  height: 18vh;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: $text-light;
+}
+
+.PromptInputButton {
+  top: 18px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .PromptInputSlot-SubmitTextField {
+    &.shake {
+      animation: SubmitTextField-Shake infinite 0.15s
+        cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+}
+
+@keyframes SubmitTextField-Shake {
+  0% {
+    transform: translateX(0px);
+  }
+  25% {
+    transform: translateX(8px);
+  }
+  50% {
+    transform: translateX(0px);
+  }
+  75% {
+    transform: translateX(-8px);
+  }
+}

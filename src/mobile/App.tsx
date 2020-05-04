@@ -12,7 +12,7 @@ import { InitialPlayerState, PlayerState } from "./features/PageProps";
 import { isDev, setMobilePage } from "../core/dev/routing";
 
 const testingPage = document.location.pathname.endsWith("/test")
-  ? PageState.SetPrompt
+  ? PageState.PlayersAnswer
   : null;
 
 function App() {
