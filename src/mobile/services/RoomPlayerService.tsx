@@ -2,11 +2,11 @@ import { PageState } from "../enums/PageState";
 import { ConnectionHealthTracker } from "../../core/server/ConnectionHealthTracker";
 import { PlayerState } from "../features/PageProps";
 import { HostClientStateService } from "../../core/server/HostClientStateService";
-import { PlayerHostClient } from "../HostClient";
+import { RoomPlayerClient } from "../HostClient";
 import { ConnectionInfo } from "../../core/configs/HostConnectionConfig";
 
 export class RoomPlayerService {
-  private readonly client: PlayerHostClient = new PlayerHostClient();
+  private readonly client: RoomPlayerClient = new RoomPlayerClient();
 
   constructor(
     private readonly connectionInfo: ConnectionInfo,

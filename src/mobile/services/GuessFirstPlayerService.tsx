@@ -2,11 +2,11 @@ import { PageState } from "../enums/PageState";
 import { ConnectionHealthTracker } from "../../core/server/ConnectionHealthTracker";
 import { PlayerState } from "../features/PageProps";
 import { HostClientStateService } from "../../core/server/HostClientStateService";
-import { EmojiPlayerClient } from "../HostClient";
+import { GuessFirstPlayerClient } from "../HostClient";
 import { ConnectionInfo } from "../../core/configs/HostConnectionConfig";
 
-export class EmojiPlayerService {
-  private readonly client: EmojiPlayerClient = new EmojiPlayerClient();
+export class GuessFirstPlayerService {
+  private readonly client: GuessFirstPlayerClient = new GuessFirstPlayerClient();
 
   constructor(
     private readonly connectionInfo: ConnectionInfo,
@@ -21,6 +21,23 @@ export class EmojiPlayerService {
     this.transitionPage(PageState.WaitingRoom);
     const info = this.connectionInfo;
     await this.client.newPrompt(promptResponse, promptSubject, info);
+  }
+
+  public async submitPromptMatch(
+    promptAnswer: string,
+    promptEmoji: string,
+    promptSubject: string
+  ) {
+    if (!this.connectionInfo) return;
+
+    this.transitionPage(PageState.WaitingRoom);
+    const info = this.connectionInfo;
+    await this.client.promptMatch(
+      promptAnswer,
+      promptEmoji,
+      promptSubject,
+      info
+    );
   }
 
   public async submitResponseEmoji(emoji: string[]) {

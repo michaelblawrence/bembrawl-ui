@@ -17,6 +17,7 @@ import {
 } from "./handlers/ClientMessageHandler";
 import { EmojiPlayerService } from "./services/EmojiPlayerService";
 import { RoomPlayerService } from "./services/RoomPlayerService";
+import { GuessFirstPlayerService } from "./services/GuessFirstPlayerService";
 
 export class PlayersClientConstants {
   public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
@@ -34,8 +35,9 @@ export class HostClientService {
   private pageSetter: StateSetter<PageState>;
   private connectionInfo: ConnectionInfo | null = null;
   private pageStatusHandle: number | null = null;
-  private emojiMobileService: EmojiPlayerService | null = null;
-  private roomMobileService: RoomPlayerService | null = null;
+  private emojiPlayerService: EmojiPlayerService | null = null;
+  private roomPlayerService: RoomPlayerService | null = null;
+  private guessFirstPlayerService: GuessFirstPlayerService | null = null;
 
   constructor(
     stateSetter: StateSetter<PlayerState>,
@@ -43,8 +45,8 @@ export class HostClientService {
   ) {
     this.connectionHealthTracker = new ConnectionHealthTracker();
     this.connection = new HostClientConnection({
-      registerUrl: PlayerClientRoutes.URL_API_ROUTE_PLAYER_REGISTER,
-      keepAliveUrl: PlayerClientRoutes.URL_API_ROUTE_KEEP_ALIVE,
+      registerUrl: PlayerClientRoutes.API_PLAYER_REGISTER,
+      keepAliveUrl: PlayerClientRoutes.API_KEEP_ALIVE,
       promptReconnect: () => this.transitionPage(PageState.JoinRoom),
     });
     this.stateService = new HostClientStateService<PlayerState>(
@@ -58,23 +60,28 @@ export class HostClientService {
     this.clientMessageHandler = new ClientMessageHandler();
   }
 
-  public async connect() {
-    this.connectionInfo = await this.connection.connect(); // this info can change? do we need to register this with connection
+  public emojiSvc(): EmojiPlayerService | null {
+    return this.getOrDefault(
+      this.emojiPlayerService,
+      (svc) => (this.emojiPlayerService = svc),
+      () => this.resolveService((...a) => new EmojiPlayerService(...a))
+    );
   }
 
-  public onMessageReceived(msg: ClientMessage) {
-    const connectionInfo = this.connectionInfo;
-    if (!connectionInfo) {
-      console.error("got message without connection?");
-      return;
-    }
-    const state = this.stateService.getState();
-    const ctx: MessageToProps = (msg) => ({ connectionInfo, msg, state });
+  public guessFirstSvc(): GuessFirstPlayerService | null {
+    return this.getOrDefault(
+      this.guessFirstPlayerService,
+      (svc) => (this.guessFirstPlayerService = svc),
+      () => this.resolveService((...a) => new GuessFirstPlayerService(...a))
+    );
+  }
 
-    let msgUpdate = this.handleMessage(msg, ctx);
-
-    if (msgUpdate.state) this.stateService.pushState(msgUpdate.state);
-    if (msgUpdate.page) this.transitionPage(msgUpdate.page);
+  public roomSvc(): RoomPlayerService | null {
+    return this.getOrDefault(
+      this.roomPlayerService,
+      (svc) => (this.roomPlayerService = svc),
+      () => this.resolveService((...a) => new RoomPlayerService(...a))
+    );
   }
 
   private handleMessage(
@@ -97,31 +104,34 @@ export class HostClientService {
     }
   }
 
+  public async connect() {
+    this.connectionInfo = await this.connection.connect(); // this info can change? do we need to register this with connection
+  }
+
+  public onMessageReceived(msg: ClientMessage) {
+    const connectionInfo = this.connectionInfo;
+    if (!connectionInfo) {
+      console.error("got message without connection?");
+      return;
+    }
+    const state = this.stateService.getState();
+    const ctx: MessageToProps = (msg) => ({ connectionInfo, msg, state });
+
+    let msgUpdate = this.handleMessage(msg, ctx);
+
+    if (msgUpdate.state) this.stateService.pushState(msgUpdate.state);
+    if (msgUpdate.page) this.transitionPage(msgUpdate.page);
+  }
+
   public dispose() {
-    if (this.pageStatusHandle) {
-      clearInterval(this.pageStatusHandle);
-      this.pageStatusHandle = null;
-    }
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    if (this.pageStatusHandle) clearInterval(this.pageStatusHandle);
+    this.pageStatusHandle = null;
+    this.subscription?.unsubscribe();
     this.connection.dispose();
   }
 
-  public registerPage(page: PageState, setPage: StateSetter<PageState>) {
+  public registerPage(setPage: StateSetter<PageState>) {
     this.pageSetter = setPage;
-  }
-
-  public emojiSvc(): EmojiPlayerService | null {
-    const svc = () =>
-      this.resolveService((...a) => new EmojiPlayerService(...a));
-    return (this.emojiMobileService = this.emojiMobileService || svc());
-  }
-
-  public roomSvc(): RoomPlayerService | null {
-    const svc = () =>
-      this.resolveService((...a) => new RoomPlayerService(...a));
-    return (this.roomMobileService = this.roomMobileService || svc());
   }
 
   private transitionPage(newPage: PageState) {
@@ -132,6 +142,22 @@ export class HostClientService {
         "wasn't registered to be able to change page. transition failed"
       );
     }
+  }
+
+  private getOrDefault<TSvc>(
+    value: TSvc | null,
+    setter: (newValue: TSvc) => void,
+    factory: (
+      p1: ConnectionInfo,
+      p2: HostClientStateService<PlayerState>,
+      p3: ConnectionHealthTracker,
+      p4: (page: PageState) => void
+    ) => TSvc
+  ): TSvc | null {
+    if (value) return value;
+    const instance = this.resolveService(factory);
+    if (instance) setter(instance);
+    return instance;
   }
 
   private resolveService<TSvc>(
@@ -147,7 +173,7 @@ export class HostClientService {
       this.connectionInfo,
       this.stateService,
       this.connectionHealthTracker,
-      page => this.transitionPage(page)
+      (page) => this.transitionPage(page)
     );
   }
 }

@@ -21,9 +21,9 @@ export function useServerPageFSM(
 
   useEffect(() => {
     if (svc) {
-      svc.registerPage(page, setPage);
+      svc.registerPage(setPage);
     }
-  }, [page, setPage, svc]);
+  }, [setPage, svc]);
 
   return [page, state, mapServiceToMessages(svc)];
 }
@@ -32,6 +32,7 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
   if (!svc) return DefaultMessages;
   const emojiSvc = () => svc.emojiSvc();
   const roomSvc = () => svc.roomSvc();
+  const guessFirstSvc = () => svc.guessFirstSvc();
   return {
     JoinRoom: ({ payload }) => roomSvc()?.joinRoom(payload.roomId),
     CloseRoom: () => roomSvc()?.closeRoom(),
@@ -43,7 +44,7 @@ function mapServiceToMessages(svc: HostClientService | null): Messages {
         payload.promptSubject
       ),
     SubmitPromptMatch: ({ payload }) =>
-      emojiSvc()?.submitPromptMatch(
+      guessFirstSvc()?.submitPromptMatch(
         payload.promptAnswer,
         payload.promptEmoji,
         payload.promptSubject
