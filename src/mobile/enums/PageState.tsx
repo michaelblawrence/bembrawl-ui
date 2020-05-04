@@ -24,6 +24,12 @@ export interface SubmitNewPromptMessage {
   promptSubject: string;
 }
 
+export interface SubmitSubmitPromptMatchMessage {
+  promptEmoji: string;
+  promptSubject: string;
+  promptAnswer: string;
+}
+
 export interface SubmitEmojiAnswerMessage {
   emoji: string[];
 }
@@ -40,6 +46,17 @@ export type Messages = {
   CloseRoom: MessageSetter<EmptyMessage>;
   ChangePlayerName: MessageSetter<ChangePlayerNameMessage>;
   SubmitNewPrompt: MessageSetter<SubmitNewPromptMessage>;
+  SubmitPromptMatch: MessageSetter<SubmitSubmitPromptMatchMessage>;
   SubmitEmojiAnswer: MessageSetter<SubmitEmojiAnswerMessage>;
-  submitEmojiVotes: MessageSetter<SubmitEmojiVotesMessage>;
+  SubmitEmojiVotes: MessageSetter<SubmitEmojiVotesMessage>;
+};
+
+export const DefaultMessages: Messages = {
+  JoinRoom: () => {},
+  CloseRoom: () => {},
+  ChangePlayerName: () => {},
+  SubmitNewPrompt: () => {},
+  SubmitPromptMatch: () => {},
+  SubmitEmojiAnswer: () => {},
+  SubmitEmojiVotes: () => {},
 };

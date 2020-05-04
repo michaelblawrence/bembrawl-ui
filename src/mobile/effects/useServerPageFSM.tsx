@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PageState, Messages } from "../enums/PageState";
+import { PageState, Messages, DefaultMessages } from "../enums/PageState";
 import { HostClientService } from "../HostClientService";
 import { PlayerState } from "../features/PageProps";
 
@@ -12,7 +12,7 @@ export function useServerPageFSM(
   const [svc, setSvc] = useState<HostClientService | null>(null);
 
   useEffect(() => {
-    const hostClientService = new HostClientService(setState);
+    const hostClientService = new HostClientService(setState, setPage);
     setSvc(hostClientService);
     startHostClientService(hostClientService);
 
@@ -28,24 +28,30 @@ export function useServerPageFSM(
   return [page, state, mapServiceToMessages(svc)];
 }
 
-const defaultMessages: Messages = {
-  JoinRoom: () => {},
-  CloseRoom: () => {},
-  ChangePlayerName: () => {},
-  SubmitNewPrompt: () => {},
-  SubmitEmojiAnswer: () => {},
-  submitEmojiVotes: () => {},
-};
-
 function mapServiceToMessages(svc: HostClientService | null): Messages {
-  if (!svc) return defaultMessages;
+  if (!svc) return DefaultMessages;
+  const emojiSvc = () => svc.emojiSvc();
+  const roomSvc = () => svc.roomSvc();
   return {
-    JoinRoom: (msg) => svc.joinRoom(msg.payload.roomId),
-    CloseRoom: () => svc.closeRoom(),
-    ChangePlayerName: (msg) => svc.changePlayerName(msg.payload.playerName),
-    SubmitNewPrompt: (msg) => svc.submitNewPrompt(msg.payload.promptResponse, msg.payload.promptSubject),
-    SubmitEmojiAnswer: (msg) => svc.submitResponseEmoji(msg.payload.emoji),
-    submitEmojiVotes: (msg) => svc.submitEmojiVotes(msg.payload.playerIdVotes),
+    JoinRoom: ({ payload }) => roomSvc()?.joinRoom(payload.roomId),
+    CloseRoom: () => roomSvc()?.closeRoom(),
+    ChangePlayerName: ({ payload }) =>
+      roomSvc()?.changePlayerName(payload.playerName),
+    SubmitNewPrompt: ({ payload }) =>
+      emojiSvc()?.submitNewPrompt(
+        payload.promptResponse,
+        payload.promptSubject
+      ),
+    SubmitPromptMatch: ({ payload }) =>
+      emojiSvc()?.submitPromptMatch(
+        payload.promptAnswer,
+        payload.promptEmoji,
+        payload.promptSubject
+      ),
+    SubmitEmojiAnswer: ({ payload }) =>
+      emojiSvc()?.submitResponseEmoji(payload.emoji),
+    SubmitEmojiVotes: ({ payload }) =>
+      emojiSvc()?.submitEmojiVotes(payload.playerIdVotes),
   };
 }
 
