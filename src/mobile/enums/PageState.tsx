@@ -24,7 +24,7 @@ export interface SubmitNewPromptMessage {
   promptSubject: string;
 }
 
-export interface SubmitSubmitPromptMatchMessage {
+export interface SubmitPromptMatchMessage {
   promptEmoji: string;
   promptSubject: string;
   promptAnswer: string;
@@ -46,7 +46,7 @@ export type Messages = {
   CloseRoom: MessageSetter<EmptyMessage>;
   ChangePlayerName: MessageSetter<ChangePlayerNameMessage>;
   SubmitNewPrompt: MessageSetter<SubmitNewPromptMessage>;
-  SubmitPromptMatch: MessageSetter<SubmitSubmitPromptMatchMessage>;
+  SubmitPromptMatch: MessageSetter<SubmitPromptMatchMessage>;
   SubmitEmojiAnswer: MessageSetter<SubmitEmojiAnswerMessage>;
   SubmitEmojiVotes: MessageSetter<SubmitEmojiVotesMessage>;
 };

@@ -2,6 +2,7 @@ import { PageState } from "../enums/PageState";
 import {
   PlayerState,
   LastJoinedPlayerNotification,
+  GameType,
 } from "../features/PageProps";
 import {
   ClientMessage,
@@ -72,6 +73,7 @@ export class ClientMessageHandler {
       connectionInfo?.deviceGuid === msg.payload.initialPromptPlayer.playerId;
     state.EmojiGame.promptPlayerAnswersEmoji =
       msg.payload.promptPlayerAnswersEmoji;
+    state.RoomInfo.gameType = GameType.Emoji;
     if (isPromptPlayer) {
       return { state, page: PageState.SetPrompt };
     } else {

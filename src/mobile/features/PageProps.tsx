@@ -53,6 +53,7 @@ export interface PlayerInfoState {
 }
 
 export interface RoomInfoState {
+  gameType: GameType;
   roomId?: string;
   isJoining: boolean;
   isOpen?: boolean;
@@ -68,6 +69,12 @@ export interface EmojiAnswer {
   playerId: string;
   responseEmoji: string[];
   sessionVotes?: number;
+}
+
+export enum GameType {
+  None,
+  Emoji,
+  GuessFirst
 }
 
 export const InitialPlayerState: PlayerState = {
@@ -97,6 +104,7 @@ export const InitialPlayerState: PlayerState = {
     isMaster: false,
   },
   RoomInfo: {
+    gameType: GameType.None,
     isJoining: false,
     playerCount: 0,
   },

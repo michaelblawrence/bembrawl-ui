@@ -84,6 +84,10 @@ export class HostClientService {
     );
   }
 
+  public async connect() {
+    this.connectionInfo = await this.connection.connect(); // this info can change? do we need to register this with connection
+  }
+
   private handleMessage(
     msg: ClientMessage,
     ctx: MessageToProps
@@ -104,11 +108,7 @@ export class HostClientService {
     }
   }
 
-  public async connect() {
-    this.connectionInfo = await this.connection.connect(); // this info can change? do we need to register this with connection
-  }
-
-  public onMessageReceived(msg: ClientMessage) {
+  private onMessageReceived(msg: ClientMessage) {
     const connectionInfo = this.connectionInfo;
     if (!connectionInfo) {
       console.error("got message without connection?");

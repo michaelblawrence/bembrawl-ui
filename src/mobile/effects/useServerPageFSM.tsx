@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { PageState, Messages, DefaultMessages } from "../enums/PageState";
 import { HostClientService } from "../HostClientService";
 import { PlayerState } from "../features/PageProps";
+import { MessagesMapper } from "./messages/MessagesMapper";
 
 export function useServerPageFSM(
   initialPage: PageState,
@@ -25,35 +26,17 @@ export function useServerPageFSM(
     }
   }, [setPage, svc]);
 
-  return [page, state, mapServiceToMessages(svc)];
+  const messages = mapServiceToMessages(svc, state);
+  return [page, state, messages];
 }
 
-function mapServiceToMessages(svc: HostClientService | null): Messages {
+function mapServiceToMessages(
+  svc: HostClientService | null,
+  state: PlayerState
+): Messages {
   if (!svc) return DefaultMessages;
-  const emojiSvc = () => svc.emojiSvc();
-  const roomSvc = () => svc.roomSvc();
-  const guessFirstSvc = () => svc.guessFirstSvc();
-  return {
-    JoinRoom: ({ payload }) => roomSvc()?.joinRoom(payload.roomId),
-    CloseRoom: () => roomSvc()?.closeRoom(),
-    ChangePlayerName: ({ payload }) =>
-      roomSvc()?.changePlayerName(payload.playerName),
-    SubmitNewPrompt: ({ payload }) =>
-      emojiSvc()?.submitNewPrompt(
-        payload.promptResponse,
-        payload.promptSubject
-      ),
-    SubmitPromptMatch: ({ payload }) =>
-      guessFirstSvc()?.submitPromptMatch(
-        payload.promptAnswer,
-        payload.promptEmoji,
-        payload.promptSubject
-      ),
-    SubmitEmojiAnswer: ({ payload }) =>
-      emojiSvc()?.submitResponseEmoji(payload.emoji),
-    SubmitEmojiVotes: ({ payload }) =>
-      emojiSvc()?.submitEmojiVotes(payload.playerIdVotes),
-  };
+  const messageMapper = new MessagesMapper(svc, state);
+  return messageMapper.map();
 }
 
 async function startHostClientService(hostClientService: HostClientService) {
