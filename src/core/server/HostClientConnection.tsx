@@ -64,10 +64,15 @@ export class HostClientConnection {
         deviceId: this.deviceGuid,
       });
       this.accessToken = resp.token;
-      this.pushMessageToObservers({
-        type: MessageTypes.CONNECT_SUCCESS,
-        payload: { joinId: ((resp as any) || {}).joinId }, // fix type
-      });
+      const joinId: number | undefined = ((resp as any) || {}).joinId; // fix type
+      setTimeout(
+        () =>
+          this.pushMessageToObservers({
+            type: MessageTypes.CONNECT_SUCCESS,
+            payload: { joinId },
+          }),
+        50
+      );
     } catch (ex) {
       if (this.shouldRetry("Can't call connect on server")) {
         await asyncWait(HostClientConstants.INTERVAL_API_RECONNECT);
@@ -158,8 +163,7 @@ export class HostClientConnection {
         messages?: ClientMessage[];
       } = await HttpClient.postJson(
         this.config.keepAliveUrl,
-        {
-        },
+        {},
         this.accessToken
       );
       this.connectionHealthTracker.addSuccessfulAttempt();

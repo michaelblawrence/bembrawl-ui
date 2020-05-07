@@ -2,8 +2,8 @@ import { PageState } from "../enums/PageState";
 import {
   PlayerState,
   LastJoinedPlayerNotification,
-  GameType,
 } from "../features/PageProps";
+import { GameType } from "../../core/enums/GameType";
 import {
   ClientMessage,
   JoinedPlayerMessage,
@@ -12,7 +12,7 @@ import {
   EmojiGameStartedMessage,
   RoomReadyMessage,
 } from "../../core/server/server.types";
-import { ConnectionInfo } from "../../core/configs/HostConnectionConfig";
+import { CoreMessageProps } from "../../core/model/types";
 
 export class PlayersClientConstants {
   public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
@@ -23,11 +23,13 @@ export interface MessageUpdate {
   page?: PageState;
 }
 
-export interface MessageProps<T extends ClientMessage> {
-  state: PlayerState;
-  msg: T;
-  connectionInfo: ConnectionInfo;
-}
+export interface MessageEffects {}
+
+export type MessageProps<T extends ClientMessage> = CoreMessageProps<
+  PlayerState,
+  MessageEffects,
+  T
+>;
 
 export class ClientMessageHandler {
   public ROOM_READY({ state }: MessageProps<RoomReadyMessage>): MessageUpdate {

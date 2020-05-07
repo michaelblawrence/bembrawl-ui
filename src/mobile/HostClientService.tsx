@@ -115,7 +115,12 @@ export class HostClientService {
       return;
     }
     const state = this.stateService.getState();
-    const ctx: MessageToProps = (msg) => ({ connectionInfo, msg, state });
+    const ctx: MessageToProps = (msg) => ({
+      connectionInfo,
+      effects: {},
+      msg,
+      state,
+    });
 
     let msgUpdate = this.handleMessage(msg, ctx);
 

@@ -1,4 +1,5 @@
 import { Messages } from "../enums/PageState";
+import { GameType } from "../../core/enums/GameType";
 
 export interface PageProps {
   setMessage: Messages;
@@ -69,12 +70,6 @@ export interface EmojiAnswer {
   playerId: string;
   responseEmoji: string[];
   sessionVotes?: number;
-}
-
-export enum GameType {
-  None,
-  Emoji,
-  GuessFirst
 }
 
 export const InitialPlayerState: PlayerState = {

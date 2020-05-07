@@ -11,7 +11,8 @@ import {
 import { HostClientService } from "../../HostClientService";
 import { EmojiPlayerService } from "../../services/EmojiPlayerService";
 import { GuessFirstPlayerService } from "../../services/GuessFirstPlayerService";
-import { PlayerState, GameType } from "../../features/PageProps";
+import { PlayerState } from "../../features/PageProps";
+import { GameType } from "../../../core/enums/GameType";
 
 export class MessagesMapper {
   currentGameSvc: () => EmojiPlayerService | GuessFirstPlayerService;
