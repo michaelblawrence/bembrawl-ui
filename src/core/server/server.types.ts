@@ -14,7 +14,6 @@ export enum MessageTypes {
     EMOJI_ALL_RESPONSES = "EMOJI_ALL_RESPONSES",
     EMOJI_VOTING_RESULTS = "EMOJI_VOTING_RESULTS",
     GUESS_FIRST_GAME_STARTED = "GUESS_FIRST_GAME_STARTED",
-    GUESS_FIRST_NEW_PROMPT = "GUESS_FIRST_NEW_PROMPT",
     GUESS_FIRST_MATCH_PROMPT = "GUESS_FIRST_MATCH_PROMPT",
     GUESS_FIRST_ALL_RESPONSES = "GUESS_FIRST_ALL_RESPONSES",
     GUESS_FIRST_VOTING_RESULTS = "GUESS_FIRST_VOTING_RESULTS",
@@ -36,7 +35,6 @@ export type EmojiGameMessages =
 
 export type GuessFirstGameMessages =
     | GuessFirstGameStartedMessage
-    | GuessFirstNewPromptMessage
     | GuessFirstMatchPromptMessage
     | GuessFirstAllResponsesMessage
     | GuessFirstVotingResultsMessage
@@ -153,16 +151,6 @@ export type GuessFirstGameStartedMessage = {
             playerJoinId: number;
             playerName: string | null;
         };
-    };
-};
-
-export type GuessFirstNewPromptMessage = {
-    type: MessageTypes.GUESS_FIRST_NEW_PROMPT;
-    payload: {
-        promptText: string;
-        promptSubject: string;
-        promptFromPlayerId: string;
-        timeoutMs: number;
     };
 };
 

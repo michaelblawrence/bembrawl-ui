@@ -105,8 +105,8 @@ export class HostClientService {
         return this.clientMessageHandler.EMOJI_ALL_RESPONSES(ctx(msg));
       case MessageTypes.GUESS_FIRST_GAME_STARTED:
         return this.clientMessageHandler.GUESS_FIRST_GAME_STARTED(ctx(msg));
-      case MessageTypes.GUESS_FIRST_NEW_PROMPT:
-        return this.clientMessageHandler.GUESS_FIRST_NEW_PROMPT(ctx(msg));
+      case MessageTypes.GUESS_FIRST_MATCH_PROMPT:
+        return this.clientMessageHandler.GUESS_FIRST_MATCH_PROMPT(ctx(msg));
       case MessageTypes.GUESS_FIRST_ALL_RESPONSES:
         return this.clientMessageHandler.GUESS_FIRST_ALL_RESPONSES(ctx(msg));
       default:

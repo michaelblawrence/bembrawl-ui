@@ -12,8 +12,8 @@ import {
   EmojiGameStartedMessage,
   RoomReadyMessage,
   GuessFirstGameStartedMessage,
-  GuessFirstNewPromptMessage,
   GuessFirstAllResponsesMessage,
+  GuessFirstMatchPromptMessage,
 } from "../../core/server/server.types";
 import { CoreMessageProps } from "../../core/model/types";
 
@@ -126,17 +126,18 @@ export class ClientMessageHandler {
     }
   }
 
-  public GUESS_FIRST_NEW_PROMPT({
+  public GUESS_FIRST_MATCH_PROMPT({
     state,
     msg,
     connectionInfo,
-  }: MessageProps<GuessFirstNewPromptMessage>): MessageUpdate {
+  }: MessageProps<GuessFirstMatchPromptMessage>): MessageUpdate {
     const wasPromptPlayer =
       connectionInfo?.deviceGuid === msg.payload.promptFromPlayerId;
-    state.GuessFirstGame.Question.Subject = msg.payload.promptSubject;
-    state.GuessFirstGame.Question.Prompt = msg.payload.promptText;
+    state.EmojiGame.Question.Subject = msg.payload.promptSubject;
+    state.EmojiGame.Question.Prompt = msg.payload.promptEmoji.join(" ");
+    state.EmojiGame.GuessFirst.Question.Secret = msg.payload.promptText;
 
-    if (wasPromptPlayer && !state.GuessFirstGame.promptPlayerAnswersEmoji) {
+    if (wasPromptPlayer && !state.EmojiGame.promptPlayerAnswersEmoji) {
       return { state, page: PageState.WaitingRoom };
     } else {
       return { state, page: PageState.PlayersAnswer };
@@ -147,7 +148,7 @@ export class ClientMessageHandler {
     state,
     msg,
   }: MessageProps<GuessFirstAllResponsesMessage>): MessageUpdate {
-    state.GuessFirstGame.Responses = msg.payload.correctResponses;
+    state.EmojiGame.GuessFirst.Responses = msg.payload.correctResponses;
     return { state, page: PageState.PlayersAnswerReview };
   }
 }

@@ -14,7 +14,6 @@ export enum LastJoinedPlayerNotification {
 
 export interface PlayerState {
   EmojiGame: EmojiGameState;
-  GuessFirstGame: GuessFirstGameState;
   PlayerInfo: PlayerInfoState;
   RoomInfo: RoomInfoState;
 }
@@ -29,23 +28,16 @@ export interface EmojiGameState {
     TimeoutMs?: number;
   };
   AnswerEmoji?: EmojiAnswer[];
+  GuessFirst: GuessFirstGameState;
   promptPlayerAnswersEmoji?: boolean;
   maxAvailableVotes?: number;
 }
 
 export interface GuessFirstGameState {
   Question: {
-    Prompt?: string;
-    PromptPlayerName?: string;
-    Subject?: string;
     Secret?: string;
-    SubjectChoices: string[];
-    EmojiCount: number;
-    TimeoutMs?: number;
   };
   Responses?: PlayerCorrectGuessResponse[];
-  promptPlayerAnswersEmoji?: boolean;
-  maxAvailableVotes?: number;
 }
 
 export interface PlayerInfoState {
@@ -84,16 +76,8 @@ export const InitialPlayerState: PlayerState = {
         "Something in the room",
       ],
     },
-  },
-  GuessFirstGame: {
-    Question: {
-      EmojiCount: 5,
-      SubjectChoices: [
-        "Song name",
-        "Film name",
-        "Someone in the room",
-        "Something in the room",
-      ],
+    GuessFirst: {
+      Question: {},
     },
   },
   PlayerInfo: {
