@@ -11,6 +11,9 @@ import {
   EmojiAllResponsesMessage,
   EmojiGameStartedMessage,
   RoomReadyMessage,
+  GuessFirstGameStartedMessage,
+  GuessFirstNewPromptMessage,
+  GuessFirstAllResponsesMessage,
 } from "../../core/server/server.types";
 import { CoreMessageProps } from "../../core/model/types";
 
@@ -71,11 +74,11 @@ export class ClientMessageHandler {
     msg,
     connectionInfo,
   }: MessageProps<EmojiGameStartedMessage>): MessageUpdate {
+    state.RoomInfo.gameType = GameType.Emoji;
     const isPromptPlayer =
       connectionInfo?.deviceGuid === msg.payload.initialPromptPlayer.playerId;
     state.EmojiGame.promptPlayerAnswersEmoji =
       msg.payload.promptPlayerAnswersEmoji;
-    state.RoomInfo.gameType = GameType.Emoji;
     if (isPromptPlayer) {
       return { state, page: PageState.SetPrompt };
     } else {
@@ -105,6 +108,46 @@ export class ClientMessageHandler {
     msg,
   }: MessageProps<EmojiAllResponsesMessage>): MessageUpdate {
     state.EmojiGame.AnswerEmoji = msg.payload.emojiResponses;
+    return { state, page: PageState.PlayersAnswerReview };
+  }
+
+  public GUESS_FIRST_GAME_STARTED({
+    state,
+    msg,
+    connectionInfo,
+  }: MessageProps<GuessFirstGameStartedMessage>): MessageUpdate {
+    state.RoomInfo.gameType = GameType.GuessFirst;
+    const isPromptPlayer =
+      connectionInfo?.deviceGuid === msg.payload.initialPromptPlayer.playerId;
+    if (isPromptPlayer) {
+      return { state, page: PageState.SetPrompt };
+    } else {
+      return { state, page: PageState.WaitingRoom };
+    }
+  }
+
+  public GUESS_FIRST_NEW_PROMPT({
+    state,
+    msg,
+    connectionInfo,
+  }: MessageProps<GuessFirstNewPromptMessage>): MessageUpdate {
+    const wasPromptPlayer =
+      connectionInfo?.deviceGuid === msg.payload.promptFromPlayerId;
+    state.GuessFirstGame.Question.Subject = msg.payload.promptSubject;
+    state.GuessFirstGame.Question.Prompt = msg.payload.promptText;
+
+    if (wasPromptPlayer && !state.GuessFirstGame.promptPlayerAnswersEmoji) {
+      return { state, page: PageState.WaitingRoom };
+    } else {
+      return { state, page: PageState.PlayersAnswer };
+    }
+  }
+
+  public GUESS_FIRST_ALL_RESPONSES({
+    state,
+    msg,
+  }: MessageProps<GuessFirstAllResponsesMessage>): MessageUpdate {
+    state.GuessFirstGame.Responses = msg.payload.correctResponses;
     return { state, page: PageState.PlayersAnswerReview };
   }
 }
