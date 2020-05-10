@@ -9,6 +9,10 @@ import {
   ConnectSuccessMessage,
   PlayerListMessage,
   EmojiVotingResultsMessage,
+  GuessFirstGameStartedMessage,
+  GuessFirstAllResponsesMessage,
+  GuessFirstVotingResultsMessage,
+  GuessFirstMatchPromptMessage,
 } from "../../core/server/server.types";
 import { CoreMessageProps } from "../../core/model/types";
 import { GameType } from "../../core/enums/GameType";
@@ -52,7 +56,7 @@ export class HostMessageHandler {
       console.error("register game without room id");
       return { page: PageState.WaitingForUsers };
     }
-    effects.register(GameType.Emoji, RoomInfo.roomId);
+    effects.register(GameType.GuessFirst, RoomInfo.roomId);
     return {};
   }
 
@@ -118,6 +122,71 @@ export class HostMessageHandler {
         (info) => info.playerId === playerAnswer.playerId
       );
       playerAnswer.votes = playerVotes?.voteCount;
+    }
+    return { state, page: PageState.Results };
+  }
+
+  public GUESS_FIRST_GAME_STARTED({
+    state,
+    msg,
+  }: MessageProps<GuessFirstGameStartedMessage>): MessageUpdate {
+    const { initialPromptPlayer } = msg.payload;
+    const promptPlayerId = initialPromptPlayer.playerJoinId + 1;
+    state.EmojiGame.Question.PromptPlayerName =
+      initialPromptPlayer.playerName || `Player ${promptPlayerId}`;
+    return { state, page: PageState.PlayersWaitingRoom };
+  }
+
+  public GUESS_FIRST_NEW_PROMPT({
+    state,
+    msg,
+  }: MessageProps<GuessFirstMatchPromptMessage>): MessageUpdate {
+    state.EmojiGame.Question = {
+      TimeoutMs: msg.payload.timeoutMs,
+      Subject: msg.payload.promptSubject,
+      Prompt: msg.payload.promptEmoji.join(" "),
+    };
+    state.EmojiGame.GuessFirst.Question = {
+      secret: msg.payload.promptText,
+      promptEmoji: msg.payload.promptEmoji,
+    };
+    return { state, page: PageState.Question };
+  }
+
+  public GUESS_FIRST_ALL_RESPONSES({
+    state,
+    msg,
+  }: MessageProps<GuessFirstAllResponsesMessage>): MessageUpdate {
+    state.EmojiGame.PlayerAnswers = msg.payload.correctResponses.map(
+      (correctResponse) => ({
+        playerId: correctResponse.playerId,
+        playerIndex: correctResponse.playerJoinId,
+      })
+    );
+    state.EmojiGame.GuessFirst.PlayerAnswers = msg.payload.correctResponses.map(
+      (correctResponse) => ({
+        playerId: correctResponse.playerId,
+        playerIndex: correctResponse.playerJoinId,
+      })
+    );
+    return { state, page: PageState.Answers };
+  }
+
+  public GUESS_FIRST_VOTING_RESULTS({
+    state,
+    msg,
+  }: MessageProps<GuessFirstVotingResultsMessage>): MessageUpdate {
+    for (const playerAnswer of state.EmojiGame.PlayerAnswers || []) {
+      const playerVotes = msg.payload.votes.find(
+        (info) => info.playerId === playerAnswer.playerId
+      );
+      playerAnswer.votes = playerVotes?.voteCount;
+    }
+    for (const playerAnswer of state.EmojiGame.GuessFirst.PlayerAnswers || []) {
+      const playerVotes = msg.payload.votes.find(
+        (info) => info.playerId === playerAnswer.playerId
+      );
+      playerAnswer.score = playerVotes?.voteCount;
     }
     return { state, page: PageState.Results };
   }

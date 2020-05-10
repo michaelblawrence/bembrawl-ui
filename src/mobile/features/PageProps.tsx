@@ -1,5 +1,6 @@
 import { Messages } from "../enums/PageState";
 import { GameType } from "../../core/enums/GameType";
+import { PlayerCorrectGuessResponse } from "../../core/server/server.types";
 
 export interface PageProps {
   setMessage: Messages;
@@ -42,7 +43,7 @@ export interface GuessFirstGameState {
     EmojiCount: number;
     TimeoutMs?: number;
   };
-  AnswerEmoji?: EmojiAnswer[];
+  Responses?: PlayerCorrectGuessResponse[];
   promptPlayerAnswersEmoji?: boolean;
   maxAvailableVotes?: number;
 }

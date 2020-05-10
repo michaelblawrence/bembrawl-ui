@@ -17,16 +17,27 @@ export interface HostState {
       playerIndex?: number; // TODO: delete when/if no longer in use
       playerId?: string;
       votes?: number;
-      answerList?: string[]
+      answerList?: string[];
     }[];
     GameDetails?: {
       PlayerScores: {
         playerId: string;
         playerScore: number;
-      }
+      };
       CurrentRound: number;
       TotalRounds: number;
-    }
+    };
+    GuessFirst: {
+      Question: {
+        promptEmoji?: string[];
+        secret?: string;
+      };
+      PlayerAnswers?: {
+        playerIndex?: number; // TODO: delete when/if no longer in use
+        playerId?: string;
+        score?: number;
+      }[];
+    };
   };
   RoomInfo: {
     roomId?: number;
@@ -42,7 +53,12 @@ export interface HostState {
 }
 
 export const InitialHostState: HostState = {
-  EmojiGame: { Question: {} },
+  EmojiGame: {
+    Question: {},
+    GuessFirst: {
+      Question: {},
+    },
+  },
   RoomInfo: {
     players: [],
   },
