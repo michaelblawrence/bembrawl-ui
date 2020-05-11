@@ -37,6 +37,7 @@ export interface HostState {
         playerId?: string;
         score?: number;
       }[];
+      PlayerGuesses: { text: string }[];
     };
   };
   RoomInfo: {
@@ -57,6 +58,7 @@ export const InitialHostState: HostState = {
     Question: {},
     GuessFirst: {
       Question: {},
+      PlayerGuesses: [],
     },
   },
   RoomInfo: {

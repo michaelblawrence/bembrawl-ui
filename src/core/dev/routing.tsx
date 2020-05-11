@@ -18,10 +18,10 @@ export function setHostPage() {
     const lastPath = splitUrl[splitUrl.length - 1];
     const re = RegExp(lastPath, "g");
     
-    Object.values(HostPageState).map((item) => {
+    Object.values(HostPageState).forEach((item) => {
       if (re.exec(item.toLowerCase())) {
         page = HostPageState[item];
-        return page;
+        return;
       }
     });
     return page;
@@ -33,10 +33,10 @@ export function setMobilePage() {
     let splitUrl = href.split("/");
     const lastPath = splitUrl[splitUrl.length - 1];
     const re = RegExp(lastPath, "g");
-    Object.values(MobilePageState).map((item) => {
+    Object.values(MobilePageState).forEach((item) => {
       if (re.exec(item.toLowerCase())) {
         page = MobilePageState[item];
-        return page;
+        return;
       }
     });
     return page;

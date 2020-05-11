@@ -187,7 +187,7 @@ export type GuessFirstVotingResultsMessage = {
 export type GuessFirstWrongAnswerMessage = {
     type: MessageTypes.GUESS_FIRST_WRONG_ANSWER;
     payload: {
-        promptText: string;
+        promptSubject: string;
         playerName: string;
         incorrectGuess: string;
     };
