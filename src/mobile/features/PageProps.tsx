@@ -36,7 +36,9 @@ export interface EmojiGameState {
 export interface GuessFirstGameState {
   Question: {
     Secret?: string;
+    PromptEmoji?: string[];
   };
+  notifyMessage?: string 
   Responses?: PlayerCorrectGuessResponse[];
 }
 

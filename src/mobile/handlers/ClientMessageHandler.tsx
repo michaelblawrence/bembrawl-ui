@@ -12,7 +12,6 @@ import {
   EmojiGameStartedMessage,
   RoomReadyMessage,
   GuessFirstGameStartedMessage,
-  GuessFirstAllResponsesMessage,
   GuessFirstMatchPromptMessage,
 } from "../../core/server/server.types";
 import { CoreMessageProps } from "../../core/model/types";
@@ -117,6 +116,7 @@ export class ClientMessageHandler {
     connectionInfo,
   }: MessageProps<GuessFirstGameStartedMessage>): MessageUpdate {
     state.RoomInfo.gameType = GameType.GuessFirst;
+    state.EmojiGame.promptPlayerAnswersEmoji = false;
     const isPromptPlayer =
       connectionInfo?.deviceGuid === msg.payload.initialPromptPlayer.playerId;
     if (isPromptPlayer) {
@@ -135,20 +135,14 @@ export class ClientMessageHandler {
       connectionInfo?.deviceGuid === msg.payload.promptFromPlayerId;
     state.EmojiGame.Question.Subject = msg.payload.promptSubject;
     state.EmojiGame.Question.Prompt = msg.payload.promptEmoji.join(" ");
+    state.EmojiGame.GuessFirst.Question.PromptEmoji = msg.payload.promptEmoji;
+
     state.EmojiGame.GuessFirst.Question.Secret = msg.payload.promptText;
 
     if (wasPromptPlayer && !state.EmojiGame.promptPlayerAnswersEmoji) {
       return { state, page: PageState.WaitingRoom };
     } else {
-      return { state, page: PageState.PlayersAnswer };
+      return { state, page: PageState.PlayersGuessingPage };
     }
-  }
-
-  public GUESS_FIRST_ALL_RESPONSES({
-    state,
-    msg,
-  }: MessageProps<GuessFirstAllResponsesMessage>): MessageUpdate {
-    state.EmojiGame.GuessFirst.Responses = msg.payload.correctResponses;
-    return { state, page: PageState.PlayersAnswerReview };
   }
 }

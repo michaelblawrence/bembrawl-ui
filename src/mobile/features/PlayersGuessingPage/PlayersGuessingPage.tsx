@@ -3,15 +3,16 @@ import "./PlayersGuessingPage.scss";
 import { Branding } from "../../../core-common/Branding";
 import { PageProps } from "../PageProps";
 import { QuestionSection } from "../common/components/QuestionSection";
-import { PlayerGuessTicker } from "../common/components/PlayerGuessTicker";
+import { PlayerGuessTicker } from "../../../core-common/PlayerGuessTicker/PlayerGuessTicker";
 import { PlayerGuessInput } from "../common/components/PlayerGuessInput";
 
 export function PlayersGuessingPage(props: PageProps) {
-  const { GuessFirstGame } = props.state;
-  const answerSlotsN = GuessFirstGame.Question.EmojiCount;
-  const prompt = GuessFirstGame.Question.Prompt || "Loading Song Title";
-  const subject = GuessFirstGame.Question.Subject || "Describe something";
+  const { EmojiGame } = props.state;
+  const answerSlotsN = EmojiGame.Question.EmojiCount;
+  const prompt = EmojiGame.GuessFirst.Question.PromptEmoji || [];
+  const subject = EmojiGame.Question.Subject || "Describe something";
 
+  // TODO: add simple hashing and standardize impl across server + client
   const toSecret = (secret: string) => {
     return secret
       .toLocaleLowerCase()
@@ -20,21 +21,26 @@ export function PlayersGuessingPage(props: PageProps) {
       .join("_");
   };
 
-  const secretToGuess = toSecret(GuessFirstGame.Question.Secret || "secret");
+  // TODO: do this server-side
+  const secretToGuess = toSecret(
+    EmojiGame.GuessFirst.Question.Secret || "secret"
+  );
   const [guessInput, setGuessInput] = useState<string | null>(null);
-
   const [tickerClear, setTickerClear] = useState(false);
 
   const onPromptSubmitted = (promptAnswer: string): boolean => {
     const secretMatch = toSecret(promptAnswer) === secretToGuess;
     if (!secretMatch) {
+      props.setMessage.WrongGuess({
+        payload: { promptAnswer },
+      });
       setGuessInput(promptAnswer);
       return false;
     }
     setGuessInput("");
     setTickerClear(true);
-    props.setMessage.SubmitPromptMatch({
-      payload: { promptAnswer, promptEmoji: prompt, promptSubject: subject },
+    props.setMessage.CorrectGuess({
+      payload: { promptAnswer },
     });
     return secretMatch;
   };
@@ -50,7 +56,7 @@ export function PlayersGuessingPage(props: PageProps) {
       <Branding />
       <QuestionSection
         emojiCount={answerSlotsN}
-        playerPrompt={prompt}
+        playerPrompt={{ type: "emoji", emoji: prompt }}
         subject={subject}
       />
       <PlayerGuessInput onGuess={onPromptSubmitted} />

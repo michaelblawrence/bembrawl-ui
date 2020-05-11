@@ -5,11 +5,11 @@ import { Grid } from "@material-ui/core";
 import "./QuestionPage.scss";
 import { PageProps } from "../PageProps";
 import Timer from "./Timer";
+import { PlayerGuessTicker } from "../../../core-common/PlayerGuessTicker/PlayerGuessTicker";
 
 export function QuestionPage(props: PageProps) {
   const { EmojiGame } = props.state;
   const nowMs = Date.now();
-  console.warn('EmojiGame.Question', EmojiGame.Question)
   const questionString = EmojiGame.Question.Prompt || "Loading question...";
   const subjectString = EmojiGame.Question.Subject || "Loading subject...";
   const [counterEndTimeMs, setCounterEndMsTime] = useState<number>(
@@ -22,13 +22,19 @@ export function QuestionPage(props: PageProps) {
     if (EmojiGame.Question.TimeoutMs && EmojiGame.Question.TimeoutMs > now) {
       setCounterEndMsTime(EmojiGame.Question.TimeoutMs);
     }
-  }, [EmojiGame]);
+  }, [EmojiGame.Question.TimeoutMs]);
+
+  const guessInput = EmojiGame.GuessFirst.PlayerGuesses[0]?.text || null;
 
   return (
     <Grid container justify="center" className="Page">
       <Branding />
       <Question questionString={questionString} subjectString={subjectString} />
       <WaitingMessage duration={duration} />
+      <PlayerGuessTicker
+        latestGuess={guessInput}
+        displayCount={5}
+      />
     </Grid>
   );
 }

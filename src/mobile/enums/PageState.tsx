@@ -4,6 +4,7 @@ export enum PageState {
   SetPrompt = "SetPrompt",
   PlayersAnswer = "PlayersAnswer",
   PlayersAnswerReview = "PlayersAnswerReview",
+  PlayersGuessingPage = "PlayersGuessingPage"
 }
 
 export interface Message<T> {
@@ -25,8 +26,6 @@ export interface SubmitNewPromptMessage {
 }
 
 export interface SubmitPromptMatchMessage {
-  promptEmoji: string;
-  promptSubject: string;
   promptAnswer: string;
 }
 
@@ -46,7 +45,8 @@ export type Messages = {
   CloseRoom: MessageSetter<EmptyMessage>;
   ChangePlayerName: MessageSetter<ChangePlayerNameMessage>;
   SubmitNewPrompt: MessageSetter<SubmitNewPromptMessage>;
-  SubmitPromptMatch: MessageSetter<SubmitPromptMatchMessage>;
+  CorrectGuess: MessageSetter<SubmitPromptMatchMessage>;
+  WrongGuess: MessageSetter<SubmitPromptMatchMessage>;
   SubmitEmojiAnswer: MessageSetter<SubmitEmojiAnswerMessage>;
   SubmitEmojiVotes: MessageSetter<SubmitEmojiVotesMessage>;
 };
@@ -56,7 +56,8 @@ export const DefaultMessages: Messages = {
   CloseRoom: () => {},
   ChangePlayerName: () => {},
   SubmitNewPrompt: () => {},
-  SubmitPromptMatch: () => {},
+  CorrectGuess: () => {},
+  WrongGuess: () => {},
   SubmitEmojiAnswer: () => {},
   SubmitEmojiVotes: () => {},
 };

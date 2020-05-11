@@ -1,9 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./QuestionSection.scss";
+import { Emoji } from "emoji-mart";
+import { mapDimensionsToEmojiSizes } from "../../PlayersAnswerPage/utils";
+
+type EmojiOrText = string | { type: "emoji"; emoji: string[] };
+
+// dup
+export default function useWindowDimensions() {
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height,
+    };
+  }
+
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowDimensions;
+}
 
 export function QuestionSection(props: {
   emojiCount: number;
-  playerPrompt: string;
+  playerPrompt: EmojiOrText;
   subject: string;
 }) {
   const { emojiCount: rawEmojiCount, playerPrompt, subject } = props;
@@ -14,8 +44,31 @@ export function QuestionSection(props: {
         <h1 className="QuestionSection-question">
           "{subject}" in {emojiCount} emoji...
         </h1>
-        <h2>{playerPrompt}</h2>
+        <QuestionPrompt playerPrompt={playerPrompt} />
       </header>
     </div>
   );
+}
+function QuestionPrompt(props: { playerPrompt: EmojiOrText }) {
+  const { playerPrompt } = props;
+  const { height, width } = useWindowDimensions();
+  const { emojiSize } = mapDimensionsToEmojiSizes(height, width);
+  if (typeof playerPrompt === "string") return <h2>{playerPrompt}</h2>;
+  switch (playerPrompt.type) {
+    case "emoji":
+      return (
+        <h2>
+          {playerPrompt.emoji.map((emoji, idx) => (
+            <Emoji
+              set={"apple"}
+              emoji={emoji}
+              size={emojiSize}
+              key={emoji + idx}
+            />
+          ))}
+        </h2>
+      );
+    default:
+      return null;
+  }
 }

@@ -13,14 +13,6 @@ export function PlayerGuessTicker(props: {
     if (clear) return setGuesses([]);
     if (!latestGuess) return;
     setGuesses((guesses) => [...guesses, latestGuess]);
-    // const handle = setTimeout(
-    //   () =>
-    //     setGuesses((guesses) =>
-    //       guesses.slice(Math.max(0, guesses.length - numberItems))
-    //     ),
-    //   500
-    // );
-    // return () => clearTimeout(handle);
   }, [clear, latestGuess]);
   const [tickerHeight, setTickerHeight] = useState<number | null>(null);
   const ticker = useRef<HTMLDivElement>(null);

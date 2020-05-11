@@ -13,6 +13,7 @@ import {
   GuessFirstAllResponsesMessage,
   GuessFirstVotingResultsMessage,
   GuessFirstMatchPromptMessage,
+  GuessFirstWrongAnswerMessage,
 } from "../../core/server/server.types";
 import { CoreMessageProps } from "../../core/model/types";
 import { GameType } from "../../core/enums/GameType";
@@ -137,7 +138,7 @@ export class HostMessageHandler {
     return { state, page: PageState.PlayersWaitingRoom };
   }
 
-  public GUESS_FIRST_NEW_PROMPT({
+  public GUESS_FIRST_MATCH_PROMPT({
     state,
     msg,
   }: MessageProps<GuessFirstMatchPromptMessage>): MessageUpdate {
@@ -170,6 +171,16 @@ export class HostMessageHandler {
       })
     );
     return { state, page: PageState.Answers };
+  }
+
+  public GUESS_FIRST_WRONG_ANSWER({
+    state,
+    msg,
+  }: MessageProps<GuessFirstWrongAnswerMessage>): MessageUpdate {
+    state.EmojiGame.GuessFirst.PlayerGuesses = [
+      { text: msg.payload.incorrectGuess },
+    ];
+    return { state };
   }
 
   public GUESS_FIRST_VOTING_RESULTS({

@@ -45,7 +45,8 @@ export class MessagesMapper {
       CloseRoom: use(this.closeRoom),
       ChangePlayerName: use(this.changePlayerName),
       SubmitNewPrompt: use(this.submitNewPrompt),
-      SubmitPromptMatch: use(this.submitPromptMatch),
+      CorrectGuess: use(this.correctGuess),
+      WrongGuess: use(this.wrongGuess),
       SubmitEmojiAnswer: use(this.submitEmojiAnswer),
       SubmitEmojiVotes: use(this.submitEmojiVotes),
     };
@@ -74,12 +75,20 @@ export class MessagesMapper {
     );
   }
 
-  private submitPromptMatch({
-    payload: { promptAnswer, promptEmoji, promptSubject },
+  private correctGuess({
+    payload: { promptAnswer },
   }: Message<SubmitPromptMatchMessage>) {
     const guessFirstSvc = this.svc.guessFirstSvc();
     if (!guessFirstSvc) throw Error("No active game instance on type!");
-    return guessFirstSvc.submitPromptMatch(promptAnswer, promptEmoji, promptSubject);
+    return guessFirstSvc.correctGuess(promptAnswer);
+  }
+
+  private wrongGuess({
+    payload: { promptAnswer },
+  }: Message<SubmitPromptMatchMessage>) {
+    const guessFirstSvc = this.svc.guessFirstSvc();
+    if (!guessFirstSvc) throw Error("No active game instance on type!");
+    return guessFirstSvc.wrongGuess(promptAnswer);
   }
 
   private submitEmojiAnswer({
@@ -91,6 +100,8 @@ export class MessagesMapper {
   private submitEmojiVotes({
     payload: { playerIdVotes },
   }: Message<SubmitEmojiVotesMessage>) {
-    return this.currentGameSvc().submitEmojiVotes(playerIdVotes);
+    const emojiSvc = this.svc.emojiSvc();
+    if (!emojiSvc) throw Error("No active game instance on type!");
+    return emojiSvc.submitEmojiVotes(playerIdVotes);
   }
 }

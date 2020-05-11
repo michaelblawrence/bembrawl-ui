@@ -75,7 +75,9 @@ export class HostClientService {
       case MessageTypes.GUESS_FIRST_GAME_STARTED:
         return this.hostMessageHandler.GUESS_FIRST_GAME_STARTED(ctx(msg));
       case MessageTypes.GUESS_FIRST_MATCH_PROMPT:
-        return this.hostMessageHandler.GUESS_FIRST_NEW_PROMPT(ctx(msg));
+        return this.hostMessageHandler.GUESS_FIRST_MATCH_PROMPT(ctx(msg));
+      case MessageTypes.GUESS_FIRST_WRONG_ANSWER:
+        return this.hostMessageHandler.GUESS_FIRST_WRONG_ANSWER(ctx(msg));
       case MessageTypes.GUESS_FIRST_ALL_RESPONSES:
         return this.hostMessageHandler.GUESS_FIRST_ALL_RESPONSES(ctx(msg));
       case MessageTypes.GUESS_FIRST_VOTING_RESULTS:

@@ -17,45 +17,54 @@ export class GuessFirstPlayerService {
 
   public async submitNewPrompt(promptResponse: string, promptSubject: string) {
     if (!this.connectionInfo) return;
+    const state = this.stateService.getState();
 
-    this.transitionPage(PageState.WaitingRoom);
-    const info = this.connectionInfo;
-    await this.client.newPrompt(promptResponse, promptSubject, info);
-  }
+    state.EmojiGame.Question.Subject = promptSubject;
+    state.EmojiGame.Question.Prompt = promptResponse;
+    state.EmojiGame.GuessFirst.Question.Secret = promptResponse;
 
-  public async submitPromptMatch(
-    promptAnswer: string,
-    promptEmoji: string,
-    promptSubject: string
-  ) {
-    if (!this.connectionInfo) return;
-
-    this.transitionPage(PageState.WaitingRoom);
-    const info = this.connectionInfo;
-    await this.client.promptMatch(
-      promptAnswer,
-      promptEmoji,
-      promptSubject,
-      info
-    );
+    this.stateService.pushState(state);
+    this.transitionPage(PageState.PlayersAnswer);
   }
 
   public async submitResponseEmoji(emoji: string[]) {
-    if (!this.connectionInfo) return;
-
     const info = this.connectionInfo;
-    await this.client.newEmojiResponse(emoji, info);
+    if (!info) return;
+
+    const { EmojiGame } = this.stateService.getState();
+    const promptAnswer = EmojiGame.Question.Prompt;
+    const promptSubject = EmojiGame.Question.Subject;
+    if (!promptAnswer || !promptSubject) return;
+
+    await this.client.promptMatch(promptAnswer, emoji, promptSubject, info);
     this.transitionPage(PageState.WaitingRoom);
   }
 
-  public async submitEmojiVotes(playerIdVotes: [string, number][]) {
-    if (!this.connectionInfo) return;
-    this.transitionPage(PageState.WaitingRoom);
+  public async correctGuess(answerText: string) {
+    const state = this.stateService.getState();
+    const promptSubject = state.EmojiGame.Question.Subject;
+    if (!this.connectionInfo || !promptSubject) return;
 
     const info = this.connectionInfo;
-    const votes = playerIdVotes.flatMap(([playerId, count]) =>
-      new Array(count).fill(playerId)
+    const success = await this.client.newEmojiResponse(
+      answerText,
+      promptSubject,
+      info
     );
-    await this.client.emojiVotesResponse(votes, info);
+    if (!success) {
+      state.EmojiGame.GuessFirst.notifyMessage = "Wrong answer";
+      this.stateService.pushState(state);
+      return;
+    }
+    this.transitionPage(PageState.WaitingRoom);
+  }
+
+  public async wrongGuess(answerText: string) {
+    const { EmojiGame } = this.stateService.getState();
+    const promptSubject = EmojiGame.Question.Subject;
+    if (!this.connectionInfo || !promptSubject) return;
+
+    const info = this.connectionInfo;
+    await this.client.wrongGuess(answerText, promptSubject, info);
   }
 }

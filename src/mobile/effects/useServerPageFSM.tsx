@@ -4,21 +4,27 @@ import { HostClientService } from "../HostClientService";
 import { PlayerState } from "../features/PageProps";
 import { MessagesMapper } from "./messages/MessagesMapper";
 
+interface ServerPageFSMOptions {
+  disableConnection?: boolean;
+}
+
 export function useServerPageFSM(
   initialPage: PageState,
-  initialState: PlayerState
+  initialState: PlayerState,
+  options?: ServerPageFSMOptions | null
 ): [PageState, PlayerState, Messages] {
   const [page, setPage] = useState(initialPage);
   const [state, setState] = useState<PlayerState>(initialState);
   const [svc, setSvc] = useState<HostClientService | null>(null);
+  const [useConnection] = useState(!options?.disableConnection);
 
   useEffect(() => {
     const hostClientService = new HostClientService(setState, setPage);
     setSvc(hostClientService);
-    startHostClientService(hostClientService);
+    if (useConnection) startHostClientService(hostClientService);
 
     return () => hostClientService.dispose();
-  }, [setState]);
+  }, [setState, useConnection]);
 
   useEffect(() => {
     if (svc) {
