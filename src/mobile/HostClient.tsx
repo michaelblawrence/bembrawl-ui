@@ -31,7 +31,7 @@ export class RoomPlayerClient {
     );
   }
   public async changePlayerName(playerName: string, info: ConnectionInfo) {
-    await HttpClient.postJson<ChangePlayerNameRequest, boolean>(
+    return await HttpClient.postJson<ChangePlayerNameRequest, boolean>(
       PlayerClientRoutes.API_PLAYER_CHANGE_NAME,
       { playerName },
       info.accessToken
