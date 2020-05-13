@@ -74,7 +74,14 @@ export class RoomPlayerService {
     if (!this.connectionInfo) return;
 
     const info = this.connectionInfo;
-    await this.client.changePlayerName(playerName, info);
+
+    try {
+      const success = await this.client.changePlayerName(playerName, info);
+      if (!success) return;
+    } catch (ex) {
+      console.error(ex);
+      return;
+    }
 
     const state = this.stateService.getState();
     state.PlayerInfo.playerName = playerName;

@@ -1,13 +1,13 @@
 @import "../../core/styles/variables.sass";
 
 .PlayerGuessTicker {
-  background-color: $input-slot-color;
   height: 25vh;
   min-height: 100px;
   display: flex;
   flex-direction: column;
   font-size: calc(10px + 2vmin);
   color: $text-light;
+  width: 100%;
 }
 
 @media (prefers-reduced-motion: no-preference) {

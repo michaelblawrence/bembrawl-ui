@@ -7,12 +7,12 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
   DialogActions,
   Tooltip,
 } from "@material-ui/core";
 import { Nothing } from "../../enums/PageState";
 import { NewPlayerAlert } from "../common/NewPlayerAlert";
+import { SubmitTextField } from "../common/components/SubmitTextField";
 
 export function WaitingRoomPage(props: PageProps) {
   const { PlayerInfo } = props.state;
@@ -22,9 +22,10 @@ export function WaitingRoomPage(props: PageProps) {
   const submitPlayerName = (newPlayerName: string | null) => {
     setOpen(false);
     const playerNameValue = newPlayerName || PlayerInfo.playerName || null;
-    if (playerNameValue) {
+    const newName = playerNameValue?.trim();
+    if (newName) {
       props.setMessage.ChangePlayerName({
-        payload: { playerName: playerNameValue },
+        payload: { playerName: newName },
       });
     }
   };
@@ -137,8 +138,9 @@ function EditPlayerNamePopup(props: {
     >
       <DialogTitle id="form-dialog-title">Edit Player Name</DialogTitle>
       <DialogContent style={{ margin: "0px 15px" }}>
-        <TextField
+        <SubmitTextField
           onChange={handleNameChange}
+          onValue={handleSubmit}
           value={playerName}
           autoFocus
           margin="normal"

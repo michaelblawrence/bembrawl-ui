@@ -80,9 +80,7 @@ export class HostMessageHandler {
     msg,
   }: MessageProps<EmojiGameStartedMessage>): MessageUpdate {
     const { initialPromptPlayer } = msg.payload;
-    const promptPlayerId = initialPromptPlayer.playerJoinId + 1;
-    state.EmojiGame.Question.PromptPlayerName =
-      initialPromptPlayer.playerName || `Player ${promptPlayerId}`;
+    state.EmojiGame.Question.PromptPlayerName = initialPromptPlayer.playerName;
     return { state, page: PageState.PlayersWaitingRoom };
   }
 
@@ -132,9 +130,7 @@ export class HostMessageHandler {
     msg,
   }: MessageProps<GuessFirstGameStartedMessage>): MessageUpdate {
     const { initialPromptPlayer } = msg.payload;
-    const promptPlayerId = initialPromptPlayer.playerJoinId + 1;
-    state.EmojiGame.Question.PromptPlayerName =
-      initialPromptPlayer.playerName || `Player ${promptPlayerId}`;
+    state.EmojiGame.Question.PromptPlayerName = initialPromptPlayer.playerName;
     return { state, page: PageState.PlayersWaitingRoom };
   }
 
