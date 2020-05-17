@@ -6,6 +6,7 @@ import { PlayersAnswerPage } from "./features/PlayersAnswerPage/PlayersAnswerPag
 import { PlayersAnswerReviewPage } from "./features/PlayersAnswerReviewPage/PlayersAnswerReviewPage";
 import { PlayersGuessingPage } from "./features/PlayersGuessingPage/PlayersGuessingPage";
 import { SetPromptPage } from "./features/SetPromptPage/SetPromptPage";
+import { GamePickerPage } from "./features/GamePickerPage/GamePickerPage";
 import { PageState, Messages } from "./enums/PageState";
 import { useFullScreen } from "../core/effects/useFullScreen";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
@@ -40,6 +41,9 @@ function AppPage(props: {
   switch (page) {
     case PageState.JoinRoom:
       return <JoinPage setMessage={setMessage} state={state} />;
+
+    case PageState.GamePickerPage:
+      return <GamePickerPage setMessage={setMessage} state={state} />;
 
     case PageState.WaitingRoom:
       return <WaitingRoomPage setMessage={setMessage} state={state} />;

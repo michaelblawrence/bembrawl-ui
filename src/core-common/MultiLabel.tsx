@@ -2,17 +2,22 @@ import React from "react";
 import { Emoji } from "emoji-mart";
 
 import { EmojiOrText } from "core/model/types";
-import useWindowDimensions, { mapDimensionsToEmojiSizes } from "core/effects/useWindowDimensions";
+import useWindowDimensions, {
+  mapDimensionsToEmojiSizes,
+} from "core/effects/useWindowDimensions";
 
 export function MultiLabel(props: { text: EmojiOrText }) {
   const { text: input } = props;
   const { height, width } = useWindowDimensions();
   const { emojiSize } = mapDimensionsToEmojiSizes(height, width);
-  if (typeof input === "string") return <span>{input}</span>;
+  const Inline = (props: { children: string | JSX.Element[] }) => (
+    <span style={{ display: "contents" }}>{props.children}</span>
+  );
+  if (typeof input === "string") return <Inline>{input}</Inline>;
   switch (input.type) {
     case "emoji":
       return (
-        <span>
+        <Inline>
           {input.emoji.map((emoji, idx) => (
             <Emoji
               set={"apple"}
@@ -21,7 +26,7 @@ export function MultiLabel(props: { text: EmojiOrText }) {
               key={emoji + idx}
             />
           ))}
-        </span>
+        </Inline>
       );
     default:
       return null;

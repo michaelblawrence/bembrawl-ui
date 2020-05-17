@@ -65,8 +65,6 @@ export function EmojiAnswerSlots(props: EmojiAnswerSlotsProps) {
       item
       xs={2}
       key={idx}
-      direction="column"
-      alignContent="center"
       className="EmojiSlot"
     >
       <div

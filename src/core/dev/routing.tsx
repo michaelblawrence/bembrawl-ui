@@ -13,9 +13,15 @@ export function setPageFromRoutePath(pageState: any) {
   const hostPageIdentifiers = Object.values(pageState) as string[];
   const href = document.location.href;
 
-  const splitUrl = href.split("/");
+  const splitUrl = href.toLowerCase().split("/");
   const lastPath = splitUrl[splitUrl.length - 1];
   const match = hostPageIdentifiers.find(ignoreCaseCompare(lastPath));
+  console.log(hostPageIdentifiers, lastPath)
+  if (!match) {
+    const idx = splitUrl.indexOf('dev');
+    if (idx < 0) return;
+    document.location.replace(splitUrl.slice(0, idx).join("/"));
+  }
 
   return match;
 }

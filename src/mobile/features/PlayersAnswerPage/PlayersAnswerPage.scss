@@ -1,45 +1,53 @@
 @import "core/styles/variables.sass";
 
-.EmojiAnswerSlots {
-  height: 8vh;
-  background-color: $input-slot-color;
-  min-height: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  padding-bottom: 2vh;
-  color: $text-light;
-}
-
-[class^="PickedEmoji-"] {
-  text-align: center;
-  padding-top: 20px;
-}
-
-.EmojiAnswerButton {
-  top: 18px;
-  height: 30vh;
-}
-
-.emoji-mart {
-  position: absolute;
-  bottom: 0;
-}
-
-.emoji-mart-scroll {
-  height: 38vh;
-}
-
-// fit iPhone SE
-@media (max-height: 568px) {
-  .emoji-mart-scroll {
-    height: 160px;
+.PlayersAnswerPage {
+  .EmojiAnswerSlots {
+    height: 8vh;
+    background-color: $input-slot-color;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    padding-bottom: 2vh;
+    color: $text-light;
   }
-}
-@media (min-height: 1024px) {
+
+  [class^="PickedEmoji-"] {
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  .EmojiAnswerButton {
+    top: 18px;
+    height: 30vh;
+  }
+
+  .emoji-mart {
+    position: absolute;
+    bottom: 0;
+  }
+
   .emoji-mart-scroll {
-    height: 500px;
+    height: 33vh;
+  }
+
+  // fit iPhone SE
+  @media (max-height: 568px) {
+    .emoji-mart-scroll {
+      height: 125px;
+    }
+  }
+  
+  @media (min-height: 640px) {
+    .emoji-mart-scroll {
+      height: 36vh;
+    }
+  }
+  @media (min-height: 1024px) {
+    .emoji-mart-scroll {
+      height: 500px;
+    }
   }
 }
