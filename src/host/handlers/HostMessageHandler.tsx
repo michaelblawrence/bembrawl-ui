@@ -141,7 +141,7 @@ export class HostMessageHandler {
     state.EmojiGame.Question = {
       TimeoutMs: msg.payload.timeoutMs,
       Subject: msg.payload.promptSubject,
-      Prompt: msg.payload.promptEmoji.join(" "),
+      Prompt: { type: "emoji", emoji: msg.payload.promptEmoji },
     };
     state.EmojiGame.GuessFirst.Question = {
       secret: msg.payload.promptText,

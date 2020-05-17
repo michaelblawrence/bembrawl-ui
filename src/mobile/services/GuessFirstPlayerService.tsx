@@ -43,9 +43,9 @@ export class GuessFirstPlayerService {
   public async correctGuess(answerText: string) {
     const state = this.stateService.getState();
     const promptSubject = state.EmojiGame.Question.Subject;
-    if (!this.connectionInfo || !promptSubject) return;
-
     const info = this.connectionInfo;
+    if (!info || !promptSubject) return;
+
     const success = await this.client.newEmojiResponse(
       answerText,
       promptSubject,
@@ -62,9 +62,9 @@ export class GuessFirstPlayerService {
   public async wrongGuess(answerText: string) {
     const { EmojiGame } = this.stateService.getState();
     const promptSubject = EmojiGame.Question.Subject;
-    if (!this.connectionInfo || !promptSubject) return;
-
     const info = this.connectionInfo;
+    if (!info || !promptSubject) return;
+
     await this.client.wrongGuess(answerText, promptSubject, info);
   }
 }

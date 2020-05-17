@@ -32,6 +32,12 @@ export class HostClientConstants {
 export type ClientMessageObserver = (message: ClientMessage) => void;
 export type ClientMessageSubscription = { unsubscribe: () => void };
 
+enum ConnectionHealth {
+  UnknownError,
+  Unauthorized,
+  Healthy,
+}
+
 export class HostClientConnection {
   private readonly deviceGuid: string;
   private readonly connectionHealthTracker: ConnectionHealthTracker;
@@ -49,7 +55,9 @@ export class HostClientConnection {
     this.observers = new Set<ClientMessageObserver>();
   }
 
-  public async connect(): Promise<ConnectionInfo> {
+  public async connect(
+    registerUrl: string | null = null
+  ): Promise<ConnectionInfo> {
     if (this.connected) {
       console.warn("connect() called but already connected");
       return this.getConnectionIds();
@@ -60,7 +68,7 @@ export class HostClientConnection {
       const resp = await HttpClient.postJson<
         RegisterClientRequest,
         PlayersResp
-      >(this.config.registerUrl, {
+      >(registerUrl || this.config.registerUrl, {
         deviceId: this.deviceGuid,
       });
       this.accessToken = resp.token;
@@ -110,9 +118,9 @@ export class HostClientConnection {
     }
   }
 
-  public reconnect() {
+  public async reconnect(registerUrl: string | null = null) {
     this.connected = false;
-    this.connect();
+    await this.connect(registerUrl);
   }
 
   private getPersistentGuid() {
@@ -140,22 +148,30 @@ export class HostClientConnection {
       clearTimeout(this.keepAliveHandle);
       this.keepAliveHandle = null;
     }
-    this.keepAliveHandle = setTimeout(() => {
+    this.keepAliveHandle = setTimeout(async () => {
       try {
-        this.getServerHealth().then((isHealthy) => {
-          if (isHealthy === false) {
+        const isHealthy = await this.getServerHealth();
+        switch (isHealthy) {
+          case ConnectionHealth.Healthy:
+            this.startPeriodicKeepAlive();
+            return;
+          case ConnectionHealth.UnknownError:
+            console.warn("ConnectionHealth=UnknownError");
             this.reconnect();
             return;
-          }
-          this.startPeriodicKeepAlive();
-        });
+          case ConnectionHealth.Unauthorized:
+            console.warn("ConnectionHealth=Unauthorized");
+            this.promptReconnect();
+            this.reconnect();
+            return;
+        }
       } catch {
         this.startPeriodicKeepAlive();
       }
     }, HostClientConstants.INTERVAL_API_KEEPALIVE);
   }
 
-  private async getServerHealth(): Promise<boolean> {
+  private async getServerHealth(): Promise<ConnectionHealth> {
     try {
       this.connectionHealthTracker.addConnectionAttempts();
       const resp: {
@@ -169,19 +185,21 @@ export class HostClientConnection {
       this.connectionHealthTracker.addSuccessfulAttempt();
       if (!resp || !resp.valid) {
         console.warn("Lost connection to party");
-        this.promptReconnect();
-        return false;
+        return ConnectionHealth.Unauthorized;
       }
       if (resp.messages) {
         for (const msg of resp.messages) {
           this.pushMessageToObservers(msg);
         }
       }
-    } catch {
-      this.shouldRetry("Couldn't do healthcheck");
-      return false;
+    } catch (ex) {
+      this.shouldRetry("Couldn't do healthcheck; msg=" + ex);
+      // TODO: formalize HTTP403 check
+      if (`${ex}`.includes(`"statusCode":403`))
+        return ConnectionHealth.Unauthorized;
+      return ConnectionHealth.UnknownError;
     }
-    return true;
+    return ConnectionHealth.Healthy;
   }
 
   private pushMessageToObservers(msg: ClientMessage) {

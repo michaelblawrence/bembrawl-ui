@@ -1,4 +1,5 @@
 import { Messages } from "../enums/PageState";
+import { EmojiOrText } from "core/model/types";
 
 export interface PageProps {
   setMessage: Messages;
@@ -8,7 +9,7 @@ export interface PageProps {
 export interface HostState {
   EmojiGame: {
     Question: {
-      Prompt?: string;
+      Prompt?: EmojiOrText;
       PromptPlayerName?: string;
       Subject?: string;
       TimeoutMs?: number;

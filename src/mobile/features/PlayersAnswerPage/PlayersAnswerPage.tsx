@@ -6,7 +6,7 @@ import { Grid, Button } from "@material-ui/core";
 import { PageProps } from "../PageProps";
 import { BaseEmoji, Emoji } from "emoji-mart";
 import { Picker } from "emoji-mart";
-import useWindowDimensions, { mapDimensionsToEmojiSizes } from "./utils";
+import useWindowDimensions, { mapDimensionsToEmojiSizes } from "core/effects/useWindowDimensions";
 import { QuestionSection } from "../common/components/QuestionSection";
 
 export type OnEmojiSubmit = (emoji: string[]) => void;

@@ -51,7 +51,8 @@ export class HostClientService {
     });
     this.stateService = new HostClientStateService<PlayerState>(
       InitialPlayerState,
-      stateSetter
+      stateSetter,
+      "player-v1"
     );
     this.subscription = this.connection.subscribe((msg) =>
       this.onMessageReceived(msg)
@@ -86,6 +87,18 @@ export class HostClientService {
 
   public async connect() {
     this.connectionInfo = await this.connection.connect(); // this info can change? do we need to register this with connection
+    const stateRecall = this.stateService.getLastState();
+    const lastRoomId = stateRecall?.RoomInfo.roomId;
+    if (lastRoomId) {
+      const success = await this.roomSvc()?.joinRoom(lastRoomId, true);
+      if (success) {
+        this.transitionPage(PageState.WaitingRoom);
+      } else {
+        const state = this.stateService.getState();
+        delete state.RoomInfo.roomId;
+        this.stateService.pushState(state);
+      }
+    }
   }
 
   private handleMessage(

@@ -35,10 +35,12 @@ export class HostClientService {
     this.connectionHealthTracker = new ConnectionHealthTracker();
     this.stateService = new HostClientStateService<HostState>(
       InitialHostState,
-      stateSetter
+      stateSetter,
+      "host-v1"
     );
+    const lastState = this.stateService.getLastState();
     this.connection = new HostClientConnection({
-      registerUrl: getRegisterUrl(document.location),
+      registerUrl: getRegisterUrl(document.location, lastState),
       keepAliveUrl: HostClientConstants.API_ROUTE_KEEP_ALIVE,
       promptReconnect: () => this.transitionPage(PageState.WaitingForUsers),
     });
@@ -47,6 +49,7 @@ export class HostClientService {
     );
     this.hostMessageHandler = new HostMessageHandler();
     this.client = new HostClient();
+    this.manageWindowEvents("register");
   }
 
   public async connect() {
@@ -110,21 +113,19 @@ export class HostClientService {
   }
 
   private async registerGame(type: GameType, roomId: number): Promise<void> {
-    if (!this.connectionInfo) return;
+    const info = this.connectionInfo;
+    if (!info) return;
 
     let success = null;
 
     switch (type) {
       case GameType.Emoji:
         console.warn("starting GameType.Emoji");
-        success = await this.client.emojiRegister(roomId, this.connectionInfo);
+        success = await this.client.emojiRegister(roomId, info);
         break;
       case GameType.GuessFirst:
         console.warn("starting GameType.GuessFirst");
-        success = await this.client.guessFirstRegister(
-          roomId,
-          this.connectionInfo
-        );
+        success = await this.client.guessFirstRegister(roomId, info);
         break;
       default:
         console.warn("no game starting GameType");
@@ -139,6 +140,7 @@ export class HostClientService {
   }
 
   public dispose() {
+    this.manageWindowEvents("unregister");
     if (this.pageStatusHandle) {
       clearInterval(this.pageStatusHandle);
       this.pageStatusHandle = null;
@@ -165,14 +167,37 @@ export class HostClientService {
       );
     }
   }
+
+  private manageWindowEvents(action: "register" | "unregister") {
+    switch (action) {
+      case "register":
+        window.addEventListener("keydown", this.keyboardHandler.bind(this));
+        break;
+      case "unregister":
+        window.removeEventListener("keydown", this.keyboardHandler.bind(this));
+        break;
+    }
+  }
+
+  private async keyboardHandler(ev: KeyboardEvent) {
+    switch (ev.key) {
+      case "n":
+        this.connection.reconnect(HostClientConstants.API_ROUTE_HOST_REGISTER);
+        return;
+    }
+  }
 }
 
-function getRegisterUrl(location: Location): string {
+function getRegisterUrl(
+  location: Location,
+  lastState: HostState | null
+): string {
   const extractUrlRoomId = (urlPath: string) => {
     const matches = /room\/(\d{4})\/?$/.exec(urlPath);
     return (matches && matches[1]) || null;
   };
-  const roomId = extractUrlRoomId(location.pathname);
+  const lastRoomId = lastState?.RoomInfo.roomId;
+  const roomId = extractUrlRoomId(location.pathname) || lastRoomId;
   if (roomId) {
     return (
       HostClientConstants.API_ROUTE_HOST_JOIN +

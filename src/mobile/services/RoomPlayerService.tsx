@@ -15,9 +15,12 @@ export class RoomPlayerService {
     private readonly transitionPage: (page: PageState) => void
   ) {}
 
-  public async joinRoom(roomId: string): Promise<boolean> {
+  public async joinRoom(
+    roomId: string,
+    noTransition: boolean = false
+  ): Promise<boolean> {
     if (!this.connectionInfo) return false;
-    this.transitionPage(PageState.WaitingRoom);
+    if (!noTransition) this.transitionPage(PageState.WaitingRoom);
     this.connectionHealthTracker.addConnectionAttempts();
 
     try {

@@ -9,35 +9,25 @@ export function isDev() {
   return trimmed.includes("/dev/");
 }
 
-// TODO: merge two functions below
+export function setPageFromRoutePath(pageState: any) {
+  const hostPageIdentifiers = Object.values(pageState) as string[];
+  const href = document.location.href;
 
-export function setHostPage() {
-    let page = HostPageState.WaitingForUsers;
-    const href = document.location.href;
-    let splitUrl = href.split("/");
-    const lastPath = splitUrl[splitUrl.length - 1];
-    const re = RegExp(lastPath, "g");
-    
-    Object.values(HostPageState).forEach((item) => {
-      if (re.exec(item.toLowerCase())) {
-        page = HostPageState[item];
-        return;
-      }
-    });
-    return page;
+  const splitUrl = href.split("/");
+  const lastPath = splitUrl[splitUrl.length - 1];
+  const match = hostPageIdentifiers.find(ignoreCaseCompare(lastPath));
+
+  return match;
 }
 
-export function setMobilePage() {
-    let page = MobilePageState.JoinRoom;
-    const href = document.location.href;
-    let splitUrl = href.split("/");
-    const lastPath = splitUrl[splitUrl.length - 1];
-    const re = RegExp(lastPath, "g");
-    Object.values(MobilePageState).forEach((item) => {
-      if (re.exec(item.toLowerCase())) {
-        page = MobilePageState[item];
-        return;
-      }
-    });
-    return page;
+export function setHostPage(): HostPageState | undefined {
+  return setPageFromRoutePath(HostPageState) as HostPageState | undefined;
+}
+
+export function setMobilePage(): MobilePageState | undefined {
+  return setPageFromRoutePath(MobilePageState) as MobilePageState | undefined;
+}
+
+function ignoreCaseCompare(matchText: string): (testMatch: string) => boolean {
+  return (ident) => matchText.toLowerCase().includes(ident.toLowerCase());
 }

@@ -6,6 +6,8 @@ import "./QuestionPage.scss";
 import { PageProps } from "../PageProps";
 import Timer from "./Timer";
 import { PlayerGuessTicker } from "../../../core-common/PlayerGuessTicker/PlayerGuessTicker";
+import { EmojiOrText } from "core/model/types";
+import { MultiLabel } from "core-common/MultiLabel";
 
 export function QuestionPage(props: PageProps) {
   const { EmojiGame } = props.state;
@@ -38,12 +40,17 @@ export function QuestionPage(props: PageProps) {
   );
 }
 
-function Question(props: { questionString: string; subjectString: string }) {
+function Question(props: {
+  questionString: EmojiOrText;
+  subjectString: string;
+}) {
   const { questionString, subjectString } = props;
   return (
     <Grid className="Question" justify="center">
       <h3 className="SubjectString">{subjectString}</h3>
-      <h2 className="QuestionString">{questionString}</h2>
+      <h2 className="QuestionString">
+        <MultiLabel text={questionString} />
+      </h2>
     </Grid>
   );
 }

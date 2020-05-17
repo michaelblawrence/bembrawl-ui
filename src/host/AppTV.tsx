@@ -34,12 +34,9 @@ function AppPage(props: {
   state: HostState;
   setMessage: Messages;
 }) {
-  const { state, setMessage } = props;
-  let { page } = props;
+  const { state, setMessage, page: propsPage } = props;
+  const page = isDev() ? setHostPage() || propsPage : propsPage;
 
-  if (isDev()) {
-    page = setHostPage();
-  }
   switch (page) {
     case PageState.WaitingForUsers:
       return <WaitingForUsersPage setMessage={setMessage} state={state} />;

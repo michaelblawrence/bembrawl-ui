@@ -34,12 +34,8 @@ function AppPage(props: {
   state: PlayerState;
   setMessage: Messages;
 }) {
-  const { state, setMessage } = props;
-  let { page } = props;
-
-  if (isDev()) {
-    page = setMobilePage();
-  }
+  const { state, setMessage, page: propsPage } = props;
+  const page = isDev() ? setMobilePage() || propsPage : propsPage;
 
   switch (page) {
     case PageState.JoinRoom:

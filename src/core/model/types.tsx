@@ -7,3 +7,5 @@ export interface CoreMessageProps<TState, TFx, TMsg extends ClientMessage> {
   connectionInfo: ConnectionInfo;
   effects: TFx
 }
+
+export type EmojiOrText = string | { type: "emoji"; emoji: string[] };

@@ -3,14 +3,16 @@ import { Branding } from "../../../core-common/Branding";
 import "./AnswerPage.scss";
 import { PageProps } from "../PageProps";
 import { EmojiRow } from "../../../core/components/EmojiGame/EmojiAnswers";
+import { EmojiOrText } from "core/model/types";
+import { MultiLabel } from "core-common/MultiLabel";
 
 export function AnswerPage(props: PageProps) {
   const { EmojiGame } = props.state;
   const answerList = EmojiGame.PlayerAnswers?.map(
     (answer) => answer.answerList
   );
-  const questionString = EmojiGame.Question.Prompt || 'Loading..';
-  const subjectString = EmojiGame.Question.Subject || 'Use emoji to answer! ';
+  const questionString = EmojiGame.Question.Prompt || "Loading..";
+  const subjectString = EmojiGame.Question.Subject || "Use emoji to answer! ";
   return (
     <div className="AppTv">
       <Branding />
@@ -25,12 +27,17 @@ export function AnswerPage(props: PageProps) {
   );
 }
 
-function Question(props: { questionString: string; subjectString: string; }) {
+function Question(props: {
+  questionString: EmojiOrText;
+  subjectString: string;
+}) {
   const { questionString, subjectString } = props;
   return (
     <div className="Question">
       <h3 className="SubjectString">{subjectString}</h3>
-      <h2 className="QuestionString">{questionString}</h2>
+      <h2 className="QuestionString">
+        <MultiLabel text={questionString} />
+      </h2>
     </div>
   );
 }

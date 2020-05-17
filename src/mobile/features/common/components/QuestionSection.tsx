@@ -1,40 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./QuestionSection.scss";
 import { Emoji } from "emoji-mart";
-import { mapDimensionsToEmojiSizes } from "../../PlayersAnswerPage/utils";
-
-type EmojiOrText = string | { type: "emoji"; emoji: string[] };
-
-// dup
-export default function useWindowDimensions() {
-  function getWindowDimensions() {
-    const { innerWidth: width, innerHeight: height } = window;
-    return {
-      width,
-      height,
-    };
-  }
-
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions()
-  );
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowDimensions(getWindowDimensions());
-    }
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return windowDimensions;
-}
+import useWindowDimensions, { mapDimensionsToEmojiSizes } from "core/effects/useWindowDimensions";
+import { EmojiOrText } from "core/model/types";
+import { MultiLabel } from "../../../../core-common/MultiLabel";
 
 export function QuestionSection(props: {
   emojiCount: number;
   playerPrompt: EmojiOrText;
-  subject: string;
+  subject: EmojiOrText;
 }) {
   const { emojiCount: rawEmojiCount, playerPrompt, subject } = props;
   const emojiCount = Math.max(0, Math.min(6, rawEmojiCount));
@@ -42,7 +16,7 @@ export function QuestionSection(props: {
     <div className="QuestionSection">
       <header className="QuestionSection-header">
         <h1 className="QuestionSection-question">
-          "{subject}" in {emojiCount} emoji...
+          "<MultiLabel text={subject}></MultiLabel>" in {emojiCount} emoji...
         </h1>
         <QuestionPrompt playerPrompt={playerPrompt} />
       </header>
