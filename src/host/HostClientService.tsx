@@ -97,7 +97,7 @@ export class HostClientService {
       case MessageTypes.EMOJI_ALL_RESPONSES:
         state.EmojiGame.PlayerAnswers = msg.payload.emojiResponses.map(
           (emojiResponse) => ({
-            answer: emojiResponse.responseEmoji.join(""),
+            answerList: emojiResponse.responseEmoji,
             Subject: msg.payload.promptSubject,
             playerIndex: emojiResponse.playerJoinId,
             playerId: emojiResponse.playerId,

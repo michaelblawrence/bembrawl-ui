@@ -9,6 +9,7 @@ import { PageState, Messages } from "./enums/PageState";
 import { useFullScreen } from "../core/effects/useFullScreen";
 import { useServerPageFSM } from "./effects/useServerPageFSM";
 import { InitialPlayerState, PlayerState } from "./features/PageProps";
+import { isDev, setMobilePage } from "../core/dev/routing";
 
 const testingPage = document.location.pathname.endsWith("/test")
   ? PageState.SetPrompt
@@ -32,7 +33,13 @@ function AppPage(props: {
   state: PlayerState;
   setMessage: Messages;
 }) {
-  const { page, state, setMessage } = props;
+  const { state, setMessage } = props;
+  let { page } = props;
+
+  
+  if (isDev()) {
+    page = setMobilePage();
+  }
 
   switch (page) {
     case PageState.JoinRoom:

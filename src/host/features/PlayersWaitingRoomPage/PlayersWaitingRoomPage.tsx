@@ -15,14 +15,15 @@ export function PlayersWaitingRoomPage(props: PageProps) {
     }
   }, [RoomInfo]);
 
+  const promptPlayerName = EmojiGame.Question.PromptPlayerName || null;
   return (
     <div className="AppTv">
       <Branding />
       <div className={"root-tv"}>
-        <Grid container spacing={3}>
-          <WaitingRoomMessage promptPlayerName={EmojiGame.Question.PromptPlayerName || null} />
-          <Grid item xs={6} spacing={3}>
-            <PlayersList
+        <Grid container>
+          <WaitingRoomMessage promptPlayerName={promptPlayerName} />
+          <Grid item xs={6}>
+            <WaitingPlayersList
               playerNames={playerNames}
               defaultMessage="Players List"
             />
@@ -33,11 +34,11 @@ export function PlayersWaitingRoomPage(props: PageProps) {
   );
 }
 
-function PlayersList(props: { playerNames: string[]; defaultMessage: string }) {
+function WaitingPlayersList(props: { playerNames: string[]; defaultMessage: string }) {
   const { playerNames, defaultMessage } = props;
   const displayPlayers = playerNames.length ? playerNames : [defaultMessage];
   const players = displayPlayers.map((name, idx) => (
-    <Grid className="PlayerList-grid" item xl={4} key={idx}>
+    <Grid className="WaitingPlayersList-grid" item xl={4} key={idx}>
       <h2 className={`player-${idx}`}>{name}</h2>
     </Grid>
   ));
@@ -48,6 +49,7 @@ function PlayersList(props: { playerNames: string[]; defaultMessage: string }) {
       alignContent="center"
       justify="center"
       style={{ height: "100%" }}
+      className="WaitingPlayersList"
     >
       <Grid container direction="column">
         {playerNames.length > 0 && (

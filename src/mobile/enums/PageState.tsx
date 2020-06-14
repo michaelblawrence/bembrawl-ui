@@ -1,9 +1,9 @@
 export enum PageState {
-  JoinRoom,
-  WaitingRoom,
-  SetPrompt,
-  PlayersAnswer,
-  PlayersAnswerReview,
+  JoinRoom = "JoinRoom",
+  WaitingRoom = "WaitingRoom",
+  SetPrompt = "SetPrompt",
+  PlayersAnswer = "PlayersAnswer",
+  PlayersAnswerReview = "PlayersAnswerReview",
 }
 
 export interface Message<T> {

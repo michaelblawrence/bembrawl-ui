@@ -9,12 +9,15 @@ import { QuestionPage } from "./features/QuestionPage/QuestionPage";
 import { AnswerPage } from "./features/AnswerPage/AnswerPage";
 import { ResultsPage } from "./features/Results/ResultsPage";
 import { WaitingForUsersPage } from "./features/WaitingForUsersPage/WaitingForUsersPage";
+import { EndScores } from "./features/EndScores/EndScores";
+import { isDev, setHostPage } from "../core/dev/routing";
 
 function AppTV() {
-  const [page, state, setMessage] = useServerPageFSM(
+  let [page, state, setMessage] = useServerPageFSM(
     PageState.WaitingForUsers,
     InitialHostState
   );
+
   return (
     <div className="Window-AppTv">
       <Helmet>
@@ -31,8 +34,12 @@ function AppPage(props: {
   state: HostState;
   setMessage: Messages;
 }) {
-  const { page, state, setMessage } = props;
+  const { state, setMessage } = props;
+  let { page } = props;
 
+  if (isDev()) {
+    page = setHostPage();
+  }
   switch (page) {
     case PageState.WaitingForUsers:
       return <WaitingForUsersPage setMessage={setMessage} state={state} />;
@@ -48,6 +55,9 @@ function AppPage(props: {
 
     case PageState.Results:
       return <ResultsPage setMessage={setMessage} state={state} />;
+
+    case PageState.EndScores:
+      return <EndScores setMessage={setMessage} state={state} />;
 
     default:
       return null;
