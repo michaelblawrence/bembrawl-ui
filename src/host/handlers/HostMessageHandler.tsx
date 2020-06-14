@@ -16,7 +16,6 @@ import {
   GuessFirstWrongAnswerMessage,
 } from "../../core/server/server.types";
 import { CoreMessageProps } from "../../core/model/types";
-import { GameType } from "../../core/enums/GameType";
 
 export class PlayersClientConstants {
   public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
@@ -28,7 +27,7 @@ export interface MessageUpdate {
 }
 
 export interface MessageEffects {
-  register: (type: GameType, roomId: number) => Promise<void>;
+  register: (roomId: number) => Promise<void>;
 }
 
 export type MessageProps<TMsg extends ClientMessage> = CoreMessageProps<
@@ -57,7 +56,7 @@ export class HostMessageHandler {
       console.error("register game without room id");
       return { page: PageState.WaitingForUsers };
     }
-    effects.register(GameType.GuessFirst, RoomInfo.roomId);
+    effects.register(RoomInfo.roomId);
     return {};
   }
 

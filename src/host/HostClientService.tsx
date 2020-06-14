@@ -100,7 +100,7 @@ export class HostClientService {
     const ctx: MessageToProps = (msg) => ({
       connectionInfo,
       effects: {
-        register: (type, roomId) => this.registerGame(type, roomId),
+        register: (roomId) => this.registerGame(roomId),
       },
       msg,
       state,
@@ -112,10 +112,11 @@ export class HostClientService {
     if (msgUpdate.page) this.transitionPage(msgUpdate.page);
   }
 
-  private async registerGame(type: GameType, roomId: number): Promise<void> {
+  private async registerGame(roomId: number): Promise<void> {
     const info = this.connectionInfo;
     if (!info) return;
 
+    const type = this.getGameTypeFromUrl(document.location);
     let success = null;
 
     switch (type) {
@@ -137,6 +138,15 @@ export class HostClientService {
       this.connection.reconnect();
       return this.transitionPage(PageState.WaitingForUsers);
     }
+  }
+
+  private getGameTypeFromUrl(location: Location): GameType {
+    const routes = location.pathname.toLowerCase().split("/");
+    const routesSet = new Set(routes);
+    if (routesSet.has("beta") || routesSet.has("guess")) {
+      return GameType.GuessFirst;
+    }
+    return GameType.Emoji;
   }
 
   public dispose() {
