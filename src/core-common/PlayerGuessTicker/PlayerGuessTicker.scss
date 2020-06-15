@@ -1,0 +1,21 @@
+@import "core/styles/variables.sass";
+
+.PlayerGuessTicker {
+  height: 25vh;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  font-size: calc(10px + 2vmin);
+  color: $text-light;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .PlayerGuessTicker-Items {
+    transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+}
+
+.PlayerGuessTicker-Item {
+  text-align: center;
+}

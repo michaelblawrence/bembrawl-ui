@@ -1,4 +1,5 @@
 import { Messages } from "../enums/PageState";
+import { EmojiOrText } from "core/model/types";
 
 export interface PageProps {
   setMessage: Messages;
@@ -8,7 +9,7 @@ export interface PageProps {
 export interface HostState {
   EmojiGame: {
     Question: {
-      Prompt?: string;
+      Prompt?: EmojiOrText;
       PromptPlayerName?: string;
       Subject?: string;
       TimeoutMs?: number;
@@ -17,16 +18,28 @@ export interface HostState {
       playerIndex?: number; // TODO: delete when/if no longer in use
       playerId?: string;
       votes?: number;
-      answerList?: string[]
+      answerList?: string[];
     }[];
     GameDetails?: {
       PlayerScores: {
         playerId: string;
         playerScore: number;
-      }
+      };
       CurrentRound: number;
       TotalRounds: number;
-    }
+    };
+    GuessFirst: {
+      Question: {
+        promptEmoji?: string[];
+        secret?: string;
+      };
+      PlayerAnswers?: {
+        playerIndex?: number; // TODO: delete when/if no longer in use
+        playerId?: string;
+        score?: number;
+      }[];
+      PlayerGuesses: { text: string }[];
+    };
   };
   RoomInfo: {
     roomId?: number;
@@ -42,7 +55,13 @@ export interface HostState {
 }
 
 export const InitialHostState: HostState = {
-  EmojiGame: { Question: {} },
+  EmojiGame: {
+    Question: {},
+    GuessFirst: {
+      Question: {},
+      PlayerGuesses: [],
+    },
+  },
   RoomInfo: {
     players: [],
   },

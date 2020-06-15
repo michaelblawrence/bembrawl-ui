@@ -1,4 +1,4 @@
-@import "../../../core/styles/variables.sass";
+@import "core/styles/variables.sass";
 
 .Page {
   font-size: calc(10px + 2vmin);
@@ -15,7 +15,18 @@
   color: $text-light;
 }
 
+.PlayersProgressBacking {
+  width: 100%;
+  height: 50vh;
+  background-color: $header-color;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .WaitingMessage {
+  height: 35vh;
   background-color: $header-color;
 }
 

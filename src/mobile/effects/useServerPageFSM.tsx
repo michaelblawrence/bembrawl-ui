@@ -1,52 +1,48 @@
 import { useEffect, useState } from "react";
-import { PageState, Messages } from "../enums/PageState";
+import { PageState, Messages, DefaultMessages } from "../enums/PageState";
 import { HostClientService } from "../HostClientService";
 import { PlayerState } from "../features/PageProps";
+import { MessagesMapper } from "./messages/MessagesMapper";
+
+interface ServerPageFSMOptions {
+  disableConnection?: boolean;
+}
 
 export function useServerPageFSM(
   initialPage: PageState,
-  initialState: PlayerState
+  initialState: PlayerState,
+  options?: ServerPageFSMOptions | null
 ): [PageState, PlayerState, Messages] {
   const [page, setPage] = useState(initialPage);
   const [state, setState] = useState<PlayerState>(initialState);
   const [svc, setSvc] = useState<HostClientService | null>(null);
+  const [useConnection] = useState(!options?.disableConnection);
 
   useEffect(() => {
-    const hostClientService = new HostClientService(setState);
+    const hostClientService = new HostClientService(setState, setPage);
     setSvc(hostClientService);
-    startHostClientService(hostClientService);
+    if (useConnection) startHostClientService(hostClientService);
 
     return () => hostClientService.dispose();
-  }, [setState]);
+  }, [setState, useConnection]);
 
   useEffect(() => {
     if (svc) {
-      svc.registerPage(page, setPage);
+      svc.registerPage(setPage);
     }
-  }, [page, setPage, svc]);
+  }, [setPage, svc]);
 
-  return [page, state, mapServiceToMessages(svc)];
+  const messages = mapServiceToMessages(svc, state);
+  return [page, state, messages];
 }
 
-const defaultMessages: Messages = {
-  JoinRoom: () => {},
-  CloseRoom: () => {},
-  ChangePlayerName: () => {},
-  SubmitNewPrompt: () => {},
-  SubmitEmojiAnswer: () => {},
-  submitEmojiVotes: () => {},
-};
-
-function mapServiceToMessages(svc: HostClientService | null): Messages {
-  if (!svc) return defaultMessages;
-  return {
-    JoinRoom: (msg) => svc.joinRoom(msg.payload.roomId),
-    CloseRoom: () => svc.closeRoom(),
-    ChangePlayerName: (msg) => svc.changePlayerName(msg.payload.playerName),
-    SubmitNewPrompt: (msg) => svc.submitNewPrompt(msg.payload.promptResponse, msg.payload.promptSubject),
-    SubmitEmojiAnswer: (msg) => svc.submitResponseEmoji(msg.payload.emoji),
-    submitEmojiVotes: (msg) => svc.submitEmojiVotes(msg.payload.playerIdVotes),
-  };
+function mapServiceToMessages(
+  svc: HostClientService | null,
+  state: PlayerState
+): Messages {
+  if (!svc) return DefaultMessages;
+  const messageMapper = new MessagesMapper(svc, state);
+  return messageMapper.map();
 }
 
 async function startHostClientService(hostClientService: HostClientService) {

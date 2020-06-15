@@ -5,234 +5,155 @@ import {
   ClientMessageSubscription,
 } from "../core/server/HostClientConnection";
 import { ConnectionHealthTracker } from "../core/server/ConnectionHealthTracker";
-import {
-  PlayerState,
-  InitialPlayerState,
-  LastJoinedPlayerNotification,
-} from "./features/PageProps";
+import { PlayerState, InitialPlayerState } from "./features/PageProps";
 import { HostClientStateService } from "../core/server/HostClientStateService";
 import { ClientMessage, MessageTypes } from "../core/server/server.types";
-import { PlayerHostClient, PlayerClientRoutes } from "./HostClient";
+import { PlayerClientRoutes } from "./HostClient";
 import { ConnectionInfo } from "../core/configs/HostConnectionConfig";
+import {
+  ClientMessageHandler,
+  MessageUpdate,
+  MessageProps,
+} from "./handlers/ClientMessageHandler";
+import { EmojiPlayerService } from "./services/EmojiPlayerService";
+import { RoomPlayerService } from "./services/RoomPlayerService";
+import { GuessFirstPlayerService } from "./services/GuessFirstPlayerService";
 
 export class PlayersClientConstants {
   public static readonly TIMEOUT_ALERT_JOINED_PLAYER_MS = 8000;
 }
 
+type MessageToProps = <T extends ClientMessage>(msg: T) => MessageProps<T>;
+
 export class HostClientService {
   private readonly connection: HostClientConnection;
   private readonly connectionHealthTracker: ConnectionHealthTracker;
   private readonly stateService: HostClientStateService<PlayerState>;
+  private readonly clientMessageHandler: ClientMessageHandler;
   private readonly subscription: ClientMessageSubscription | null = null;
-  private readonly client: PlayerHostClient;
 
+  private pageSetter: StateSetter<PageState>;
   private connectionInfo: ConnectionInfo | null = null;
   private pageStatusHandle: number | null = null;
-  private pageSetter: StateSetter<PageState> | null = null;
-  private currentPage: PageState | null = null;
+  private emojiPlayerService: EmojiPlayerService | null = null;
+  private roomPlayerService: RoomPlayerService | null = null;
+  private guessFirstPlayerService: GuessFirstPlayerService | null = null;
 
-  constructor(stateSetter: StateSetter<PlayerState>) {
+  constructor(
+    stateSetter: StateSetter<PlayerState>,
+    pageSetter: StateSetter<PageState>
+  ) {
     this.connectionHealthTracker = new ConnectionHealthTracker();
     this.connection = new HostClientConnection({
-      registerUrl: PlayerClientRoutes.URL_API_ROUTE_PLAYER_REGISTER,
-      keepAliveUrl: PlayerClientRoutes.URL_API_ROUTE_KEEP_ALIVE,
+      registerUrl: PlayerClientRoutes.API_PLAYER_REGISTER,
+      keepAliveUrl: PlayerClientRoutes.API_KEEP_ALIVE,
       promptReconnect: () => this.transitionPage(PageState.JoinRoom),
     });
     this.stateService = new HostClientStateService<PlayerState>(
       InitialPlayerState,
-      stateSetter
+      stateSetter,
+      "player-v1"
     );
     this.subscription = this.connection.subscribe((msg) =>
       this.onMessageReceived(msg)
     );
-    this.client = new PlayerHostClient();
+    this.pageSetter = pageSetter;
+    this.clientMessageHandler = new ClientMessageHandler();
+  }
+
+  public emojiSvc(): EmojiPlayerService | null {
+    return this.getOrDefault(
+      this.emojiPlayerService,
+      (svc) => (this.emojiPlayerService = svc),
+      () => this.resolveService((...a) => new EmojiPlayerService(...a))
+    );
+  }
+
+  public guessFirstSvc(): GuessFirstPlayerService | null {
+    return this.getOrDefault(
+      this.guessFirstPlayerService,
+      (svc) => (this.guessFirstPlayerService = svc),
+      () => this.resolveService((...a) => new GuessFirstPlayerService(...a))
+    );
+  }
+
+  public roomSvc(): RoomPlayerService | null {
+    return this.getOrDefault(
+      this.roomPlayerService,
+      (svc) => (this.roomPlayerService = svc),
+      () => this.resolveService((...a) => new RoomPlayerService(...a))
+    );
   }
 
   public async connect() {
     this.connectionInfo = await this.connection.connect(); // this info can change? do we need to register this with connection
+    const stateRecall = this.stateService.getLastState();
+    const lastRoomId = stateRecall?.RoomInfo.roomId;
+    if (lastRoomId) {
+      const success = await this.roomSvc()?.joinRoom(lastRoomId, true);
+      if (success) {
+        this.transitionPage(PageState.WaitingRoom);
+      } else {
+        const state = this.stateService.getState();
+        delete state.RoomInfo.roomId;
+        this.stateService.pushState(state);
+      }
+    }
+  }
+
+  private handleMessage(
+    msg: ClientMessage,
+    ctx: MessageToProps
+  ): MessageUpdate {
+    switch (msg.type) {
+      case MessageTypes.ROOM_READY:
+        return this.clientMessageHandler.ROOM_READY(ctx(msg));
+      case MessageTypes.JOINED_PLAYER:
+        return this.clientMessageHandler.JOINED_PLAYER(ctx(msg));
+      case MessageTypes.EMOJI_GAME_STARTED:
+        return this.clientMessageHandler.EMOJI_GAME_STARTED(ctx(msg));
+      case MessageTypes.EMOJI_NEW_PROMPT:
+        return this.clientMessageHandler.EMOJI_NEW_PROMPT(ctx(msg));
+      case MessageTypes.EMOJI_ALL_RESPONSES:
+        return this.clientMessageHandler.EMOJI_ALL_RESPONSES(ctx(msg));
+      case MessageTypes.GUESS_FIRST_GAME_STARTED:
+        return this.clientMessageHandler.GUESS_FIRST_GAME_STARTED(ctx(msg));
+      case MessageTypes.GUESS_FIRST_MATCH_PROMPT:
+        return this.clientMessageHandler.GUESS_FIRST_MATCH_PROMPT(ctx(msg));
+      default:
+        return {};
+    }
   }
 
   private onMessageReceived(msg: ClientMessage) {
-    const state = this.stateService.getState();
-    switch (msg.type) {
-      case MessageTypes.ROOM_READY:
-        state.RoomInfo.isJoining = false;
-        this.transitionPage(PageState.WaitingRoom);
-        break;
-
-      case MessageTypes.JOINED_PLAYER:
-        state.RoomInfo.playerCount = msg.payload.playerCount;
-        if (
-          msg.payload.playerJoinOrder === null &&
-          msg.payload.playerJoinName === null
-        ) {
-          this.stateService.pushState(state);
-          break;
-        }
-        const playerIndex =
-          msg.payload.playerJoinOrder === null
-            ? -1
-            : msg.payload.playerJoinOrder + 1;
-        const playerName =
-          msg.payload.playerJoinName || `Player ${playerIndex}`;
-        const displayTimeout =
-          PlayersClientConstants.TIMEOUT_ALERT_JOINED_PLAYER_MS;
-
-        state.RoomInfo.lastJoined = {
-          displayUntilMs: msg.payload.eventTime + displayTimeout,
-          playerName: playerName,
-          eventNotificationType: msg.payload.playerNameChanged
-            ? LastJoinedPlayerNotification.NameChange
-            : LastJoinedPlayerNotification.Joined,
-        };
-        this.stateService.pushState(state);
-        break;
-
-      case MessageTypes.EMOJI_GAME_STARTED:
-        const isPromptPlayer =
-          this.connectionInfo?.deviceGuid ===
-          msg.payload.initialPromptPlayer.playerId;
-
-        state.EmojiGame.promptPlayerAnswersEmoji =
-          msg.payload.promptPlayerAnswersEmoji;
-        this.stateService.pushState(state);
-
-        if (isPromptPlayer) {
-          this.transitionPage(PageState.SetPrompt);
-        } else {
-          this.transitionPage(PageState.WaitingRoom);
-        }
-        break;
-
-      case MessageTypes.EMOJI_NEW_PROMPT:
-        const wasPromptPlayer =
-          this.connectionInfo?.deviceGuid === msg.payload.promptFromPlayerId;
-        state.EmojiGame.Question.Subject = msg.payload.promptSubject;
-        state.EmojiGame.Question.Prompt = msg.payload.promptText;
-        this.stateService.pushState(state);
-
-        if (wasPromptPlayer && !state.EmojiGame.promptPlayerAnswersEmoji) {
-          this.transitionPage(PageState.WaitingRoom);
-        } else {
-          this.transitionPage(PageState.PlayersAnswer);
-        }
-        break;
-
-      case MessageTypes.EMOJI_ALL_RESPONSES:
-        state.EmojiGame.AnswerEmoji = msg.payload.emojiResponses;
-        this.stateService.pushState(state);
-        this.transitionPage(PageState.PlayersAnswerReview);
-        break;
+    const connectionInfo = this.connectionInfo;
+    if (!connectionInfo) {
+      console.error("got message without connection?");
+      return;
     }
+    const state = this.stateService.getState();
+    const ctx: MessageToProps = (msg) => ({
+      connectionInfo,
+      effects: {},
+      msg,
+      state,
+    });
+
+    let msgUpdate = this.handleMessage(msg, ctx);
+
+    if (msgUpdate.state) this.stateService.pushState(msgUpdate.state);
+    if (msgUpdate.page) this.transitionPage(msgUpdate.page);
   }
 
   public dispose() {
-    if (this.pageStatusHandle) {
-      clearInterval(this.pageStatusHandle);
-      this.pageStatusHandle = null;
-    }
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    if (this.pageStatusHandle) clearInterval(this.pageStatusHandle);
+    this.pageStatusHandle = null;
+    this.subscription?.unsubscribe();
     this.connection.dispose();
   }
 
-  public async joinRoom(roomId: string): Promise<boolean> {
-    if (!this.connectionInfo) return false;
-    this.transitionPage(PageState.WaitingRoom);
-    this.connectionHealthTracker.addConnectionAttempts();
-
-    try {
-      const info = this.connectionInfo;
-      const joinResult = await this.client.joinRoom(roomId, info);
-      if (!joinResult.success) {
-        this.transitionPage(PageState.JoinRoom);
-        return false;
-      }
-
-      const state = this.stateService.getState();
-      state.PlayerInfo.isMaster = joinResult.isMaster;
-      state.RoomInfo.isOpen = joinResult.isOpen;
-      if (joinResult.playerIdx != null) {
-        state.PlayerInfo.playerId = joinResult.playerIdx + 1;
-      } else {
-        state.PlayerInfo.playerId = -1;
-      }
-      state.PlayerInfo.playerName =
-        joinResult.playerName || "Player " + state.PlayerInfo.playerId;
-      state.RoomInfo.roomId = roomId;
-      this.stateService.pushState(state);
-    } catch (ex) {
-      return false;
-    }
-    return true;
-  }
-
-  public async closeRoom(): Promise<boolean> {
-    if (!this.connectionInfo) return false;
-    this.connectionHealthTracker.addConnectionAttempts();
-    try {
-      const state = this.stateService.getState();
-      const roomId = state.RoomInfo.roomId;
-      if (!roomId) return false;
-
-      const info = this.connectionInfo;
-      const success = await this.client.completeRoom(roomId, info);
-      if (!success) {
-        this.transitionPage(PageState.WaitingRoom);
-        return false;
-      }
-
-      state.RoomInfo.isOpen = false;
-      state.RoomInfo.isJoining = true;
-      this.stateService.pushState(state);
-    } catch (ex) {
-      return false;
-    }
-    return true;
-  }
-
-  public async changePlayerName(playerName: string) {
-    if (!this.connectionInfo) return;
-
-    const info = this.connectionInfo;
-    await this.client.changePlayerName(playerName, info);
-
-    const state = this.stateService.getState();
-    state.PlayerInfo.playerName = playerName;
-    this.stateService.pushState(state);
-  }
-
-  public async submitNewPrompt(promptResponse: string, promptSubject: string) {
-    if (!this.connectionInfo) return;
-
-    this.transitionPage(PageState.WaitingRoom);
-    const info = this.connectionInfo;
-    await this.client.newPrompt(promptResponse, promptSubject, info);
-  }
-
-  public async submitResponseEmoji(emoji: string[]) {
-    if (!this.connectionInfo) return;
-
-    const info = this.connectionInfo;
-    await this.client.newEmojiResponse(emoji, info);
-    this.transitionPage(PageState.WaitingRoom);
-  }
-
-  public async submitEmojiVotes(playerIdVotes: [string, number][]) {
-    if (!this.connectionInfo) return;
-    this.transitionPage(PageState.WaitingRoom);
-
-    const info = this.connectionInfo;
-    const votes = playerIdVotes.flatMap(([playerId, count]) =>
-      new Array(count).fill(playerId)
-    );
-    await this.client.emojiVotesResponse(votes, info);
-  }
-
-  public registerPage(page: PageState, setPage: StateSetter<PageState>) {
+  public registerPage(setPage: StateSetter<PageState>) {
     this.pageSetter = setPage;
-    this.currentPage = page;
   }
 
   private transitionPage(newPage: PageState) {
@@ -243,5 +164,38 @@ export class HostClientService {
         "wasn't registered to be able to change page. transition failed"
       );
     }
+  }
+
+  private getOrDefault<TSvc>(
+    value: TSvc | null,
+    setter: (newValue: TSvc) => void,
+    factory: (
+      p1: ConnectionInfo,
+      p2: HostClientStateService<PlayerState>,
+      p3: ConnectionHealthTracker,
+      p4: (page: PageState) => void
+    ) => TSvc
+  ): TSvc | null {
+    if (value) return value;
+    const instance = this.resolveService(factory);
+    if (instance) setter(instance);
+    return instance;
+  }
+
+  private resolveService<TSvc>(
+    factory: (
+      p1: ConnectionInfo,
+      p2: HostClientStateService<PlayerState>,
+      p3: ConnectionHealthTracker,
+      p4: (page: PageState) => void
+    ) => TSvc
+  ): TSvc | null {
+    if (!this.connectionInfo) return null;
+    return factory(
+      this.connectionInfo,
+      this.stateService,
+      this.connectionHealthTracker,
+      (page) => this.transitionPage(page)
+    );
   }
 }

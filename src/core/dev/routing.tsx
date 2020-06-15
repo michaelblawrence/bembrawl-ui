@@ -9,35 +9,31 @@ export function isDev() {
   return trimmed.includes("/dev/");
 }
 
-// TODO: merge two functions below
+export function setPageFromRoutePath(pageState: any) {
+  const hostPageIdentifiers = Object.values(pageState) as string[];
+  const href = document.location.href;
 
-export function setHostPage() {
-    let page = HostPageState.WaitingForUsers;
-    const href = document.location.href;
-    let splitUrl = href.split("/");
-    const lastPath = splitUrl[splitUrl.length - 1];
-    const re = RegExp(lastPath, "g");
-    
-    Object.values(HostPageState).map((item) => {
-      if (re.exec(item.toLowerCase())) {
-        page = HostPageState[item];
-        return page;
-      }
-    });
-    return page;
+  const splitUrl = href.toLowerCase().split("/");
+  const lastPath = splitUrl[splitUrl.length - 1];
+  const match = hostPageIdentifiers.find(ignoreCaseCompare(lastPath));
+  console.log(hostPageIdentifiers, lastPath)
+  if (!match) {
+    const idx = splitUrl.indexOf('dev');
+    if (idx < 0) return;
+    document.location.replace(splitUrl.slice(0, idx).join("/"));
+  }
+
+  return match;
 }
 
-export function setMobilePage() {
-    let page = MobilePageState.JoinRoom;
-    const href = document.location.href;
-    let splitUrl = href.split("/");
-    const lastPath = splitUrl[splitUrl.length - 1];
-    const re = RegExp(lastPath, "g");
-    Object.values(MobilePageState).map((item) => {
-      if (re.exec(item.toLowerCase())) {
-        page = MobilePageState[item];
-        return page;
-      }
-    });
-    return page;
+export function setHostPage(): HostPageState | undefined {
+  return setPageFromRoutePath(HostPageState) as HostPageState | undefined;
+}
+
+export function setMobilePage(): MobilePageState | undefined {
+  return setPageFromRoutePath(MobilePageState) as MobilePageState | undefined;
+}
+
+function ignoreCaseCompare(matchText: string): (testMatch: string) => boolean {
+  return (ident) => matchText.toLowerCase().includes(ident.toLowerCase());
 }

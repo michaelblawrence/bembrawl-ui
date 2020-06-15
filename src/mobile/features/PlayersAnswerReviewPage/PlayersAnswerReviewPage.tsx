@@ -33,7 +33,7 @@ export function PlayersAnswerReviewPage(props: PageProps) {
     const playerIdVotes = Array.from(entries).map<[string, number]>(
       ([k, v]) => [k, v.votes]
     );
-    props.setMessage.submitEmojiVotes({
+    props.setMessage.SubmitEmojiVotes({
       payload: { playerIdVotes: playerIdVotes },
     });
   };

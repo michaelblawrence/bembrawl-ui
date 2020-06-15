@@ -1,8 +1,8 @@
 import React from "react";
 import { LinearProgress } from "@material-ui/core";
 
-export default function Timer({ duration }: { duration: number }) {
-  const [counterMs, setCounterMs] = React.useState(duration * 1000);
+export default function Timer({ durationS }: { durationS: number }) {
+  const [counterMs, setCounterMs] = React.useState(durationS * 1000);
   // const [timeLeft, setTimeLeft] = React.useState(0);
   // let timeLeft = 60;
 
@@ -15,13 +15,12 @@ export default function Timer({ duration }: { duration: number }) {
     }
   }, [counterMs]);
 
+  const counterS = counterMs / 1000;
+  const progressDecimal = counterS / durationS;
   return (
     <div className="Timer">
       <div>{Math.round(counterMs / 1000)}</div>
-      <LinearProgress
-        variant="buffer"
-        value={(1 - counterMs / 1000 / duration) * 100}
-      />
+      <LinearProgress variant="buffer" value={(1 - progressDecimal) * 100} />
     </div>
   );
 }
